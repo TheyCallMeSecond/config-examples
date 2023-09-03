@@ -122,7 +122,7 @@
 
 "server": "IP",
 
-"server_port": 444,
+"server_port": PORT,
 
 "tag": "proxy",
 
