@@ -138,7 +138,7 @@
 
 "insecure": true,
 
-"server_name": "www.example.com"
+"server_name": "SNI"
 
 },
 
