@@ -40,80 +40,80 @@
         "level": "info"
     },
     "outbounds": [
-    {
-      "packet_encoding": "",
-      "server": "IP",
-      "server_port": PORT,
-      "tls": {
-        "alpn": [
-          "h2",
-          "http/1.1"
-        ],
-        "enabled": true,
-        "insecure": false,
-        "reality": {
-          "enabled": true,
-          "public_key": "PUBLIC-KEY",
-          "short_id": "SHORT-ID"
+        {
+            "domain_strategy": "",
+            "packet_encoding": "",
+            "server": "IP",
+            "server_port": "PORT",
+            "tag": "proxy",
+            "tls": {
+                "alpn": [
+                    "h2",
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "reality": {
+                    "enabled": true,
+                    "public_key": "PUBLIC-KEY",
+                    "short_id": "SHORT-ID"
+                },
+                "server_name": "SNI",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "firefox"
+                }
+            },
+            "transport": {
+                "service_name": "SERVICE-NAME",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "UUID"
         },
-        "server_name": "SNI",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "firefox"
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "tag": "bypass",
+            "type": "direct"
+        },
+        {
+            "tag": "block",
+            "type": "block"
+        },
+        {
+            "tag": "dns-out",
+            "type": "dns"
         }
-      },
-      "transport": {
-        "service_name": "SERVICE-NAME",
-        "type": "grpc"
-      },
-      "uuid": "UUID",
-      "type": "vless",
-      "domain_strategy": "",
-      "tag": "proxy"
-    },
-    {
-      "tag": "direct",
-      "type": "direct"
-    },
-    {
-      "tag": "bypass",
-      "type": "direct"
-    },
-    {
-      "tag": "block",
-      "type": "block"
-    },
-    {
-      "tag": "dns-out",
-      "type": "dns"
+    ],
+    "route": {
+        "auto_detect_interface": true,
+        "rules": [
+            {
+                "outbound": "dns-out",
+                "port": [
+                    53
+                ]
+            },
+            {
+                "inbound": [
+                    "dns-in"
+                ],
+                "outbound": "dns-out"
+            },
+            {
+                "ip_cidr": [
+                    "224.0.0.0/3",
+                    "ff00::/8"
+                ],
+                "outbound": "block",
+                "source_ip_cidr": [
+                    "224.0.0.0/3",
+                    "ff00::/8"
+                ]
+            }
+        ]
     }
-  ],
-  "route": {
-    "auto_detect_interface": true,
-    "rules": [
-      {
-        "outbound": "dns-out",
-        "port": [
-          53
-        ]
-      },
-      {
-        "inbound": [
-          "dns-in"
-        ],
-        "outbound": "dns-out"
-      },
-      {
-        "ip_cidr": [
-          "224.0.0.0/3",
-          "ff00::/8"
-        ],
-        "outbound": "block",
-        "source_ip_cidr": [
-          "224.0.0.0/3",
-          "ff00::/8"
-        ]
-      }
-    ]
-  }
 }
