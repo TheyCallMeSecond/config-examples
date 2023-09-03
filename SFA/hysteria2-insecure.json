@@ -67,7 +67,7 @@
                     "h3"
                 ],
                 "enabled": true,
-                "insecure": true
+                "insecure": true,
                 "server_name": "SNI"
             },
             "type": "hysteria2",
