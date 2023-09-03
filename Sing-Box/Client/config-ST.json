@@ -25,47 +25,47 @@
     "log": {
         "level": "info"
     },
-  "outbounds": [
-    {
-      "type": "shadowsocks",
-      "tag": "ss",
-      "method": "chacha20-ietf-poly1305",
-      "password": "PASSWORD2",
-      "detour": "shadowtls-out",
-      "udp_over_tcp": {
-        "enabled": true,
-        "version": 2
-      }
-    },
-    {
-      "type": "shadowtls",
-      "tag": "shadowtls-out",
-      "server": "IP",
-      "server_port": PORT,
-      "version": 3,
-      "password": "PASSWORD",
-      "tls": {
-        "enabled": true,
-        "server_name": "SNI",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "firefox"
+    "outbounds": [
+        {
+            "detour": "shadowtls-out",
+            "method": "chacha20-ietf-poly1305",
+            "password": "PASSWORD2",
+            "tag": "ss",
+            "type": "shadowsocks",
+            "udp_over_tcp": {
+                "enabled": true,
+                "version": 2
+            }
+        },
+        {
+            "password": "PASSWORD",
+            "server": "IP",
+            "server_port": "PORT",
+            "tag": "shadowtls-out",
+            "tls": {
+                "enabled": true,
+                "server_name": "SNI",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "firefox"
+                }
+            },
+            "type": "shadowtls",
+            "version": 3
+        },
+        {
+            "tag": "dns-out",
+            "type": "dns"
         }
-      }
-    },
-    {
-      "tag": "dns-out",
-      "type": "dns"
+    ],
+    "route": {
+        "auto_detect_interface": true,
+        "final": "ss",
+        "rules": [
+            {
+                "outbound": "dns-out",
+                "protocol": "dns"
+            }
+        ]
     }
-  ],
-  "route": {
-    "auto_detect_interface": true,
-    "final": "ss",
-    "rules": [
-      {
-        "protocol": "dns",
-        "outbound": "dns-out"
-      }
-    ]
-  }
 }
