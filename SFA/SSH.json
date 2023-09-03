@@ -56,7 +56,7 @@
             "domain_strategy": "",
             "password": "PASSWORD",
             "server": "IP",
-            "server_port": "PORT",
+            "server_port": PORT,
             "tag": "proxy",
             "type": "ssh",
             "user": "USER"
