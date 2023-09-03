@@ -42,7 +42,7 @@
         {
             "password": "PASSWORD",
             "server": "IP",
-            "server_port": PORT,
+            "server_port": "PORT",
             "tag": "shadowtls-out",
             "tls": {
                 "enabled": true,
@@ -71,4 +71,3 @@
         ]
     }
 }
-
