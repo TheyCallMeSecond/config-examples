@@ -1,0 +1,74 @@
+{
+    "dns": {
+        "rules": [
+        ],
+        "servers": [
+            {
+                "address": "tls://1.1.1.1",
+                "detour": "ss",
+                "strategy": "ipv4_only",
+                "tag": "dns-remote"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "auto_route": true,
+            "endpoint_independent_nat": true,
+            "inet4_address": "172.19.0.1/28",
+            "interface_name": "ipv4-tun",
+            "mtu": 1500,
+            "sniff": true,
+            "stack": "gvisor",
+            "strict_route": true,
+            "type": "tun"
+        }
+    ],
+    "log": {
+        "level": "warn"
+    },
+    "outbounds": [
+        {
+            "detour": "shadowtls-out",
+            "method": "chacha20-ietf-poly1305",
+            "password": "PASSWORD2",
+            "tag": "ss",
+            "type": "shadowsocks",
+            "udp_over_tcp": {
+                "enabled": true,
+                "version": 2
+            }
+        },
+        {
+            "password": "PASSWORD",
+            "server": "IP",
+            "server_port": PORT,
+            "tag": "shadowtls-out",
+            "tls": {
+                "enabled": true,
+                "server_name": "SNI",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "firefox"
+                }
+            },
+            "type": "shadowtls",
+            "version": 3
+        },
+        {
+            "tag": "dns-out",
+            "type": "dns"
+        }
+    ],
+    "route": {
+        "auto_detect_interface": true,
+        "final": "ss",
+        "rules": [
+            {
+                "outbound": "dns-out",
+                "protocol": "dns"
+            }
+        ]
+    }
+}
+

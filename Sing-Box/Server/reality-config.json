@@ -1,0 +1,48 @@
+{
+    "log": {
+        "level": "info",
+        "timestamp": true
+    },
+    "inbounds": [
+        {
+            "type": "vless",
+            "tag": "vless-in",
+            "listen": "::",
+            "listen_port": PORT,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "users": [
+                {
+                    "uuid": "UUID",
+                    "flow": ""
+                }
+            ],
+            "tls": {
+                "enabled": true,
+                "server_name": "SNI",
+                "reality": {
+                    "enabled": true,
+                    "handshake": {
+                        "server": "SNI",
+                        "server_port": 443
+                    },
+                    "private_key": "PRIVATE-KEY",
+                    "short_id": [ 
+                        "SHORT-ID"
+                    ]
+                }
+            },
+            "transport": {
+                "type": "grpc",
+                "service_name": "SERVICE-NAME"
+            }
+        }
+    ],
+    "outbounds": [
+        {
+            "type": "direct",
+            "tag": "direct"
+        }
+    ]
+}
+

@@ -1,0 +1,59 @@
+listen: :PORT
+tls:
+  cert: /PATH/TO/FILE.crt
+  key: /PATH/TO/FILE.key
+obfs:
+  type: salamander
+  salamander:
+    password: OBFS-PASSWORD
+auth:
+  type: password
+  password: PASSWORD
+disableUDP: false
+udpIdleTimeout: 60s
+quic:
+  initStreamReceiveWindow: 8388608
+  maxStreamReceiveWindow: 8388608
+  initConnReceiveWindow: 20971520
+  maxConnReceiveWindow: 20971520
+  maxIdleTimeout: 30s
+  maxIncomingStreams: 1024
+  disablePathMTUDiscovery: true
+bandwidth:
+  up: 1 gbps
+  down: 1 gbps
+ignoreClientBandwidth: false
+resolver:
+  type: udp
+  tcp:
+    addr: 8.8.8.8:53
+    timeout: 4s
+  udp:
+    addr: 1.1.1.1
+    timeout: 4s
+  tls:
+    addr: 1.1.1.1:853
+    timeout: 10s
+    sni: cloudflare-dns.com
+    insecure: false
+  https:
+    addr: 1.1.1.1:443
+    timeout: 10s
+    sni: cloudflare-dns.com
+    insecure: false
+acl:
+  file: /PARH/TO/acl.txt
+outbounds:
+  - name: hoho
+    type: direct
+    direct:
+      mode: auto
+      bindDevice: eth0
+masquerade:
+  type: proxy
+  file:
+    dir: /www/masq
+  proxy:
+    url: HTTPS://SOME.SITE.NET
+    rewriteHost: true
+

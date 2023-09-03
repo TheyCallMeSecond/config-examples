@@ -1,0 +1,128 @@
+{
+    "dns": {
+        "independent_cache": true,
+        "rules": [
+            {
+                "disable_cache": true,
+                "geosite": [
+                    "category-ads-all"
+                ],
+                "server": "dns-block"
+            }
+        ],
+        "servers": [
+            {
+                "address": "tcp://1.1.1.1",
+                "address_resolver": "dns-direct",
+                "strategy": "ipv4_only",
+                "tag": "dns-remote"
+            },
+            {
+                "address": "h3://cloudflare-dns.com/dns-query",
+                "address_resolver": "dns-local",
+                "detour": "direct",
+                "strategy": "ipv4_only",
+                "tag": "dns-direct"
+            },
+            {
+                "address": "local",
+                "detour": "direct",
+                "tag": "dns-local"
+            },
+            {
+                "address": "rcode://success",
+                "tag": "dns-block"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "auto_route": true,
+            "endpoint_independent_nat": true,
+            "inet4_address": "172.19.0.1/28",
+            "interface_name": "ipv4-tun",
+            "mtu": 1500,
+            "sniff": true,
+            "stack": "gvisor",
+            "strict_route": true,
+            "type": "tun"
+        }
+    ],
+    "log": {
+        "level": "warn"
+    },
+    "outbounds": [
+        {
+            "auth_str": "STRING-PASSWORD",
+            "disable_mtu_discovery": true,
+            "domain_strategy": "",
+            "down_mbps": 200,
+            "obfs": "OBFS-PASSWORD",
+            "server": "IP",
+            "server_port": PORT,
+            "tag": "proxy",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "certificate": "FILL-WITH-CRT-FILE",
+                "enabled": true,
+                "insecure": false,
+                "server_name": "CERT-SNI"
+            },
+            "type": "hysteria",
+            "up_mbps": 200
+        },
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "tag": "bypass",
+            "type": "direct"
+        },
+        {
+            "tag": "block",
+            "type": "block"
+        },
+        {
+            "tag": "dns-out",
+            "type": "dns"
+        }
+    ],
+    "route": {
+        "auto_detect_interface": true,
+        "rules": [
+            {
+                "outbound": "dns-out",
+                "port": [
+                    53
+                ]
+            },
+            {
+                "inbound": [
+                    "dns-in"
+                ],
+                "outbound": "dns-out"
+            },
+            {
+                "geosite": [
+                    "category-ads-all"
+                ],
+                "outbound": "block"
+            },
+            {
+                "ip_cidr": [
+                    "224.0.0.0/3",
+                    "ff00::/8"
+                ],
+                "outbound": "block",
+                "source_ip_cidr": [
+                    "224.0.0.0/3",
+                    "ff00::/8"
+                ]
+            }
+        ]
+    }
+}
+

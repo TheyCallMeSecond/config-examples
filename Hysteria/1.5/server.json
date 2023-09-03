@@ -1,0 +1,18 @@
+{
+    "listen": ":PORT",
+    "alpn": "h3",
+    "obfs": "OBFS-PASSWORD",
+    "cert": "/PATH/TO/FILE.crt",
+    "key": "/PATH/TO/FILE.key" ,
+    "acl": "/PATH/TO/FILE.acl",
+    "resolver": "udp://1.1.1.1",
+    "resolve_preference": "46",
+    "disable_mtu_discovery": true,
+    "auth": {
+        "mode": "password",
+        "config": {
+            "password": "STRING-PASSWORD"
+        }
+    }
+}
+

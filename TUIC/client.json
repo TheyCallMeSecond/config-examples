@@ -1,0 +1,47 @@
+{
+    "relay": {
+        "server": "CERT-SNI:PORT",
+
+        "uuid": "UUID",
+
+        "password": "PASSWORD",
+
+        "ip": "IP",
+
+        "certificates": ["/PATH/TO/FILE.ca.crt"],
+
+        "udp_relay_mode": "native",
+
+        "congestion_control": "bbr",
+
+        "alpn": ["h3", "spdy/3.1"],
+
+        "zero_rtt_handshake": false,
+
+        "disable_sni": false,
+
+        "timeout": "8s",
+
+        "heartbeat": "3s",
+
+        "disable_native_certs": false,
+
+        "send_window": 16777216,
+
+        "receive_window": 8388608,
+
+        "gc_interval": "3s",
+
+        "gc_lifetime": "15s"
+    },
+
+    "local": {
+        "server": "[::]:10813",
+        
+        "dual_stack": true,
+
+        "max_packet_size": 1500
+    },
+
+    "log_level": "warn"
+}

@@ -1,0 +1,71 @@
+{
+    "dns": {
+        "rules": [
+        ],
+        "servers": [
+            {
+                "address": "tls://1.1.1.1",
+                "detour": "ss",
+                "strategy": "ipv4_only",
+                "tag": "dns-remote"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "",
+            "listen": "::",
+            "listen_port": 10808,
+            "sniff": true,
+            "sniff_override_destination": false,
+            "tag": "mixed-in",
+            "type": "mixed"
+        }
+    ],
+    "log": {
+        "level": "info"
+    },
+  "outbounds": [
+    {
+      "type": "shadowsocks",
+      "tag": "ss",
+      "method": "chacha20-ietf-poly1305",
+      "password": "PASSWORD2",
+      "detour": "shadowtls-out",
+      "udp_over_tcp": {
+        "enabled": true,
+        "version": 2
+      }
+    },
+    {
+      "type": "shadowtls",
+      "tag": "shadowtls-out",
+      "server": "IP",
+      "server_port": PORT,
+      "version": 3,
+      "password": "PASSWORD",
+      "tls": {
+        "enabled": true,
+        "server_name": "SNI",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "firefox"
+        }
+      }
+    },
+    {
+      "tag": "dns-out",
+      "type": "dns"
+    }
+  ],
+  "route": {
+    "auto_detect_interface": true,
+    "final": "ss",
+    "rules": [
+      {
+        "protocol": "dns",
+        "outbound": "dns-out"
+      }
+    ]
+  }
+}

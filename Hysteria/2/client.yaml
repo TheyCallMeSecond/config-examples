@@ -1,0 +1,32 @@
+server: IP:PORT
+auth: PASSWORD
+tls:
+  sni: CERT-SNI 
+  insecure: false 
+  pinSHA256: SERVER-CRT-FILE-SHA256 //openssl x509 -noout -fingerprint -sha256 -in your_cert.crt
+  ca: /PATH/TO/FILE.ca.crt 
+obfs:
+  type: salamander
+  salamander:
+    password: OBFS-PASSWORD 
+transport:
+  type: udp
+  udp:
+    hopInterval: 30s 
+quic:
+  initStreamReceiveWindow: 8388608 
+  maxStreamReceiveWindow: 8388608 
+  initConnReceiveWindow: 20971520 
+  maxConnReceiveWindow: 20971520 
+  maxIdleTimeout: 30s 
+  keepAlivePeriod: 10s 
+  disablePathMTUDiscovery: false 
+fastOpen: true
+lazy: true
+socks5:
+  listen: 127.0.0.1:10820 
+http:
+  listen: 127.0.0.1:10821
+
+
+
