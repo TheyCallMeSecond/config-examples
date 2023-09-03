@@ -39,79 +39,79 @@
     "log": {
         "level": "info"
     },
-  "outbounds": [
-    {
-      "congestion_control": "bbr",
-      "password": "PASSWORD",
-      "server": "IP",
-      "server_port": PORT,
-      "tls": {
-        "alpn": [
-          "h3",
-          " spdy/3.1"
-        ],
-        "certificate": "FILL-WITH-CRT-FILE",
-        "disable_sni": false,
-        "enabled": true,
-        "insecure": false,
-        "server_name": "CERT-SNI"
-      },
-      "udp_relay_mode": "native",
-      "uuid": "UUID",
-      "zero_rtt_handshake": false,
-      "type": "tuic",
-      "domain_strategy": "",
-      "tag": "proxy"
-    },
-    {
-      "tag": "direct",
-      "type": "direct"
-    },
-    {
-      "tag": "bypass",
-      "type": "direct"
-    },
-    {
-      "tag": "block",
-      "type": "block"
-    },
-    {
-      "tag": "dns-out",
-      "type": "dns"
+    "outbounds": [
+        {
+            "congestion_control": "bbr",
+            "domain_strategy": "",
+            "password": "PASSWORD",
+            "server": "IP",
+            "server_port": "PORT",
+            "tag": "proxy",
+            "tls": {
+                "alpn": [
+                    "h3",
+                    " spdy/3.1"
+                ],
+                "certificate": "FILL-WITH-CRT-FILE",
+                "disable_sni": false,
+                "enabled": true,
+                "insecure": false,
+                "server_name": "CERT-SNI"
+            },
+            "type": "tuic",
+            "udp_relay_mode": "native",
+            "uuid": "UUID",
+            "zero_rtt_handshake": false
+        },
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "tag": "bypass",
+            "type": "direct"
+        },
+        {
+            "tag": "block",
+            "type": "block"
+        },
+        {
+            "tag": "dns-out",
+            "type": "dns"
+        }
+    ],
+    "route": {
+        "auto_detect_interface": true,
+        "rules": [
+            {
+                "outbound": "dns-out",
+                "port": [
+                    53
+                ]
+            },
+            {
+                "inbound": [
+                    "dns-in"
+                ],
+                "outbound": "dns-out"
+            },
+            {
+                "geosite": [
+                    "category-ads-all"
+                ],
+                "outbound": "block"
+            },
+            {
+                "ip_cidr": [
+                    "224.0.0.0/3",
+                    "ff00::/8"
+                ],
+                "outbound": "block",
+                "source_ip_cidr": [
+                    "224.0.0.0/3",
+                    "ff00::/8"
+                ]
+            }
+        ]
     }
-  ],
-  "route": {
-    "auto_detect_interface": true,
-    "rules": [
-      {
-        "outbound": "dns-out",
-        "port": [
-          53
-        ]
-      },
-      {
-        "inbound": [
-          "dns-in"
-        ],
-        "outbound": "dns-out"
-      },
-      {
-        "geosite": [
-          "category-ads-all"
-        ],
-        "outbound": "block"
-      },
-      {
-        "ip_cidr": [
-          "224.0.0.0/3",
-          "ff00::/8"
-        ],
-        "outbound": "block",
-        "source_ip_cidr": [
-          "224.0.0.0/3",
-          "ff00::/8"
-        ]
-      }
-    ]
-  }
 }
