@@ -47,7 +47,7 @@
             "down_mbps": 200,
             "obfs": "OBFS-PASSWORD",
             "server": "IP",
-            "server_port": "PORT",
+            "server_port": PORT,
             "tag": "proxy",
             "tls": {
                 "alpn": [
