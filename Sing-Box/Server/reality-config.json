@@ -2,7 +2,7 @@
     "inbounds": [
         {
             "listen": "::",
-            "listen_port": "PORT",
+            "listen_port": PORT,
             "sniff": true,
             "sniff_override_destination": true,
             "tag": "vless-in",
