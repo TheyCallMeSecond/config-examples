@@ -38,7 +38,7 @@
 
 {
 
-"address": "h3://cloudflare-dns.com/dns-query",
+"address": "https://cloudflare-dns.com/dns-query",
 
 "address_resolver": "dns-local",
 
