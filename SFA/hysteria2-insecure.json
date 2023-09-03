@@ -68,6 +68,7 @@
                 ],
                 "enabled": true,
                 "insecure": true
+                "server_name": "SNI"
             },
             "type": "hysteria2",
             "up_mbps": 200
