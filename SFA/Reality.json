@@ -56,7 +56,7 @@
             "domain_strategy": "",
             "packet_encoding": "",
             "server": "IP",
-            "server_port": "PORT",
+            "server_port": PORT,
             "tag": "proxy",
             "tls": {
                 "alpn": [
