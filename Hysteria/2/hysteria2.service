@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/hysteria2 -c /etc/hysteria2/config.yaml server
+ExecStart=/usr/bin/hysteria2 -c /etc/hysteria2/server.yaml server
 WorkingDirectory=/etc/hysteria2
 User=root
 Group=root
