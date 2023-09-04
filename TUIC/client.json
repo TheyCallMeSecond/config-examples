@@ -8,7 +8,7 @@
 
         "ip": "IP",
 
-        "certificates": ["/PATH/TO/FILE.ca.crt"],
+        "certificates": ["/PATH/TO/ca.crt"],
 
         "udp_relay_mode": "native",
 
