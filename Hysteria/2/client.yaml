@@ -1,4 +1,4 @@
-server: IP:PORT
+server: YOURDOMAIN-or-IP:PORT
 auth: PASSWORD
 tls:
   sni: CERT-SNI 
