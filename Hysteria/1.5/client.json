@@ -7,7 +7,7 @@
     "down_mbps": 200,
     "hop_interval": 10,
     "fast_open": true,
-    "acl": "/PATH/TO/FILE.acl",
+    "acl": "/PATH/TO/block-udp.acl",
     "disable_mtu_discovery": true,
     "resolver": "udp://1.1.1.1:53",
     "resolve_preference": "46",
@@ -18,5 +18,5 @@
         "listen": "127.0.0.1:10811"
     },
     "server_name": "CERT-SNI",
-    "ca": "/PATH/TO/FILE.ca.crt"
+    "ca": "/PATH/TO/ca.crt"
 }
