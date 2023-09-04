@@ -4,7 +4,7 @@ tls:
   sni: CERT-SNI 
   insecure: false 
   pinSHA256: SERVER-CRT-FILE-SHA256 //openssl x509 -noout -fingerprint -sha256 -in your_cert.crt
-  ca: /PATH/TO/FILE.ca.crt 
+  ca: /PATH/TO/ca.crt 
 obfs:
   type: salamander
   salamander:
