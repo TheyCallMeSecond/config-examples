@@ -1,7 +1,7 @@
 listen: :PORT
 tls:
-  cert: /PATH/TO/FILE.crt
-  key: /PATH/TO/FILE.key
+  cert: /PATH/TO/server.crt
+  key: /PATH/TO/server.key
 obfs:
   type: salamander
   salamander:
