@@ -20,7 +20,7 @@ quic:
   maxConnReceiveWindow: 20971520 
   maxIdleTimeout: 30s 
   keepAlivePeriod: 10s 
-  disablePathMTUDiscovery: false 
+  disablePathMTUDiscovery: true 
 fastOpen: true
 lazy: true
 socks5:
