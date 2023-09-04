@@ -1,5 +1,5 @@
 [Unit]
-Description=Hysteria2 Server Service (server.json)
+Description=Hysteria2 Server Service (server.yaml)
 After=network.target
 
 [Service]
