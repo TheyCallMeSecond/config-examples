@@ -5,9 +5,9 @@
         "UUID": "PASSWORD"
     },
 
-    "certificate": "/PATH/TO/FILE.crt",
+    "certificate": "/PATH/TO/server.crt",
 
-    "private_key": "/PATH/TO/FILE.key" ,
+    "private_key": "/PATH/TO/server.key" ,
 
     "congestion_control": "bbr",
 
