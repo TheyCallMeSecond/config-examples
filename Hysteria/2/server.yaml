@@ -1,4 +1,4 @@
-listen: PORT
+listen: :PORT
 tls:
   cert: /PATH/TO/server.crt
   key: /PATH/TO/server.key
