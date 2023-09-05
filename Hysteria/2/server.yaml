@@ -22,7 +22,7 @@ quic:
 bandwidth:
   up: 1 gbps
   down: 1 gbps
-ignoreClientBandwidth: false
+ignoreClientBandwidth: true
 resolver:
   type: udp
   tcp:
@@ -54,6 +54,6 @@ masquerade:
   file:
     dir: /www/masq
   proxy:
-    url: HTTPS://SOME.SITE.NET
+    url: HTTPS://SOME-H3.SITE.NET
     rewriteHost: true
 
