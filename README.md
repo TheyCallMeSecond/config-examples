@@ -80,7 +80,7 @@ mkdir singbox-warp && nano /root/singbox-warp/config.json
 
 حالا دستورات زیر را به‌ترتیب اجرا کنید
 ```
-curl -Lo /root/sb https://github.com/SagerNet/sing-box/releases/download/v1.5.0-beta.2/sing-box-1.5.0-beta.2-linux-amd64.tar.gz && tar -xzf /root/sb && cp -f /root/sing-box-*/sing-box /root/singbox-warp/ && rm -r /root/sb /root/sing-box-* && chown root:root /root/singbox-warp/sing-box && chmod +x /root/singbox-warp/sing-box
+curl -Lo /root/sb https://github.com/SagerNet/sing-box/releases/download/v1.5.0-beta.3/sing-box-1.5.0-beta.3-linux-amd64.tar.gz && tar -xzf /root/sb && cp -f /root/sing-box-*/sing-box /root/singbox-warp/ && rm -r /root/sb /root/sing-box-* && chown root:root /root/singbox-warp/sing-box && chmod +x /root/singbox-warp/sing-box
 ```
 
 ```
