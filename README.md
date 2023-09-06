@@ -123,4 +123,34 @@ systemctl enable --now hysteria2
 [![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/7.png)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/7.png)
 
 کانفیگ شما ساخته شده و بر روی برنامه v2rayN روی ویندوز قابل اجراست.
-برای اندروید و iOS هنوزهیچ کلاینتی Hysteria 2 را پشتیبانی نمیکند. در صورت آپدیت احتمالی کلاینت‌های این دو سیستم‌عامل، آموزش به‌روزرسانی خواهد شد.
+
+### اندروید
+
+۱. آخرین نسخه‌ی برنامه‌ی SFA را از [اینجا ](https://github.com/SagerNet/sing-box/releases "اینجا ")دانلود کنید.
+
+۲. کانفیگ را از لینک زیر کپی کنید.
+
+[raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/SFA/hysteria2-insecure.json](raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/SFA/hysteria2-insecure.json "raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/SFA/hysteria2-insecure.json")
+
+بخش outbounds کانفیگ را مطابق تصویر زیر ادیت کنید.
+
+[![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/8.png)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/8.png)
+ 
+۳. وارد برنامه‌ی sing-box شوید و از منوی پایین روی Profile کلیک کرده و New Profile را انتخاب کنید. 
+
+برای کانفیگ نامی انتخاب کرده و روی گزینه‌ی Create بزنید. 
+
+[![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/10.jpg)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/10.jpg)
+
+سپس در قسمت Profiles روی نام کانفیگ جدید خود بزنید و Edit Content را انتخاب کنید. 
+
+[![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/9.jpg)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/9.jpg)
+
+محتوای کانفیگ پیشفرض را به‌طور کامل پاک کرده و کانفیگ خود را Paste کنید.
+
+
+[![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/11.jpg)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/11.jpg)
+
+ سپس بازگردید و از قسمت Dashboard پس از انتخاب کانفیگ آنرا اجرا کنید. 
+
+[![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/12.jpg)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/12.jpg)
