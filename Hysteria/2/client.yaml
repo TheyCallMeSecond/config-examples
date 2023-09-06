@@ -20,9 +20,9 @@ quic:
 fastOpen: true
 lazy: true
 socks5:
-  listen: 127.0.0.1:10809
+  listen: 127.0.0.1:10810
 http:
-  listen: 127.0.0.1:10808
+  listen: 127.0.0.1:10811
 
 
 
