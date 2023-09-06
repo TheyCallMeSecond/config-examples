@@ -107,7 +107,7 @@ systemctl enable --now hysteria2
 
 ۲. هسته‌ی Hysteria 2 را دانلود کنید. 
 
-[https://github.com/apernet/hysteria/releases/download/app%2Fv2.0.0/hysteria-windows-amd64.exe](https://github.com/apernet/hysteria/releases/download/app%2Fv2.0.0/hysteria-windows-amd64.exe "https://github.com/apernet/hysteria/releases/download/app%2Fv2.0.0/hysteria-windows-amd64.exe")
+[https://github.com/apernet/hysteria/releases/latest/download/hysteria-windows-amd64.exe](https://github.com/apernet/hysteria/releases/latest/download/hysteria-windows-amd64.exe "https://github.com/apernet/hysteria/releases/latest/download/hysteria-windows-amd64.exe")
 
 ۳. سپس فایل .exe دانلود شده را در فولدر `v2rayN/bin/hysteria` جایگزین کنید.
 
