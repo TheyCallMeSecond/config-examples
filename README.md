@@ -1,0 +1,126 @@
+# آموزش نصب و کانفیگ Hysteria 2 + WARP
+
+مزیت این روش نسبت به روش‌های دیگر برای کانفیگ هیستریا ۲ امنیت بسیار بالا، غیرقابل شناسایی بودن آی‌پی (و بلاک شدن و فیلترشدن آن) و امکان دسترسی به سایت‌های ایرانی بدون نگرانی از شناسایی آی‌پی اصلی سرور است. 
+
+# سرور
+۱. 	برنامه را (linux-amd64) دانلود کنید.
+```
+curl -Lo /root/hysteria2 https://github.com/apernet/hysteria/releases/latest/download/hysteria-linux-amd64 && chmod +x /root/hysteria2 && mv -f /root/hysteria2 /usr/bin
+```
+۲. 	کانفیگ را دانلود کنید.
+```
+mkdir /etc/hysteria2 && curl -Lo /etc/hysteria2/server.yaml raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/server.yaml
+```
+۳. 	کانفیگ مربوط به systemctl را دانلود کنید.
+```
+curl -Lo /etc/systemd/system/hysteria2.service raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/hysteria2.service && systemctl daemon-reload
+```
+۴. 	به سایت کلاودفلر بروید و پس از ورود به بخش DNS یک رکورد جدید ثبت کنید(Add record). 
+(برای ipv4 رکورد A و برای ipv6 رکورد AAAA ایجاد کنید)
+(تنظیمات بخش Proxy status در حالت DNS only باشد)
+ 
+[![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/1.png)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/1.png)
+
+
+۵. 	به قسمت SSL/TLS بروید و گزینه‌ی Origin Server را انتخاب کنید. در صفحه‌ی باز‌شده گزینه‌ی Create Certificate را انتخاب کنید. در مرحله‌ی بعد هم Create را بزنید. 
+
+[![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/2.png)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/2.png)
+
+
+سپس دو مقدار Origin Certificate و Private Key را به شکل جداگانه در جایی ذخیره کنید (در مراحل آتی به آن‌ها نیاز خواهید داشت)
+
+[![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/3.png)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/3.png)
+
+۶. 	حالا در سرور فایل server.crt را به‌کمک دستور زیر بسازید.
+```
+sudo nano /etc/hysteria2/server.crt
+```
+در صفحه‌ی باز شده مقدار Origin Certificate که در مرحله‌ی ۵ ذخیره کرده بودید را قرار دهید(CTRL+SHIFT+V).
+
+در آخر به کمک CTRL+X و فشردن Y و سپس اینتر فایل را ذخیره کنید.
+
+در ویندوز نوت‌پد را باز کرده و محتوای Origin Certificate را در آن پیست کنید. سپس این فایل را با نام ca.crt در جایی ذخیره کنید(در قسمت کلاینت به این فایل نیاز خواهید داشت).
+
+سپس فایل server.key را به‌کمک دستور زیر بسازید
+```
+sudo nano /etc/hysteria2/server.key
+```
+در صفحه‌ی باز شده مقدار Private Key که در مرحله‌ی ۵ ذخیره کرده بودید را قرار دهید(CTRL+SHIFT+V).
+
+در آخر به کمک CTRL+X و فشردن Y و سپس ENTER فایل را ذخیره کنید.
+
+به کمک دستور زیر SHA256 سرتیفیکیت را دریافت و در جایی ذخیره کنید(در بخش کلاینت به آن نیاز خواهیم داشت).
+
+
+```
+openssl x509 -noout -fingerprint -sha256 -in /etc/hysteria2/server.crt
+
+```
+۷. 	فایل کانفیگ را با دستور زیر باز کرده و مطابق با عکس ادیت کنید.
+```
+sudo nano /etc/hysteria2/server.yaml
+
+``` 
+
+[![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/4.png)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/4.png)
+
+۸.	از طریق [این بات تلگرام](https://t.me/generatewarpplusbot "این بات تلگرام") یک کلید WARP+ تهیه کنید  و سپس به[ این آدرس](https://replit.com/@TheyCallMeSecon/warpgo-sing-box-config-generator-english " این آدرس") رفته و روی گزینه‌ی Run کلیک کنید.
+
+سپس در اولین مرحله وارد کردن عدد ۲ گزینه‌ی WARP+ را انتخاب کنید.  در صفحه‌ی بعد کد WARP+ که دریافت کرده بودید را وارد کنید. در صفحه‌ی بعد یک Device Name دلخواه انتخاب کنید. 
+سپس کانفیگ را در جایی ذخیره کنید.
+
+[![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/5.png)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/5.png)
+
+حالا دستور زیر را در سرور خود وارد کنید.
+```
+mkdir singbox-warp && cd singbox-warp && nano config.json
+```
+در صفحه‌ی باز شده کانفیگ ذخیره شده در قسمت قبل را پیست کنید(CTRL+SHIFT+V). سپس به کمک CTRL+X و فشردن Y و سپس ENTER فایل را ذخیره کنید.
+
+حالا دستورات زیر را به‌ترتیب اجرا کنید
+```
+curl -Lo /root/sb https://github.com/SagerNet/sing-box/releases/download/v1.5.0-beta.2/sing-box-1.5.0-beta.2-linux-amd64.tar.gz && tar -xzf /root/sb && cp -f /root/sing-box-*/sing-box /root/singbox-warp/ && rm -r /root/sb /root/sing-box-* && chown root:root /root/singbox-warp/sing-box && chmod +x /root/singbox-warp/sing-box
+```
+
+```
+curl -Lo /etc/systemd/system/SBW.service raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/SBW.service && systemctl daemon-reload
+```
+
+```
+systemctl enable --now SBW
+
+```
+در نهایت با دستور `systemctl status SBW` از فعا‌ل‌بودن پروکسی در سمت سرور مطمئن شوید.
+
+۹. به‌کمک دستور زیر سرویس هیستریا را اجرا کنید.
+```
+systemctl enable --now hysteria2
+```
+با دستور `systemctl status hysteria2` از فعال‌بودن سرویس هیستریا مطمئن شوید.
+
+# کلاینت
+
+### ویندوز
+
+۱. آخرین نسخه‌ی v2rayN را از [اینجا](https://github.com/2dust/v2rayN/releases "اینجا") دانلود کنید.
+
+۲. هسته‌ی Hysteria 2 را دانلود کنید. 
+
+[https://github.com/apernet/hysteria/releases/download/app%2Fv2.0.0/hysteria-windows-amd64.exe](https://github.com/apernet/hysteria/releases/download/app%2Fv2.0.0/hysteria-windows-amd64.exe "https://github.com/apernet/hysteria/releases/download/app%2Fv2.0.0/hysteria-windows-amd64.exe")
+
+۳. سپس فایل .exe دانلود شده را در فولدر `v2rayN/bin/hysteria` جایگزین کنید.
+
+۴. کانفیگ را از اینجا کپی کنید.
+
+[raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/client.yaml](raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/client.yaml "raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/client.yaml")
+
+فایلی با نام `config.yaml` در نوت‌پد بسازید و کانفیگ کپی شده را در آن پیست کنید. سپس مانند تصویر زیر ان‌را ادیت کنید.
+
+[![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/6.png)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/6.png)
+
+۵. برنامه‌ی v2rayN را باز کنید. از قسمت Server بر روی Add a custom configuration server کلیک کنید. سپس با انتخاب گزینه‌ی Browse، فایل `config.yaml` که ساخته بودید را انتخاب کنید. مطمئن شوید Core Type روی گزینه‌ی Hysteria قرار دارد و پورت 10810 است. 
+
+[![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/7.png)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/7.png)
+
+کانفیگ شما ساخته شده و بر روی برنامه v2rayN روی ویندوز قابل اجراست.
+برای اندروید و iOS هنوزهیچ کلاینتی Hysteria 2 را پشتیبانی نمیکند. در صورت آپدیت احتمالی کلاینت‌های این دو سیستم‌عامل، آموزش به‌روزرسانی خواهد شد.
