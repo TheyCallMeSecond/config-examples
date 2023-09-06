@@ -112,7 +112,7 @@ systemctl enable --now hysteria2
 
 ۴. کانفیگ را از اینجا کپی کنید.
 
-[raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/client.yaml](raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/client.yaml "raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/client.yaml")
+[https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/client.yaml](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/client.yaml "raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/client.yaml")
 
 فایلی با نام `config.yaml` در نوت‌پد بسازید و کانفیگ کپی شده را در آن پیست کنید. سپس مانند تصویر زیر ان‌را ادیت کنید.
 
@@ -130,7 +130,7 @@ systemctl enable --now hysteria2
 
 ۲. کانفیگ را از لینک زیر کپی کنید.
 
-[raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/SFA/hysteria2-insecure.json](raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/SFA/hysteria2-insecure.json "raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/SFA/hysteria2-insecure.json")
+[https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/SFA/hysteria2-insecure.json](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/SFA/hysteria2-insecure.json "raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/SFA/hysteria2-insecure.json")
 
 بخش outbounds کانفیگ را مطابق تصویر زیر ادیت کنید.
 
