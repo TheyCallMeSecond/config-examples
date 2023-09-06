@@ -73,7 +73,7 @@ sudo nano /etc/hysteria2/server.yaml
 
 حالا دستور زیر را در سرور خود وارد کنید.
 ```
-mkdir singbox-warp && cd singbox-warp && nano config.json
+mkdir singbox-warp && nano /root/singbox-warp/config.json
 ```
 در صفحه‌ی باز شده کانفیگ ذخیره شده در قسمت قبل را پیست کنید(CTRL+SHIFT+V). سپس به کمک CTRL+X و فشردن Y و سپس ENTER فایل را ذخیره کنید.
 
