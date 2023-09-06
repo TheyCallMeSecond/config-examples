@@ -54,10 +54,6 @@
     "outbounds": [
         {
             "down_mbps": 200,
-            "obfs": {
-                "password": "OBFS-PASSWORD",
-                "type": "salamander"
-            },
             "password": "PASSWORD",
             "server": "IP",
             "server_port": PORT,
