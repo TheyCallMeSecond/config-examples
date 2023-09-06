@@ -1,7 +1,7 @@
-server: YOURDOMAIN-or-IP:PORT
+server: YOURDOMAIN:PORT
 auth: PASSWORD
 tls:
-  sni: CERT-SNI 
+  sni: YOURDOMAIN
   insecure: false 
   pinSHA256: SERVER-CRT-FILE-SHA256
   ca: /PATH/TO/ca.crt
