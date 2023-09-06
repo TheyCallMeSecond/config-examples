@@ -66,7 +66,7 @@ sudo nano /etc/hysteria2/server.yaml
 
 ۸.	از طریق [این بات تلگرام](https://t.me/generatewarpplusbot "این بات تلگرام") یک کلید WARP+ تهیه کنید  و سپس به[ این آدرس](https://replit.com/@TheyCallMeSecon/warpgo-sing-box-config-generator-english " این آدرس") رفته و روی گزینه‌ی Run کلیک کنید.
 
-سپس در اولین مرحله وارد کردن عدد ۲ گزینه‌ی WARP+ را انتخاب کنید.  در صفحه‌ی بعد کد WARP+ که دریافت کرده بودید را وارد کنید. در صفحه‌ی بعد یک Device Name دلخواه انتخاب کنید. 
+سپس در اولین مرحله با وارد کردن عدد ۲ گزینه‌ی WARP+ را انتخاب کنید.  در صفحه‌ی بعد کد WARP+ که دریافت کرده بودید را وارد کنید. در صفحه‌ی بعد یک Device Name دلخواه انتخاب کنید. 
 سپس کانفیگ را در جایی ذخیره کنید.
 
 [![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/5.png)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/5.png)
