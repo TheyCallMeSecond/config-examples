@@ -4,11 +4,7 @@ tls:
   sni: CERT-SNI 
   insecure: false 
   pinSHA256: SERVER-CRT-FILE-SHA256 //openssl x509 -noout -fingerprint -sha256 -in your_cert.crt
-  ca: /PATH/TO/ca.crt 
-obfs:
-  type: salamander
-  salamander:
-    password: OBFS-PASSWORD 
+  ca: /PATH/TO/ca.crt
 transport:
   type: udp
   udp:
@@ -24,9 +20,9 @@ quic:
 fastOpen: true
 lazy: true
 socks5:
-  listen: 127.0.0.1:10820 
+  listen: 127.0.0.1:10809
 http:
-  listen: 127.0.0.1:10821
+  listen: 127.0.0.1:10808
 
 
 
