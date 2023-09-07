@@ -11,28 +11,31 @@ install_hysteria() {
     # Step 3: download the hysteria2.service file
     curl -Lo /etc/systemd/system/hysteria2.service raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/hysteria2.service && systemctl daemon-reload
 
-    # Step 4: Prompt the user to enter a port and replace "PORT" in the server.yaml file
+    # Step 4: download the acl.txt file
+    curl -Lo /etc/hysteria2/acl.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/acl.txt 
+
+    # Step 5: Prompt the user to enter a port and replace "PORT" in the server.yaml file
     read -p "Please enter a port: " user_port
     sed -i "s/PORT/$user_port/" /etc/hysteria2/server.yaml
 
-    # Step 5: Prompt the user to enter a domain and replace "DOMAIN" in the server.yaml file
+    # Step 6: Prompt the user to enter a domain and replace "DOMAIN" in the server.yaml file
     read -p "Please enter your domain: " user_domain
     sed -i "s/DOMAIN/$user_domain/" /etc/hysteria2/server.yaml
 
-    # Step 6: Prompt the user to enter a password and replace "PASSWORD" in the server.yaml file
+    # Step 7: Prompt the user to enter a password and replace "PASSWORD" in the server.yaml file
     read -s -p "Please enter your password: " user_password
     echo
     sed -i "s/PASSWORD/$user_password/" /etc/hysteria2/server.yaml
 
-    # Step 7: Prompt the user to enter an email and replace "EMAIL" in the server.yaml file
+    # Step 8: Prompt the user to enter an email and replace "EMAIL" in the server.yaml file
     read -p "Please enter your email: " user_email
     sed -i "s/EMAIL/$user_email/" /etc/hysteria2/server.yaml
 
-    # Step 8: Enable and start the Hysteria2 service
+    # Step 9: Enable and start the Hysteria2 service
     sudo systemctl enable hysteria2
     sudo systemctl start hysteria2
 
-    # Step 9: Construct and display the resulting URL
+    # Step 10: Construct and display the resulting URL
     result_url="hy2://$user_password@$user_domain:$user_port?insecure=1&sni=$user_domain#HY2"
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
@@ -77,8 +80,11 @@ while true; do
             # Remove the existing configuration
             rm -rf /etc/hysteria2
 
-            # Re-run Step 2 to download the server-auto.yaml file
+            # download the server-auto.yaml file
             mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.yaml https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/server-auto.yaml
+
+            # download the acl.txt file
+            curl -Lo /etc/hysteria2/acl.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/acl.txt 
 
             # Prompt the user to enter a port and replace "PORT" in the server.yaml file
             read -p "Please enter a port: " user_port
@@ -108,6 +114,7 @@ while true; do
             echo "Hysteria setup completed."
             exit 0  # Exit the script immediately with a successful status
             ;;
+}
         3)
             uninstall_hysteria
             ;;
