@@ -10,9 +10,6 @@ install_hysteria() {
 
 # Function to modify config
 modify_config() {
-    # Stop the Hysteria2 service
-    sudo systemctl stop hysteria2
-
     # Remove the existing configuration
     rm -rf /etc/hysteria2
 
@@ -37,35 +34,28 @@ uninstall_hysteria() {
     exit 0  # Exit the script immediately with a successful status
 }
 
-# Main menu loop
-while true; do
-    echo -e "\e[93mPlease select an option:"
-    echo "1: Install"
-    echo "2: Modify Config"
-    echo "3: Uninstall"
-    echo "4: Exit\e[0m"
+# Display menu and get user choice
+echo -e "\e[93mPlease select an option:"
+echo "1: Install"
+echo "2: Modify Config"
+echo "3: Uninstall\e[0m"
 
-    read -p "Enter your choice: " user_choice
+read -p "Enter your choice: " user_choice
 
-    case $user_choice in
-        1)
-            install_hysteria
-            ;;
-        2)
-            modify_config
-            ;;
-        3)
-            uninstall_hysteria
-            ;;
-        4)
-            echo "Exiting."
-            exit 0  # Exit the script immediately
-            ;;
-        *)
-            echo "Invalid choice. Please select a valid option."
-            ;;
-    esac
-done
+case $user_choice in
+    1)
+        install_hysteria
+        ;;
+    2)
+        modify_config
+        ;;
+    3)
+        uninstall_hysteria
+        ;;
+    *)
+        echo "Invalid choice. Exiting."
+        ;;
+esac
 
 
 # Step 1: Download Hysteria binary and make it executable
