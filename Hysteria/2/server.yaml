@@ -1,7 +1,12 @@
 listen: :PORT
-tls:
-  cert: /etc/hysteria2/server.crt
-  key: /etc/hysteria2/server.key
+acme:
+  domains:
+    - DOMAIN
+  email: EMAIL
+  ca: letsencrypt 
+  disableHTTP: false 
+  disableTLSALPN: false 
+  dir: /etc/hysteria2
 auth:
   type: password
   password: PASSWORD
@@ -38,14 +43,12 @@ resolver:
     sni: cloudflare-dns.com
     insecure: false
 outbounds:
-  - name: warp+
-    type: socks5
-    socks5:
-      addr: 127.0.0.1:2000
+  - name: direct
+    type: direct
 masquerade:
   type: proxy
   file:
     dir: /www/masq
   proxy:
-    url: HTTPS://SOME-H3.SITE.NET
+    url: https://google.com
     rewriteHost: true
