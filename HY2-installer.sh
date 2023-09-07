@@ -107,6 +107,7 @@ while true; do
 
             echo "Hysteria setup completed."
             exit 0  # Exit the script immediately with a successful status
+            ;;
         3)
             uninstall_hysteria
             ;;
