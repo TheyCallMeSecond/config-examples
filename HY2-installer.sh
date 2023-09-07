@@ -37,6 +37,8 @@ install_hysteria() {
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
     echo "Hysteria setup completed."
+
+    exit 0  # Exit the script immediately with a successful status
 }
 
 # Function to uninstall Hysteria
@@ -69,16 +71,10 @@ while true; do
             install_hysteria
             ;;
         2)
-            # Stop the Hysteria2 service
-            sudo systemctl stop hysteria2
+            uninstall_hysteria
+            ;;
             
-            # Remove the existing configuration
-            rm -rf /etc/hysteria2
-
-            # Re-run Step 2 to download the server.yaml file
-            mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.yaml https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/server-auto.yaml
-
-            # (Continue from Step 4...)
+            install_hysteria
             ;;
         3)
             uninstall_hysteria
