@@ -99,9 +99,15 @@ systemctl enable --now hysteria2
 ```
 با دستور `systemctl status hysteria2` از فعال‌بودن سرویس هیستریا مطمئن شوید.
 
+------------
+
+
+
 # کلاینت
 
 ### ویندوز
+
+#### برنامه V2rayN
 
 ۱. آخرین نسخه‌ی v2rayN را از [اینجا](https://github.com/2dust/v2rayN/releases "اینجا") دانلود کنید.
 
@@ -124,6 +130,31 @@ systemctl enable --now hysteria2
 [![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/7.png)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/7.png)
 
 کانفیگ شما ساخته شده و بر روی برنامه v2rayN روی ویندوز قابل اجراست.
+
+------------
+
+#### برنامه Nekoray
+
+
+آخرین نسخه‌ی Nekoray را از [اینجا](https://github.com/MatsuriDayo/nekoray/releases "اینجا") دانلود کنید.
+
+برنامه را باز کرده, به قسمت server بروید و new profile را انتخاب کنید و type را بر روی hysteria2 بذارید
+
+مطابق تصویر اطلاعاته کانفیگتون رو وارد کنید
+
+
+[![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/13.png)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/13.png)
+
+
+بر روی certificate کلیک کرده و محتوای فایل ca.crt رو داخلش paste کنید
+
+[![](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/14.png)](https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/img/14.png)
+
+ تمام
+
+------------
+
+
 
 ### اندروید
 
