@@ -42,6 +42,8 @@ resolver:
     timeout: 10s
     sni: cloudflare-dns.com
     insecure: false
+acl:
+  file: /etc/hysteria2/acl.txt    
 outbounds:
   - name: direct
     type: direct
