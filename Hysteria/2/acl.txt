@@ -1,7 +1,6 @@
 
 reject(all, udp/443)
 reject(geoip:ir)
-reject(ext:iran.dat:ir)
 reject(regexp:.*\\\\.ir$)
 reject(geosite:category-ir)
 reject(2.176.0.0/12)
