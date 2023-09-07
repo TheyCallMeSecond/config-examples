@@ -2,7 +2,16 @@
 [![](https://hysteria.network/assets/banner_dark.svg)](https://hysteria.network/assets/banner_dark.svg)
 
 مزیت این روش نسبت به روش‌های دیگر برای کانفیگ هیستریا ۲ امنیت بسیار بالا، غیرقابل شناسایی بودن آی‌پی (و بلاک شدن و فیلترشدن آن) و امکان دسترسی به سایت‌های ایرانی بدون نگرانی از شناسایی آی‌پی اصلی سرور است. 
+------------
+### نصب اتوماتیک (بدون وارپ)
 
+بعد از اتصال دامنه ی خود بهIP سرور, کد زیر را بر روی سرور اجرا کنید
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/HY2-installer.sh)"
+```
+------------
+------------
+### نصب و کانفیگ دستی (+WARP)
 # سرور
 ۱. 	برنامه را (linux-amd64) دانلود کنید.
 ```
