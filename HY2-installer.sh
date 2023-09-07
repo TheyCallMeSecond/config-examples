@@ -10,11 +10,14 @@ install_hysteria() {
 
 # Function to modify config
 modify_config() {
+    # Stop the Hysteria2 service
+    sudo systemctl stop hysteria2
+    
     # Remove the existing configuration
     rm -rf /etc/hysteria2
 
     # Re-run Step 2 to download the server.yaml file
-    mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.yaml https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/server-auto.yaml
+    mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.yaml https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/server.yaml
 
     # (Continue from Step 4...)
 }
@@ -30,32 +33,39 @@ uninstall_hysteria() {
     sudo rm -f /etc/systemd/system/hysteria2.service
 
     echo "Hysteria uninstalled."
-    
+
     exit 0  # Exit the script immediately with a successful status
 }
 
-# Display menu and get user choice
-echo -e "\e[93mPlease select an option:"
-echo "1: Install"
-echo "2: Modify Config"
-echo "3: Uninstall\e[0m"
+# Main menu loop
+while true; do
+    echo "Please select an option:"
+    echo "1: $(tput setaf 3)Install$(tput sgr0)"
+    echo "2: $(tput setaf 3)Modify Config$(tput sgr0)"
+    echo "3: $(tput setaf 3)Uninstall$(tput sgr0)"
+    echo "4: $(tput setaf 3)Exit$(tput sgr0)"
 
-read -p "Enter your choice: " user_choice
+    read -p "Enter your choice: " user_choice
 
-case $user_choice in
-    1)
-        install_hysteria
-        ;;
-    2)
-        modify_config
-        ;;
-    3)
-        uninstall_hysteria
-        ;;
-    *)
-        echo "Invalid choice. Exiting."
-        ;;
-esac
+    case $user_choice in
+        1)
+            install_hysteria
+            ;;
+        2)
+            modify_config
+            ;;
+        3)
+            uninstall_hysteria
+            ;;
+        4)
+            echo "Exiting."
+            exit 0  # Exit the script immediately
+            ;;
+        *)
+            echo "Invalid choice. Please select a valid option."
+            ;;
+    esac
+done
 
 
 # Step 1: Download Hysteria binary and make it executable
