@@ -41,7 +41,7 @@
             "endpoint_independent_nat": true,
             "inet4_address": "172.19.0.1/28",
             "interface_name": "ipv4-tun",
-            "mtu": 1199,
+            "mtu": 1500,
             "sniff": true,
             "stack": "gvisor",
             "strict_route": true,
