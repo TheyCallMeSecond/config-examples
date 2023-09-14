@@ -21,6 +21,7 @@ install_hysteria() {
 
     # Step 6: Prompt the user to enter a password and replace "PASSWORD" in the server.yaml file
     read -s -p "Please enter your password: " user_password
+    echo
     sed -i "s/PASSWORD/$user_password/" /etc/hysteria2/server.yaml
 
     # Step 7: Prompt the user to enter an email and replace "EMAIL" in the server.yaml file
@@ -52,6 +53,8 @@ install_hysteria() {
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
     echo "Hysteria setup completed."
+    
+    exit 0  # Exit the script immediately with a successful status
 }
 
 # Function to modify Hysteria configuration
@@ -75,6 +78,7 @@ modify_hysteria_config() {
 
     # Prompt the user to enter a password and replace "PASSWORD" in the server.yaml file
     read -s -p "Please enter your password: " user_password
+    echo
     sed -i "s/PASSWORD/$user_password/" /etc/hysteria2/server.yaml
 
     # Prompt the user to enter an email and replace "EMAIL" in the server.yaml file
@@ -106,6 +110,8 @@ modify_hysteria_config() {
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
     echo "Hysteria configuration modified."
+    
+    exit 0  # Exit the script immediately with a successful status
 }
 
 # Function to uninstall Hysteria
@@ -152,5 +158,3 @@ while true; do
             ;;
     esac
 done
-
-
