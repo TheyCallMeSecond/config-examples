@@ -35,8 +35,11 @@ install_hysteria() {
     sudo systemctl enable hysteria2
     sudo systemctl start hysteria2
 
-    # Step 10: Construct and display the resulting URL
-    result_url="hy2://$user_password@$user_domain:$user_port?insecure=1&sni=$user_domain#HY2"
+    # step 10: get server ip
+    public_ip=$(curl -s https://ipinfo.io/ip)
+
+    # Step 11: Construct and display the resulting URL
+    result_url="hy2://$user_password@$public_ip:$user_port?insecure=1&sni=$user_domain#HY2"
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
     echo "Hysteria setup completed."
@@ -107,8 +110,11 @@ while true; do
             sudo systemctl enable hysteria2
             sudo systemctl start hysteria2
 
+            # get server ip
+            public_ip=$(curl -s https://ipinfo.io/ip)
+
             # Construct and display the resulting URL
-            result_url="hy2://$user_password@$user_domain:$user_port?insecure=1&sni=$user_domain#HY2"
+            result_url="hy2://$user_password@$public_ip:$user_port?insecure=1&sni=$user_domain#HY2"
             echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
             echo "Hysteria setup completed."
