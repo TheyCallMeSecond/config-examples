@@ -123,6 +123,9 @@ uninstall_hysteria() {
     sudo rm -f /usr/bin/hysteria2
     rm -rf /etc/hysteria2
     sudo rm -f /etc/systemd/system/hysteria2.service
+    
+    # Uninstall warp client
+    bash <(curl -fsSL git.io/warp.sh) uninstall
 
     echo "Hysteria uninstalled."
 
