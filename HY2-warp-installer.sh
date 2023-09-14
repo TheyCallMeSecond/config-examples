@@ -28,25 +28,25 @@ install_hysteria() {
     read -p "Please enter your email: " user_email
     sed -i "s/EMAIL/$user_email/" /etc/hysteria2/server.yaml
     
-    # Step 8:Execute the WARP setup script (with user key replacement)
+    # Step 8: Use a public DNS service to determine the public IP address
+    public_ip=$(curl -s https://ipinfo.io/ip)
+    
+    # Step 9:Execute the WARP setup script (with user key replacement)
     bash <(curl -fsSL git.io/warp.sh) proxy
 
-    # Step 9:Prompt the user for their WARP+ key
+    # Step 10:Prompt the user for their WARP+ key
     read -p "Enter your WARP+ key: " warp_key
 
-    # Step 10:Replace the placeholder in the command and run it
+    # Step 11:Replace the placeholder in the command and run it
     warp_command="warp-cli set-license $warp_key"
     eval "$warp_command"
 
-    # Step 11:Restart WARP
+    # Step 12:Restart WARP
     bash <(curl -fsSL git.io/warp.sh) restart
 
-    # Step 12: Enable and start the Hysteria2 service
+    # Step 13: Enable and start the Hysteria2 service
     sudo systemctl enable hysteria2
     sudo systemctl start hysteria2
-    
-    # Step 13: Use a public DNS service to determine the public IP address
-    public_ip=$(curl -s https://ipinfo.io/ip)
 
     # Step 14:Construct and display the resulting URL
     result_url="hy2://$user_password@$public_ip:$user_port?insecure=1&sni=$user_domain#HY2"
@@ -84,6 +84,9 @@ modify_hysteria_config() {
     # Prompt the user to enter an email and replace "EMAIL" in the server.yaml file
     read -p "Please enter your email: " user_email
     sed -i "s/EMAIL/$user_email/" /etc/hysteria2/server.yaml
+    
+    # Use a public DNS service to determine the public IP address
+    public_ip=$(curl -s https://ipinfo.io/ip)
 
     # Execute the WARP setup script (with user key replacement)
     bash <(curl -fsSL git.io/warp.sh) proxy
@@ -101,9 +104,6 @@ modify_hysteria_config() {
     # Enable and start the Hysteria2 service
     sudo systemctl enable hysteria2
     sudo systemctl start hysteria2
-    
-    # Use a public DNS service to determine the public IP address
-    public_ip=$(curl -s https://ipinfo.io/ip)
 
     # Construct and display the resulting URL
     result_url="hy2://$user_password@$public_ip:$user_port?insecure=1&sni=$user_domain#HY2"
