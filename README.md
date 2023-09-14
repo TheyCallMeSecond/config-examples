@@ -180,6 +180,12 @@ systemctl enable --now hysteria2
 
 ### اندروید
 
+#### نکوباکس :
+از آخرین نسخه‌ی نکوباکس استفاده کنید
+[https://github.com/MatsuriDayo/NekoBoxForAndroid/releases](https://github.com/MatsuriDayo/NekoBoxForAndroid/releases "https://github.com/MatsuriDayo/NekoBoxForAndroid/releases")
+
+#### سینگ باکس :
+
 ۱. آخرین نسخه‌ی برنامه‌ی SFA را از [اینجا ](https://github.com/SagerNet/sing-box/releases "اینجا ")دانلود کنید.
 
 ۲. کانفیگ را از لینک زیر کپی کنید.
