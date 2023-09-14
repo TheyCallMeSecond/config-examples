@@ -15,6 +15,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-
 ------------
 
 (بدون وارپ) :
+
 (برای امنیت بیشتر دامنه ها و IP های ایرانی بلاک هستند)
 
 بعد از اتصال دامنه ی خود بهIP سرور, کد زیر را بر روی سرور اجرا کنید
