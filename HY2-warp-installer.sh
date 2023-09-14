@@ -62,6 +62,9 @@ modify_hysteria_config() {
     # Stop the Hysteria2 service
     sudo systemctl stop hysteria2
     
+    # turn off warp proxy
+    bash <(curl -fsSL git.io/warp.sh) unproxy
+    
     # Remove the existing configuration
     rm -rf /etc/hysteria2
 
@@ -88,18 +91,18 @@ modify_hysteria_config() {
     # Use a public DNS service to determine the public IP address
     public_ip=$(curl -s https://ipinfo.io/ip)
 
-    # Execute the WARP setup script (with user key replacement)
-    bash <(curl -fsSL git.io/warp.sh) proxy
-
     # Prompt the user for their WARP+ key
     read -p "Enter your WARP+ key: " warp_key
 
     # Replace the placeholder in the command and run it
     warp_command="warp-cli set-license $warp_key"
     eval "$warp_command"
-
+    
     # Restart WARP
     bash <(curl -fsSL git.io/warp.sh) restart
+    
+    # Execute the WARP setup script (with user key replacement)
+    bash <(curl -fsSL git.io/warp.sh) proxy
     
     # Enable and start the Hysteria2 service
     sudo systemctl enable hysteria2
