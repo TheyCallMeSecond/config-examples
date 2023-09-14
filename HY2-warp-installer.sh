@@ -1,35 +1,5 @@
 #!/bin/bash
 
-# Main menu loop
-while true; do
-    echo -e "Please select an option:"
-    echo -e "1: \e[93mInstall\e[0m"
-    echo -e "2: \e[93mModify Config\e[0m"
-    echo -e "3: \e[93mUninstall\e[0m"
-    echo -e "4: \e[93mExit\e[0m"
-
-    read -p "Enter your choice: " user_choice
-
-    case $user_choice in
-        1)
-            install_hysteria
-            ;;
-        2)
-            modify_hysteria_config
-            ;;
-        3)
-            uninstall_hysteria
-            ;;
-        4)
-            echo "Exiting."
-            exit 0  # Exit the script immediately
-            ;;
-        *)
-            echo "Invalid choice. Please select a valid option."
-            ;;
-    esac
-done
-
 # Function to install Hysteria
 install_hysteria() {
     # Step 1: Download Hysteria binary and make it executable
@@ -152,5 +122,35 @@ uninstall_hysteria() {
 
     exit 0  # Exit the script immediately with a successful status
 }
+
+# Main menu loop
+while true; do
+    echo -e "Please select an option:"
+    echo -e "1: \e[93mInstall\e[0m"
+    echo -e "2: \e[93mModify Config\e[0m"
+    echo -e "3: \e[93mUninstall\e[0m"
+    echo -e "4: \e[93mExit\e[0m"
+
+    read -p "Enter your choice: " user_choice
+
+    case $user_choice in
+        1)
+            install_hysteria
+            ;;
+        2)
+            modify_hysteria_config
+            ;;
+        3)
+            uninstall_hysteria
+            ;;
+        4)
+            echo "Exiting."
+            exit 0  # Exit the script immediately
+            ;;
+        *)
+            echo "Invalid choice. Please select a valid option."
+            ;;
+    esac
+done
 
 
