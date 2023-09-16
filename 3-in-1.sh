@@ -50,9 +50,9 @@ install_hysteria() {
     sudo systemctl start hysteria2
 
     # Step 14:Construct and display the resulting URL
-    result_url=" ipv4 hy2://$user_password@$public_ipv4:$user_port?insecure=1&sni=$user_domain#HY2
+    result_url=" ipv4 : hy2://$user_password@$public_ipv4:$user_port?insecure=1&sni=$user_domain#HY2
     ---------------------------------------------------------------
-    ipv6 hy2://$user_password@$public_ipv6:$user_port?insecure=1&sni=$user_domain#HY2"
+    ipv6 : hy2://$user_password@[$public_ipv6]:$user_port?insecure=1&sni=$user_domain#HY2"
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
     echo "Hysteria setup completed."
@@ -110,9 +110,9 @@ modify_hysteria_config() {
     sudo systemctl start hysteria2
 
     # Construct and display the resulting URL
-    result_url=" ipv4 hy2://$user_password@$public_ipv4:$user_port?insecure=1&sni=$user_domain#HY2
+    result_url=" ipv4 : hy2://$user_password@$public_ipv4:$user_port?insecure=1&sni=$user_domain#HY2
     ---------------------------------------------------------------
-    ipv6 hy2://$user_password@$public_ipv6:$user_port?insecure=1&sni=$user_domain#HY2"
+    ipv6 : hy2://$user_password@[$public_ipv6]:$user_port?insecure=1&sni=$user_domain#HY2"
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
     echo "Hysteria configuration modified."
@@ -189,9 +189,9 @@ install_tuic() {
     sudo systemctl enable --now tuic
 
     # Construct and display the resulting URL
-    result_url=" v4: tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC-V5
+    result_url=" ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
     ---------------------------------------------------------------
-    v6 tuic://$uuid:$password@$public_ipv6:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC-V5"
+    ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
     echo "tuic setup completed."
@@ -252,9 +252,9 @@ install_tuic() {
     sudo systemctl enable --now tuic
 
     # Construct and display the resulting URL
-    result_url=" v4 tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC-V5
+    result_url=" ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
     ---------------------------------------------------------------
-    v6 tuic://$uuid:$password@$public_ipv6:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC-V5"
+    ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
     echo "tuic configuration modified."
@@ -347,9 +347,9 @@ install_reality() {
     sudo systemctl enable --now sing-box
 
     # Construct and display the resulting URL
-    result_url="v4 vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
+    result_url="ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
     ---------------------------------------------------------------
-    v6 vless://$uuid@$public_ipv6:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Realit"
+    ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Realit"
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
     echo "Reality setup completed."
@@ -417,9 +417,9 @@ install_reality() {
     sudo systemctl enable --now sing-box
 
     # Construct and display the resulting URL
-    result_url="v4 vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
+    result_url="ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
     ---------------------------------------------------------------
-    v6 vless://$uuid@$public_ipv6:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Realit"
+    ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Realit"
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
     echo "Reality configuration modified."
