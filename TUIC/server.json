@@ -5,9 +5,9 @@
         "UUID": "PASSWORD"
     },
 
-    "certificate": "/PATH/TO/server.crt",
+    "certificate": "/etc/tuic/server.crt",
 
-    "private_key": "/PATH/TO/server.key" ,
+    "private_key": "/etc/tuic/server.key" ,
 
     "congestion_control": "bbr",
 
