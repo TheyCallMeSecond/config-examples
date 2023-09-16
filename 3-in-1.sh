@@ -2,6 +2,8 @@
 
 # Function to install Hysteria
 install_hysteria() {
+    apt update && apt install -y qrencode
+
     # Step 1: Download Hysteria binary and make it executable
     curl -Lo /root/hysteria2 https://github.com/apernet/hysteria/releases/latest/download/hysteria-linux-amd64 && chmod +x /root/hysteria2 && mv -f /root/hysteria2 /usr/bin
 
@@ -56,6 +58,15 @@ install_hysteria() {
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/hysteria2/config.txt # Red color for URL
 
     cat /etc/hysteria2/config.txt
+
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/hysteria2/config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/hysteria2/config.txt)
+
+    echo IPv4:
+    qrencode -t ANSIUTF8 <<< "$ipv4qr"
+
+    echo IPv6:
+    qrencode -t ANSIUTF8 <<< "$ipv6qr"
 
     echo "Hysteria setup completed."
     
@@ -118,6 +129,15 @@ modify_hysteria_config() {
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/hysteria2/config.txt # Red color for URL
 
     cat /etc/hysteria2/config.txt
+    
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/hysteria2/config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/hysteria2/config.txt)
+
+    echo IPv4:
+    qrencode -t ANSIUTF8 <<< "$ipv4qr"
+
+    echo IPv6:
+    qrencode -t ANSIUTF8 <<< "$ipv6qr"
 
     echo "Hysteria configuration modified."
     
@@ -145,6 +165,8 @@ uninstall_hysteria() {
 }
 
 install_tuic() {
+    apt update && apt install -y qrencode
+
     # Download tuic binary and make it executable
     curl -Lo /root/tuic https://github.com/EAimTY/tuic/releases/download/tuic-server-1.0.0/tuic-server-1.0.0-x86_64-unknown-linux-gnu && chmod +x /root/tuic && mv -f /root/tuic /usr/bin
 
@@ -199,6 +221,15 @@ install_tuic() {
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/tuic/config.txt # Red color for URL
 
     cat /etc/tuic/config.txt
+
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/tuic/config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/tuic/config.txt)
+
+    echo IPv4:
+    qrencode -t ANSIUTF8 <<< "$ipv4qr"
+
+    echo IPv6:
+    qrencode -t ANSIUTF8 <<< "$ipv6qr"
 
     echo "tuic setup completed."
     
@@ -265,6 +296,15 @@ install_tuic() {
 
     cat /etc/tuic/config.txt
 
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/tuic/config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/tuic/config.txt)
+
+    echo IPv4:
+    qrencode -t ANSIUTF8 <<< "$ipv4qr"
+
+    echo IPv6:
+    qrencode -t ANSIUTF8 <<< "$ipv6qr"
+
     echo "tuic configuration modified."
     
     else
@@ -291,6 +331,8 @@ uninstall_tuic() {
 }
 
 install_reality() {
+    apt update && apt install -y qrencode
+
     # Download sing-box binary and make it executable
     mkdir /root/singbox && cd /root/singbox
     wget https://github.com/SagerNet/sing-box/releases/download/v1.4.3/sing-box-1.4.3-linux-amd64.tar.gz
@@ -361,7 +403,15 @@ install_reality() {
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/sing-box/config.txt  # Red color for URL
 
     cat /etc/sing-box/config.txt
+    
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/sing-box/config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/sing-box/config.txt)
 
+    echo IPv4:
+    qrencode -t ANSIUTF8 <<< "$ipv4qr"
+
+    echo IPv6:
+    qrencode -t ANSIUTF8 <<< "$ipv6qr"
     echo "Reality setup completed."
     
     exit 0  # Exit the script immediately with a successful status
@@ -434,6 +484,15 @@ install_reality() {
 
     cat /etc/sing-box/config.txt
 
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/sing-box/config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/sing-box/config.txt)
+
+    echo IPv4:
+    qrencode -t ANSIUTF8 <<< "$ipv4qr"
+
+    echo IPv6:
+    qrencode -t ANSIUTF8 <<< "$ipv6qr"
+
     echo "Reality configuration modified."
     
     else
@@ -473,12 +532,30 @@ uninstall_warp() {
 show_hysteria_config() {
 cat /etc/hysteria2/config.txt
 
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/hysteria2/config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/hysteria2/config.txt)
+
+    echo IPv4:
+    qrencode -t ANSIUTF8 <<< "$ipv4qr"
+
+    echo IPv6:
+    qrencode -t ANSIUTF8 <<< "$ipv6qr"
+
     exit 0  # Exit the script immediately with a successful status
 }
 
 # Function to show tuic config    
 show_tuic_config() {
 cat /etc/tuic/config.txt
+
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/tuic/config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/tuic/config.txt)
+
+    echo IPv4:
+    qrencode -t ANSIUTF8 <<< "$ipv4qr"
+
+    echo IPv6:
+    qrencode -t ANSIUTF8 <<< "$ipv6qr"
 
     exit 0  # Exit the script immediately with a successful status
 }
@@ -487,6 +564,14 @@ cat /etc/tuic/config.txt
 show_reality_config() {
 cat /etc/sing-box/config.txt
 
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/sing-box/config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/sing-box/config.txt)
+
+    echo IPv4:
+    qrencode -t ANSIUTF8 <<< "$ipv4qr"
+
+    echo IPv6:
+    qrencode -t ANSIUTF8 <<< "$ipv6qr"
     exit 0  # Exit the script immediately with a successful status
 }
 
