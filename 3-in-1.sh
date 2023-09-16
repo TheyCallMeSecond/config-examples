@@ -457,19 +457,43 @@ uninstall_warp() {
     exit 0  # Exit the script immediately with a successful status
 } 
 
+# Function to show hysteria config    
+show_hysteria_config() {
+cat /etc/hysteria2/config.txt
+
+    exit 0  # Exit the script immediately with a successful status
+}
+
+# Function to show tuic config    
+show_tuic_config() {
+cat /etc/tuic/config.txt
+
+    exit 0  # Exit the script immediately with a successful status
+}
+
+# Function to show reality config    
+show_reality_config() {
+cat /etc/sing-box/config.txt
+
+    exit 0  # Exit the script immediately with a successful status
+}
+
 # Main menu loop
 while true; do
     echo -e "Please select an option:"
-    echo -e "1: \e[93mInstall Hysteria\e[0m"
-    echo -e "2: \e[93mModify Hysteria Config\e[0m"
-    echo -e "3: \e[93mUninstall Hysteria\e[0m"
-    echo -e "4: \e[93mInstall tuic\e[0m"
-    echo -e "5: \e[93mModify tuic Config\e[0m"
-    echo -e "6: \e[93mUninstall tuic\e[0m"
-    echo -e "7: \e[93mInstall reality\e[0m"
-    echo -e "8: \e[93mModify reality Config\e[0m"
-    echo -e "9: \e[93mUninstall reality\e[0m"
-    echo -e "10: \e[93mUninstall warp\e[0m"    
+    echo -e "1: \e[93mInstall Hysteria2\e[0m"
+    echo -e "2: \e[93mModify Hysteria2 Config\e[0m"
+    echo -e "3: \e[93mShow Hysteria2 Config\e[0m"    
+    echo -e "4: \e[93mUninstall Hysteria2\e[0m"
+    echo -e "5: \e[93mInstall tuic\e[0m"
+    echo -e "6: \e[93mModify tuic Config\e[0m"
+    echo -e "7: \e[93mShow tuic Config\e[0m"    
+    echo -e "8: \e[93mUninstall tuic\e[0m"
+    echo -e "9: \e[93mInstall reality\e[0m"
+    echo -e "10: \e[93mModify reality Config\e[0m"
+    echo -e "11: \e[93mShow reality Config\e[0m"    
+    echo -e "12: \e[93mUninstall reality\e[0m"
+    echo -e "13: \e[93mUninstall warp\e[0m"    
     echo -e "0: \e[93mExit\e[0m"
 
     read -p "Enter your choice: " user_choice
@@ -482,27 +506,36 @@ while true; do
             modify_hysteria_config
             ;;
         3)
-            uninstall_hysteria
+            show_hysteria_config
             ;;
         4)
+            uninstall_hysteria
+            ;;            
+        5)
             install_tuic
             ;;
-        5)
+        6)
             modify_tuic_config
             ;;
-        6)
+        7)
+            show_tuic_config
+            ;;            
+        8)
             uninstall_tuic
             ;;
-        7)
+        9)
             install_reality
             ;;
-        8)
+        10)
             modify_reality_config
             ;;
-        9)
+        11)
+            show_reality_config
+            ;;            
+        12)
             uninstall_reality
             ;;
-        10)
+        13)
             uninstall_warp
             ;;            
         0)
