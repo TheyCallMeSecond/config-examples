@@ -182,8 +182,8 @@ install_tuic() {
     sed -i "s/UUID/$uuid/" /etc/tuic/server.json
     
     # Use a public DNS service to determine the public IP address
-    public_ip4=$(curl -s https://v4.ident.me)
-    public_ip6=$(curl -s https://v6.ident.me)
+    public_ipv4=$(curl -s https://v4.ident.me)
+    public_ipv6=$(curl -s https://v6.ident.me)
 
     # Enable and start the tuic service
     sudo systemctl enable --now tuic
@@ -245,8 +245,8 @@ install_tuic() {
     sed -i "s/UUID/$uuid/" /etc/tuic/server.json
     
     # Use a public DNS service to determine the public IP address
-    public_ip4=$(curl -s https://v4.ident.me)
-    public_ip6=$(curl -s https://v6.ident.me)
+    public_ipv4=$(curl -s https://v4.ident.me)
+    public_ipv6=$(curl -s https://v6.ident.me)
     
     # Enable and start the tuic service
     sudo systemctl enable --now tuic
