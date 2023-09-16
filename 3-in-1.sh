@@ -29,7 +29,8 @@ install_hysteria() {
     sed -i "s/EMAIL/$user_email/" /etc/hysteria2/server.yaml
     
     # Step 8: Use a public DNS service to determine the public IP address
-    public_ip=$(curl -s https://v4.ident.me)
+    public_ipv4=$(curl -s https://v4.ident.me)
+    public_ipv6=$(curl -s https://v6.ident.me)
     
     # Step 9:Execute the WARP setup script (with user key replacement)
     bash <(curl -fsSL git.io/warp.sh) proxy
@@ -49,7 +50,9 @@ install_hysteria() {
     sudo systemctl start hysteria2
 
     # Step 14:Construct and display the resulting URL
-    result_url="hy2://$user_password@$public_ip:$user_port?insecure=1&sni=$user_domain#HY2"
+    result_url=" ipv4 hy2://$user_password@$public_ipv4:$user_port?insecure=1&sni=$user_domain#HY2
+    echo
+    ipv6 hy2://$user_password@$public_ipv6:$user_port?insecure=1&sni=$user_domain#HY2"
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
     echo "Hysteria setup completed."
@@ -89,8 +92,9 @@ modify_hysteria_config() {
     sed -i "s/EMAIL/$user_email/" /etc/hysteria2/server.yaml
     
     # Use a public DNS service to determine the public IP address
-    public_ip=$(curl -s https://v4.ident.me)
-
+    public_ipv4=$(curl -s https://v4.ident.me)
+    public_ipv6=$(curl -s https://v6.ident.me)
+    
     # Prompt the user for their WARP+ key
     read -p "Enter your WARP+ key: " warp_key
 
@@ -106,7 +110,9 @@ modify_hysteria_config() {
     sudo systemctl start hysteria2
 
     # Construct and display the resulting URL
-    result_url="hy2://$user_password@$public_ip:$user_port?insecure=1&sni=$user_domain#HY2"
+    result_url=" ipv4 hy2://$user_password@$public_ipv4:$user_port?insecure=1&sni=$user_domain#HY2
+    echo
+    ipv6 hy2://$user_password@$public_ipv6:$user_port?insecure=1&sni=$user_domain#HY2"
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
     echo "Hysteria configuration modified."
@@ -176,13 +182,16 @@ install_tuic() {
     sed -i "s/UUID/$uuid/" /etc/tuic/server.json
     
     # Use a public DNS service to determine the public IP address
-    public_ip=$(curl -s https://v4.ident.me)
+    public_ip4=$(curl -s https://v4.ident.me)
+    public_ip6=$(curl -s https://v6.ident.me)
 
     # Enable and start the tuic service
     sudo systemctl enable --now tuic
 
     # Construct and display the resulting URL
-    result_url="tuic://$uuid:$password@$public_ip:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC-V5"
+    result_url=" v4 tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC-V5
+    echo 
+    v6 tuic://$uuid:$password@$public_ipv6:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC-V5"
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
     echo "tuic setup completed."
@@ -236,13 +245,16 @@ install_tuic() {
     sed -i "s/UUID/$uuid/" /etc/tuic/server.json
     
     # Use a public DNS service to determine the public IP address
-    public_ip=$(curl -s https://v4.ident.me)
-
+    public_ip4=$(curl -s https://v4.ident.me)
+    public_ip6=$(curl -s https://v6.ident.me)
+    
     # Enable and start the tuic service
     sudo systemctl enable --now tuic
 
     # Construct and display the resulting URL
-    result_url="tuic://$uuid:$password@$public_ip:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC-V5"
+    result_url=" v4 tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC-V5
+    echo 
+    v6 tuic://$uuid:$password@$public_ipv6:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC-V5"
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
     echo "tuic configuration modified."
@@ -314,7 +326,9 @@ install_reality() {
     sed -i "s/SERVICE-NAME/$service_name/" /etc/sing-box/config.json
     
     # Use a public DNS service to determine the public IP address
-    public_ip=$(curl -s https://v4.ident.me)
+    public_ipv4=$(curl -s https://v4.ident.me)
+    public_ipv6=$(curl -s https://v6.ident.me)
+
 
     # Execute the WARP setup script (with user key replacement)
     bash <(curl -fsSL git.io/warp.sh) proxy
@@ -333,7 +347,9 @@ install_reality() {
     sudo systemctl enable --now sing-box
 
     # Construct and display the resulting URL
-    result_url="vless://$uuid@$public_ip:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality"
+    result_url="v4 vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
+    echo
+    v6 vless://$uuid@$public_ipv6:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Realit"
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
     echo "Reality setup completed."
@@ -384,7 +400,8 @@ install_reality() {
     sed -i "s/SERVICE-NAME/$service_name/" /etc/sing-box/config.json
     
     # Use a public DNS service to determine the public IP address
-    public_ip=$(curl -s https://v4.ident.me)
+    public_ipv4=$(curl -s https://v4.ident.me)
+    public_ipv6=$(curl -s https://v6.ident.me)
     
     # Prompt the user for their WARP+ key
     read -p "Enter your WARP+ key: " warp_key
@@ -400,7 +417,9 @@ install_reality() {
     sudo systemctl enable --now sing-box
 
     # Construct and display the resulting URL
-    result_url="vless://$uuid@$public_ip:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality"
+    result_url="v4 vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
+    echo
+    v6 vless://$uuid@$public_ipv6:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Realit"
     echo -e "Config URL: \e[91m$result_url\e[0m"  # Red color for URL
 
     echo "Reality configuration modified."
