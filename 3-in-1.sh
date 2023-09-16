@@ -55,6 +55,8 @@ install_hysteria() {
     ipv6 : hy2://$user_password@[$public_ipv6]:$user_port?insecure=1&sni=$user_domain#HY2" 
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/hysteria2/config.txt # Red color for URL
 
+    cat /etc/hysteria2/config.txt
+
     echo "Hysteria setup completed."
     
     exit 0  # Exit the script immediately with a successful status
@@ -114,6 +116,8 @@ modify_hysteria_config() {
     ---------------------------------------------------------------
     ipv6 : hy2://$user_password@[$public_ipv6]:$user_port?insecure=1&sni=$user_domain#HY2"
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/hysteria2/config.txt # Red color for URL
+
+    cat /etc/hysteria2/config.txt
 
     echo "Hysteria configuration modified."
     
@@ -194,6 +198,8 @@ install_tuic() {
     ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/tuic/config.txt # Red color for URL
 
+    cat /etc/tuic/config.txt
+
     echo "tuic setup completed."
     
     exit 0  # Exit the script immediately with a successful status
@@ -256,6 +262,8 @@ install_tuic() {
     ---------------------------------------------------------------
     ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/tuic/config.txt  # Red color for URL
+
+    cat /etc/tuic/config.txt
 
     echo "tuic configuration modified."
     
@@ -352,6 +360,8 @@ install_reality() {
     ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Realit"
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/sing-box/config.txt  # Red color for URL
 
+    cat /etc/sing-box/config.txt
+
     echo "Reality setup completed."
     
     exit 0  # Exit the script immediately with a successful status
@@ -421,6 +431,8 @@ install_reality() {
     ---------------------------------------------------------------
     ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Realit"
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/sing-box/config.txt  # Red color for URL
+
+    cat /etc/sing-box/config.txt
 
     echo "Reality configuration modified."
     
