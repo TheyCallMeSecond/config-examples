@@ -29,7 +29,7 @@ install_hysteria() {
     sed -i "s/EMAIL/$user_email/" /etc/hysteria2/server.yaml
     
     # Step 8: Use a public DNS service to determine the public IP address
-    public_ip=$(curl -s https://ipinfo.io/ip)
+    public_ip=$(curl -s https://v4.ident.me)
     
     # Step 9:Execute the WARP setup script (with user key replacement)
     bash <(curl -fsSL git.io/warp.sh) proxy
@@ -89,7 +89,7 @@ modify_hysteria_config() {
     sed -i "s/EMAIL/$user_email/" /etc/hysteria2/server.yaml
     
     # Use a public DNS service to determine the public IP address
-    public_ip=$(curl -s https://ipinfo.io/ip)
+    public_ip=$(curl -s https://v4.ident.me)
 
     # Prompt the user for their WARP+ key
     read -p "Enter your WARP+ key: " warp_key
@@ -176,7 +176,7 @@ install_tuic() {
     sed -i "s/UUID/$uuid/" /etc/tuic/server.json
     
     # Use a public DNS service to determine the public IP address
-    public_ip=$(curl -s https://ipinfo.io/ip)
+    public_ip=$(curl -s https://v4.ident.me)
 
     # Enable and start the tuic service
     sudo systemctl enable --now tuic
@@ -236,7 +236,7 @@ install_tuic() {
     sed -i "s/UUID/$uuid/" /etc/tuic/server.json
     
     # Use a public DNS service to determine the public IP address
-    public_ip=$(curl -s https://ipinfo.io/ip)
+    public_ip=$(curl -s https://v4.ident.me)
 
     # Enable and start the tuic service
     sudo systemctl enable --now tuic
@@ -314,7 +314,7 @@ install_reality() {
     sed -i "s/SERVICE-NAME/$service_name/" /etc/sing-box/config.json
     
     # Use a public DNS service to determine the public IP address
-    public_ip=$(curl -s https://ipinfo.io/ip)
+    public_ip=$(curl -s https://v4.ident.me)
 
     # Execute the WARP setup script (with user key replacement)
     bash <(curl -fsSL git.io/warp.sh) proxy
@@ -384,7 +384,7 @@ install_reality() {
     sed -i "s/SERVICE-NAME/$service_name/" /etc/sing-box/config.json
     
     # Use a public DNS service to determine the public IP address
-    public_ip=$(curl -s https://ipinfo.io/ip)
+    public_ip=$(curl -s https://v4.ident.me)
     
     # Prompt the user for their WARP+ key
     read -p "Enter your WARP+ key: " warp_key
