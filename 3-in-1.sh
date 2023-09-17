@@ -644,19 +644,19 @@ change_warp_key() {
 
 # Main menu loop
 while true; do
-    echo -e "\e[91mPlease select an option:\e[0m"
+    echo -e "    \e[91mPlease select an option:\e[0m"
     echo -e
-    echo -e "1: \e[93mInstall Hysteria2\e[0m"
-    echo -e "2: \e[93mModify Hysteria2 Config\e[0m"
-    echo -e "3: \e[93mShow Hysteria2 Config\e[0m"
-    echo -e "4: \e[93mUninstall Hysteria2\e[0m"
+    echo -e "1:  \e[93mInstall Hysteria2\e[0m"
+    echo -e "2:  \e[93mModify Hysteria2 Config\e[0m"
+    echo -e "3:  \e[93mShow Hysteria2 Config\e[0m"
+    echo -e "4:  \e[93mUninstall Hysteria2\e[0m"
     echo -------------------------------------------
-    echo -e "5: \e[93mInstall TUIC\e[0m"
-    echo -e "6: \e[93mModify TUIC Config\e[0m"
-    echo -e "7: \e[93mShow TUIC Config\e[0m"
-    echo -e "8: \e[93mUninstall TUIC\e[0m"
+    echo -e "5:  \e[93mInstall TUIC\e[0m"
+    echo -e "6:  \e[93mModify TUIC Config\e[0m"
+    echo -e "7:  \e[93mShow TUIC Config\e[0m"
+    echo -e "8:  \e[93mUninstall TUIC\e[0m"
     echo -------------------------------------------
-    echo -e "9: \e[93mInstall Reality\e[0m"
+    echo -e "9:  \e[93mInstall Reality\e[0m"
     echo -e "10: \e[93mModify Reality Config\e[0m"
     echo -e "11: \e[93mShow Reality Config\e[0m"
     echo -e "12: \e[93mUninstall Reality\e[0m"
@@ -664,7 +664,7 @@ while true; do
     echo -e "13: \e[93mChange WARP+ Key\e[0m"
     echo -e "14: \e[93mUninstall WARP\e[0m"
     echo -------------------------------------------
-    echo -e "0: \e[91mExit\e[0m"
+    echo -e "0:  \e[91mExit\e[0m"
 
     read -p "Enter your choice: " user_choice
 
