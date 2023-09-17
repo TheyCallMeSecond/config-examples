@@ -21,10 +21,9 @@ install_hysteria() {
     read -p "Please enter your domain: " user_domain
     sed -i "s/DOMAIN/$user_domain/" /etc/hysteria2/server.yaml
 
-    # Prompt the user to enter a password and replace "PASSWORD" in the server.yaml file
-    read -s -p "Please enter your password: " user_password
-    echo
-    sed -i "s/PASSWORD/$user_password/" /etc/hysteria2/server.yaml
+    # Generate a password and replace "PASSWORD" in the server.yaml file
+    password=$(openssl rand -hex 8)
+    sed -i "s/PASSWORD/$password/" /etc/hysteria2/server.yaml
 
     # Prompt the user to enter an email and replace "EMAIL" in the server.yaml file
     read -p "Please enter your email: " user_email
@@ -33,6 +32,15 @@ install_hysteria() {
     # Use a public DNS service to determine the public IP address
     public_ipv4=$(curl -s https://v4.ident.me)
     public_ipv6=$(curl -s https://v6.ident.me)
+    
+    # WARP+ installation
+    warp_check="/etc/systemd/sytsem/warp-svc.service"
+    
+    if [ -e "$warp_check" ]; then
+    
+    echo "WARP is running."
+    
+    else
     
     # Execute the WARP setup script (with user key replacement)
     bash <(curl -fsSL git.io/warp.sh) proxy
@@ -46,6 +54,8 @@ install_hysteria() {
 
     # Restart WARP
     bash <(curl -fsSL git.io/warp.sh) restart
+    
+    fi
 
     # Enable and start the Hysteria2 service
     sudo systemctl enable hysteria2
@@ -53,9 +63,9 @@ install_hysteria() {
 
     # Construct and display the resulting URL & QR
     result_url=" 
-    ipv4 : hy2://$user_password@$public_ipv4:$user_port?insecure=1&sni=$user_domain#HY2
+    ipv4 : hy2://$password@$public_ipv4:$user_port?insecure=1&sni=$user_domain#HY2
     ---------------------------------------------------------------
-    ipv6 : hy2://$user_password@[$public_ipv6]:$user_port?insecure=1&sni=$user_domain#HY2" 
+    ipv6 : hy2://$password@[$public_ipv6]:$user_port?insecure=1&sni=$user_domain#HY2" 
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/hysteria2/config.txt # Red color for URL
 
     cat /etc/hysteria2/config.txt
@@ -76,9 +86,9 @@ install_hysteria() {
 
     # Function to modify Hysteria configuration
 modify_hysteria_config() {
-    file_to_check="/etc/hysteria2/server.yaml"
+    hysteria_check="/etc/hysteria2/server.yaml"
     
-    if [ -e "$file_to_check" ]; then
+    if [ -e "$hysteria_check" ]; then
     
     # Stop the Hysteria2 service
     sudo systemctl stop hysteria2
@@ -97,10 +107,9 @@ modify_hysteria_config() {
     read -p "Please enter your domain: " user_domain
     sed -i "s/DOMAIN/$user_domain/" /etc/hysteria2/server.yaml
 
-    # Prompt the user to enter a password and replace "PASSWORD" in the server.yaml file
-    read -s -p "Please enter your password: " user_password
-    echo
-    sed -i "s/PASSWORD/$user_password/" /etc/hysteria2/server.yaml
+    # Generate a password and replace "PASSWORD" in the server.yaml file
+    password=$(openssl rand -hex 8)
+    sed -i "s/PASSWORD/$password/" /etc/hysteria2/server.yaml
 
     # Prompt the user to enter an email and replace "EMAIL" in the server.yaml file
     read -p "Please enter your email: " user_email
@@ -110,25 +119,15 @@ modify_hysteria_config() {
     public_ipv4=$(curl -s https://v4.ident.me)
     public_ipv6=$(curl -s https://v6.ident.me)
     
-    # Prompt the user for their WARP+ key
-    read -p "Enter your WARP+ key: " warp_key
-
-    # Replace the placeholder in the command and run it
-    warp_command="warp-cli set-license $warp_key"
-    eval "$warp_command"
-    
-    # Restart WARP
-    bash <(curl -fsSL git.io/warp.sh) restart
-    
     # Enable and start the Hysteria2 service
     sudo systemctl enable hysteria2
     sudo systemctl start hysteria2
 
     # Construct and display the resulting URL
     result_url=" 
-    ipv4 : hy2://$user_password@$public_ipv4:$user_port?insecure=1&sni=$user_domain#HY2
+    ipv4 : hy2://$password@$public_ipv4:$user_port?insecure=1&sni=$user_domain#HY2
     ---------------------------------------------------------------
-    ipv6 : hy2://$user_password@[$public_ipv6]:$user_port?insecure=1&sni=$user_domain#HY2"
+    ipv6 : hy2://$password@[$public_ipv6]:$user_port?insecure=1&sni=$user_domain#HY2"
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/hysteria2/config.txt # Red color for URL
 
     cat /etc/hysteria2/config.txt
@@ -243,9 +242,9 @@ install_tuic() {
 
     # Function to modify tuic configuration
 modify_tuic_config() {
-    file_to_check="/etc/tuic/server.json"
+    tuic_check="/etc/tuic/server.json"
     
-    if [ -e "$file_to_check" ]; then
+    if [ -e "$tuic_check" ]; then
     
     # Stop the tuic service
     sudo systemctl stop tuic
@@ -312,11 +311,11 @@ modify_tuic_config() {
     echo IPv6:
     qrencode -t ANSIUTF8 <<< "$ipv6qr"
 
-    echo "tuic configuration modified."
+    echo "TUIC configuration modified."
     
     else
     
-    echo "tuic is not installed yet."
+    echo "TUIC is not installed yet."
     
     fi
     
@@ -333,7 +332,7 @@ uninstall_tuic() {
     rm -rf /etc/tuic
     sudo rm -f /etc/systemd/system/tuic.service
 
-    echo "tuic uninstalled."
+    echo "TUIC uninstalled."
 
     exit 0  # Exit the script immediately with a successful status
 }
@@ -387,7 +386,15 @@ install_reality() {
     public_ipv4=$(curl -s https://v4.ident.me)
     public_ipv6=$(curl -s https://v6.ident.me)
 
-
+    # WARP+ installation
+    warp_check="/etc/systemd/sytsem/warp-svc.service"
+    
+    if [ -e "$warp_check" ]; then
+    
+    echo "WARP is running."
+    
+    else
+    
     # Execute the WARP setup script (with user key replacement)
     bash <(curl -fsSL git.io/warp.sh) proxy
 
@@ -400,6 +407,8 @@ install_reality() {
 
     # Restart WARP
     bash <(curl -fsSL git.io/warp.sh) restart
+    
+    fi
 
     # Enable and start the sing-box service
     sudo systemctl enable --now sing-box
@@ -428,9 +437,9 @@ install_reality() {
 
     # Function to modify reality configuration
 modify_reality_config() {
-    file_to_check="/etc/sing-box/config.json"
+    reality_check="/etc/sing-box/config.json"
     
-    if [ -e "$file_to_check" ]; then
+    if [ -e "$reality_check" ]; then
 
     # Stop the sing-box service
     sudo systemctl stop sing-box    
@@ -471,17 +480,7 @@ modify_reality_config() {
     
     # Use a public DNS service to determine the public IP address
     public_ipv4=$(curl -s https://v4.ident.me)
-    public_ipv6=$(curl -s https://v6.ident.me)
-    
-    # Prompt the user for their WARP+ key
-    read -p "Enter your WARP+ key: " warp_key
-
-    # Replace the placeholder in the command and run it
-    warp_command="warp-cli set-license $warp_key"
-    eval "$warp_command"
-    
-    # Restart WARP
-    bash <(curl -fsSL git.io/warp.sh) restart   
+    public_ipv6=$(curl -s https://v6.ident.me)  
 
     # Enable and start the sing-box service
     sudo systemctl enable --now sing-box
@@ -535,16 +534,16 @@ uninstall_warp() {
     # Uninstall warp client
     bash <(curl -fsSL git.io/warp.sh) uninstall
     
-    echo "warp uninstalled."
+    echo "WARP uninstalled."
 
     exit 0  # Exit the script immediately with a successful status
 } 
 
     # Function to show hysteria config    
 show_hysteria_config() {
-    file_to_check="/etc/hysteria2/config.txt"
+    hysteria_check="/etc/hysteria2/config.txt"
     
-    if [ -e "$file_to_check" ]; then
+    if [ -e "$hysteria_check" ]; then
     
     cat /etc/hysteria2/config.txt
 
@@ -568,9 +567,9 @@ show_hysteria_config() {
 
     # Function to show tuic config    
 show_tuic_config() {
-    file_to_check="/etc/tuic/config.txt"
+    tuic_check="/etc/tuic/config.txt"
     
-    if [ -e "$file_to_check" ]; then
+    if [ -e "$tuic_check" ]; then
     
     cat /etc/tuic/config.txt
 
@@ -594,9 +593,9 @@ show_tuic_config() {
 
     # Function to show reality config    
 show_reality_config() {
-    file_to_check="/etc/sing-box/config.txt"
+    reality_check="/etc/sing-box/config.txt"
     
-    if [ -e "$file_to_check" ]; then
+    if [ -e "$reality_check" ]; then
     
     cat /etc/sing-box/config.txt
 
@@ -618,6 +617,31 @@ show_reality_config() {
     exit 0  # Exit the script immediately with a successful status
 }
 
+    # Function to change warp+ key    
+change_warp_key() {
+    warp_check="/etc/systemd/sytsem/warp-svc.service"
+    
+    if [ -e "$warp_check" ]; then
+    
+    # Prompt the user for their WARP+ key
+    read -p "Enter your WARP+ key: " warp_key
+
+    # Replace the placeholder in the command and run it
+    warp_command="warp-cli set-license $warp_key"
+    eval "$warp_command"
+    
+    # Restart WARP
+    bash <(curl -fsSL git.io/warp.sh) restart
+    
+    else
+    
+    echo "WARP is not running."
+    
+    fi
+    
+    exit 0  # Exit the script immediately with a successful status
+}
+
     # Main menu loop
 while true; do
     echo -e "Please select an option:"
@@ -625,15 +649,16 @@ while true; do
     echo -e "2: \e[93mModify Hysteria2 Config\e[0m"
     echo -e "3: \e[93mShow Hysteria2 Config\e[0m"    
     echo -e "4: \e[93mUninstall Hysteria2\e[0m"
-    echo -e "5: \e[93mInstall tuic\e[0m"
-    echo -e "6: \e[93mModify tuic Config\e[0m"
-    echo -e "7: \e[93mShow tuic Config\e[0m"    
-    echo -e "8: \e[93mUninstall tuic\e[0m"
-    echo -e "9: \e[93mInstall reality\e[0m"
-    echo -e "10: \e[93mModify reality Config\e[0m"
-    echo -e "11: \e[93mShow reality Config\e[0m"    
-    echo -e "12: \e[93mUninstall reality\e[0m"
-    echo -e "13: \e[93mUninstall warp\e[0m"    
+    echo -e "5: \e[93mInstall TUIC\e[0m"
+    echo -e "6: \e[93mModify TUIC Config\e[0m"
+    echo -e "7: \e[93mShow TUIC Config\e[0m"    
+    echo -e "8: \e[93mUninstall TUIC\e[0m"
+    echo -e "9: \e[93mInstall Reality\e[0m"
+    echo -e "10: \e[93mModify Reality Config\e[0m"
+    echo -e "11: \e[93mShow Reality Config\e[0m"    
+    echo -e "12: \e[93mUninstall Reality\e[0m"
+    echo -e "13: \e[93mChange WARP+ Key\e[0m"    
+    echo -e "14: \e[93mUninstall WARP\e[0m"    
     echo -e "0: \e[93mExit\e[0m"
 
     read -p "Enter your choice: " user_choice
@@ -676,6 +701,9 @@ while true; do
             uninstall_reality
             ;;
         13)
+            change_warp_key
+            ;;            
+        14)
             uninstall_warp
             ;;            
         0)
