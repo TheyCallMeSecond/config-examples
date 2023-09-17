@@ -204,7 +204,7 @@ install_tuic() {
 
     # Generate a password and replace "PASSWORD" in the server.json file
     password=$(openssl rand -hex 8)
-    sed -i "s/PASSWORD/$password/" /etc/tuic/server.jsonF
+    sed -i "s/PASSWORD/$password/" /etc/tuic/server.json
 
     # Generate uuid and replace "UUID" in the server.json file
     uuid=$(cat /proc/sys/kernel/random/uuid)
