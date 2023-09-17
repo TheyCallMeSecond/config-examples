@@ -645,7 +645,7 @@ change_warp_key() {
     # Main menu loop
 while true; do
     echo -e "\e[91mPlease select an option:\e[0m"
-    
+    echo -e
     echo -e "1: \e[93mInstall Hysteria2\e[0m"
     echo -e "2: \e[93mModify Hysteria2 Config\e[0m"
     echo -e "3: \e[93mShow Hysteria2 Config\e[0m"    
