@@ -642,6 +642,24 @@ change_warp_key() {
     exit 0 # Exit the script immediately with a successful status
 }
 
+# Function to install warp
+install_warp() {
+    warp_check="/lib/systemd/system/warp-svc.service"
+
+    if [ -e "$warp_check" ]; then
+
+        echo "WARP is running."
+
+    else
+
+        # Execute the WARP setup script (with user key replacement)
+        bash <(curl -fsSL git.io/warp.sh) proxy
+
+    fi
+
+    exit 0 # Exit the script immediately with a successful status
+}
+
 # Main menu loop
 while true; do
     echo -e "    \e[91mPlease select an option:\e[0m"
@@ -661,8 +679,9 @@ while true; do
     echo -e "11: \e[93mShow Reality Config\e[0m"
     echo -e "12: \e[93mUninstall Reality\e[0m"
     echo -------------------------------------------
-    echo -e "13: \e[93mChange WARP+ Key\e[0m"
-    echo -e "14: \e[93mUninstall WARP\e[0m"
+    echo -e "13: \e[93mInstall WARP\e[0m"    
+    echo -e "14: \e[93mChange WARP+ Key\e[0m"
+    echo -e "15: \e[93mUninstall WARP\e[0m"
     echo -------------------------------------------
     echo -e "0:  \e[91mExit\e[0m"
 
@@ -706,9 +725,12 @@ while true; do
         uninstall_reality
         ;;
     13)
-        change_warp_key
+        install_warp
         ;;
     14)
+        change_warp_key
+        ;;        
+    15)
         uninstall_warp
         ;;
     0)
