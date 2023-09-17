@@ -242,7 +242,7 @@ install_tuic() {
 }
 
     # Function to modify tuic configuration
- modify_tuic_config() {
+modify_tuic_config() {
     file_to_check="/etc/tuic/server.json"
     
     if [ -e "$file_to_check" ]; then
@@ -427,7 +427,7 @@ install_reality() {
 }
 
     # Function to modify reality configuration
-    modify_reality_config() {
+modify_reality_config() {
     file_to_check="/etc/sing-box/config.json"
     
     if [ -e "$file_to_check" ]; then
