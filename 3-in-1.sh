@@ -644,7 +644,8 @@ change_warp_key() {
 
     # Main menu loop
 while true; do
-    echo -e "Please select an option:"
+    echo -e "\e[91mPlease select an option:\e[0m"
+    
     echo -e "1: \e[93mInstall Hysteria2\e[0m"
     echo -e "2: \e[93mModify Hysteria2 Config\e[0m"
     echo -e "3: \e[93mShow Hysteria2 Config\e[0m"    
@@ -663,7 +664,7 @@ while true; do
     echo -e "13: \e[93mChange WARP+ Key\e[0m"    
     echo -e "14: \e[93mUninstall WARP\e[0m"    
     echo -------------------------------------------    
-    echo -e "0: \e[93mExit\e[0m"
+    echo -e "0: \e[91mExit\e[0m"
 
     read -p "Enter your choice: " user_choice
 
