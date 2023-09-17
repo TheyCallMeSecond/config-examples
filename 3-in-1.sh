@@ -34,7 +34,7 @@ install_hysteria() {
     public_ipv6=$(curl -s https://v6.ident.me)
 
     # WARP+ installation
-    warp_check="/etc/systemd/sytsem/warp-svc.service"
+    warp_check="/etc/systemd/system/warp-svc.service"
 
     if [ -e "$warp_check" ]; then
 
@@ -387,7 +387,7 @@ install_reality() {
     public_ipv6=$(curl -s https://v6.ident.me)
 
     # WARP+ installation
-    warp_check="/etc/systemd/sytsem/warp-svc.service"
+    warp_check="/etc/systemd/system/warp-svc.service"
 
     if [ -e "$warp_check" ]; then
 
@@ -619,7 +619,7 @@ show_reality_config() {
 
 # Function to change warp+ key
 change_warp_key() {
-    warp_check="/etc/systemd/sytsem/warp-svc.service"
+    warp_check="/etc/systemd/system/warp-svc.service"
 
     if [ -e "$warp_check" ]; then
 
