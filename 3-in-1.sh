@@ -1,58 +1,59 @@
 #!/bin/bash
 
-# Function to install Hysteria
+    # Function to install Hysteria
 install_hysteria() {
     apt update && apt install -y qrencode
 
-    # Step 1: Download Hysteria binary and make it executable
+    # Download Hysteria binary and make it executable
     curl -Lo /root/hysteria2 https://github.com/apernet/hysteria/releases/latest/download/hysteria-linux-amd64 && chmod +x /root/hysteria2 && mv -f /root/hysteria2 /usr/bin
 
-    # Step 2: Create a directory for Hysteria configuration and download the server.yaml file
+    # Create a directory for Hysteria configuration and download the server.yaml file
     mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.yaml https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/server-auto-warp.yaml
 
-    # Step 3: download the hysteria2.service file
+    # Download the hysteria2.service file
     curl -Lo /etc/systemd/system/hysteria2.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/hysteria2.service && systemctl daemon-reload
 
-    # Step 4: Prompt the user to enter a port and replace "PORT" in the server.yaml file
+    # Prompt the user to enter a port and replace "PORT" in the server.yaml file
     read -p "Please enter a port: " user_port
     sed -i "s/PORT/$user_port/" /etc/hysteria2/server.yaml
 
-    # Step 5: Prompt the user to enter a domain and replace "DOMAIN" in the server.yaml file
+    # Prompt the user to enter a domain and replace "DOMAIN" in the server.yaml file
     read -p "Please enter your domain: " user_domain
     sed -i "s/DOMAIN/$user_domain/" /etc/hysteria2/server.yaml
 
-    # Step 6: Prompt the user to enter a password and replace "PASSWORD" in the server.yaml file
+    # Prompt the user to enter a password and replace "PASSWORD" in the server.yaml file
     read -s -p "Please enter your password: " user_password
     echo
     sed -i "s/PASSWORD/$user_password/" /etc/hysteria2/server.yaml
 
-    # Step 7: Prompt the user to enter an email and replace "EMAIL" in the server.yaml file
+    # Prompt the user to enter an email and replace "EMAIL" in the server.yaml file
     read -p "Please enter your email: " user_email
     sed -i "s/EMAIL/$user_email/" /etc/hysteria2/server.yaml
     
-    # Step 8: Use a public DNS service to determine the public IP address
+    # Use a public DNS service to determine the public IP address
     public_ipv4=$(curl -s https://v4.ident.me)
     public_ipv6=$(curl -s https://v6.ident.me)
     
-    # Step 9:Execute the WARP setup script (with user key replacement)
+    # Execute the WARP setup script (with user key replacement)
     bash <(curl -fsSL git.io/warp.sh) proxy
 
-    # Step 10:Prompt the user for their WARP+ key
+    # Prompt the user for their WARP+ key
     read -p "Enter your WARP+ key: " warp_key
 
-    # Step 11:Replace the placeholder in the command and run it
+    # Replace the placeholder in the command and run it
     warp_command="warp-cli set-license $warp_key"
     eval "$warp_command"
 
-    # Step 12:Restart WARP
+    # Restart WARP
     bash <(curl -fsSL git.io/warp.sh) restart
 
-    # Step 13: Enable and start the Hysteria2 service
+    # Enable and start the Hysteria2 service
     sudo systemctl enable hysteria2
     sudo systemctl start hysteria2
 
-    # Step 14:Construct and display the resulting URL
-    result_url=" ipv4 : hy2://$user_password@$public_ipv4:$user_port?insecure=1&sni=$user_domain#HY2
+    # Construct and display the resulting URL & QR
+    result_url=" 
+    ipv4 : hy2://$user_password@$public_ipv4:$user_port?insecure=1&sni=$user_domain#HY2
     ---------------------------------------------------------------
     ipv6 : hy2://$user_password@[$public_ipv6]:$user_port?insecure=1&sni=$user_domain#HY2" 
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/hysteria2/config.txt # Red color for URL
@@ -68,14 +69,15 @@ install_hysteria() {
     echo IPv6:
     qrencode -t ANSIUTF8 <<< "$ipv6qr"
 
-    echo "Hysteria setup completed."
+    echo "Hysteria2 setup completed."
     
     exit 0  # Exit the script immediately with a successful status
 }
 
-# Function to modify Hysteria configuration
+    # Function to modify Hysteria configuration
 modify_hysteria_config() {
     file_to_check="/etc/hysteria2/server.yaml"
+    
     if [ -e "$file_to_check" ]; then
     
     # Stop the Hysteria2 service
@@ -84,7 +86,7 @@ modify_hysteria_config() {
     # Remove the existing configuration
     rm -rf /etc/hysteria2
 
-    # download the server-auto.yaml file
+    # Download the server-auto.yaml file
     mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.yaml https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/server-auto-warp.yaml
 
     # Prompt the user to enter a port and replace "PORT" in the server.yaml file
@@ -123,7 +125,8 @@ modify_hysteria_config() {
     sudo systemctl start hysteria2
 
     # Construct and display the resulting URL
-    result_url=" ipv4 : hy2://$user_password@$public_ipv4:$user_port?insecure=1&sni=$user_domain#HY2
+    result_url=" 
+    ipv4 : hy2://$user_password@$public_ipv4:$user_port?insecure=1&sni=$user_domain#HY2
     ---------------------------------------------------------------
     ipv6 : hy2://$user_password@[$public_ipv6]:$user_port?insecure=1&sni=$user_domain#HY2"
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/hysteria2/config.txt # Red color for URL
@@ -139,17 +142,18 @@ modify_hysteria_config() {
     echo IPv6:
     qrencode -t ANSIUTF8 <<< "$ipv6qr"
 
-    echo "Hysteria configuration modified."
+    echo "Hysteria2 configuration modified."
     
     else
-    echo "Hysteria is not installed yet."
+    
+    echo "Hysteria2 is not installed yet."
     
     fi
     
     exit 0  # Exit the script immediately with a successful status
 }
 
-# Function to uninstall Hysteria
+    # Function to uninstall Hysteria
 uninstall_hysteria() {
     # Stop the Hysteria2 service
     sudo systemctl stop hysteria2
@@ -159,7 +163,7 @@ uninstall_hysteria() {
     rm -rf /etc/hysteria2
     sudo rm -f /etc/systemd/system/hysteria2.service
 
-    echo "Hysteria uninstalled."
+    echo "Hysteria2 uninstalled."
 
     exit 0  # Exit the script immediately with a successful status
 }
@@ -173,7 +177,7 @@ install_tuic() {
     # Create a directory for tuic configuration and download the server.json file
     mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://github.com/TheyCallMeSecond/config-examples/raw/main/TUIC/server.json
 
-    # download the tuic.service file
+    # Download the tuic.service file
     curl -Lo /etc/systemd/system/tuic.service https://github.com/TheyCallMeSecond/config-examples/raw/main/TUIC/tuic.service && systemctl daemon-reload
 
     # Prompt the user to enter a port and replace "PORT" in the server.json file
@@ -199,11 +203,11 @@ install_tuic() {
     
     rm -rf /root/cert
 
-    # generate a password and replace "PASSWORD" in the server.json file
+    # Generate a password and replace "PASSWORD" in the server.json file
     password=$(openssl rand -hex 8)
     sed -i "s/PASSWORD/$password/" /etc/tuic/server.json
 
-    # generate uuid and replace "UUID" in the server.json file
+    # Generate uuid and replace "UUID" in the server.json file
     uuid=$(cat /proc/sys/kernel/random/uuid)
     sed -i "s/UUID/$uuid/" /etc/tuic/server.json
     
@@ -215,7 +219,8 @@ install_tuic() {
     sudo systemctl enable --now tuic
 
     # Construct and display the resulting URL
-    result_url=" ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
+    result_url=" 
+    ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
     ---------------------------------------------------------------
     ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/tuic/config.txt # Red color for URL
@@ -231,14 +236,15 @@ install_tuic() {
     echo IPv6:
     qrencode -t ANSIUTF8 <<< "$ipv6qr"
 
-    echo "tuic setup completed."
+    echo "TUIC setup completed."
     
     exit 0  # Exit the script immediately with a successful status
 }
 
     # Function to modify tuic configuration
  modify_tuic_config() {
-     file_to_check="/etc/tuic/server.json"
+    file_to_check="/etc/tuic/server.json"
+    
     if [ -e "$file_to_check" ]; then
     
     # Stop the tuic service
@@ -254,7 +260,7 @@ install_tuic() {
     read -p "Please enter a port: " user_port
     sed -i "s/PORT/$user_port/" /etc/tuic/server.json
 
-    # get certificate
+    # Get certificate
     mkdir /root/cert && cd /root/cert
     
     openssl genrsa -out ca.key 2048
@@ -273,11 +279,11 @@ install_tuic() {
     
     rm -rf /root/cert
 
-    # generate a password and replace "PASSWORD" in the server.json file
+    # Generate a password and replace "PASSWORD" in the server.json file
     password=$(openssl rand -hex 8)
     sed -i "s/PASSWORD/$password/" /etc/tuic/server.json
 
-    # generate uuid and replace "UUID" in the server.json file
+    # Generate uuid and replace "UUID" in the server.json file
     uuid=$(cat /proc/sys/kernel/random/uuid)
     sed -i "s/UUID/$uuid/" /etc/tuic/server.json
     
@@ -289,7 +295,8 @@ install_tuic() {
     sudo systemctl enable --now tuic
 
     # Construct and display the resulting URL
-    result_url=" ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
+    result_url=" 
+    ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
     ---------------------------------------------------------------
     ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/tuic/config.txt  # Red color for URL
@@ -308,6 +315,7 @@ install_tuic() {
     echo "tuic configuration modified."
     
     else
+    
     echo "tuic is not installed yet."
     
     fi
@@ -333,7 +341,7 @@ uninstall_tuic() {
 install_reality() {
     apt update && apt install -y qrencode
 
-    # Download sing-box binary and make it executable
+    # Download sing-box binary 
     mkdir /root/singbox && cd /root/singbox
     wget https://github.com/SagerNet/sing-box/releases/download/v1.4.3/sing-box-1.4.3-linux-amd64.tar.gz
     tar xvzf sing-box-1.4.3-linux-amd64.tar.gz
@@ -344,7 +352,7 @@ install_reality() {
     # Create a directory for sing-box configuration and download the Reality-gRPC.json file
     mkdir -p /etc/sing-box && curl -Lo /etc/sing-box/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC+warp.json
 
-    # download the sing-box.service file
+    # Download the sing-box.service file
     curl -Lo /etc/systemd/system/sing-box.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/sing-box.service && systemctl daemon-reload
 
     # Prompt the user to enter a port and replace "PORT" in the config.json file
@@ -355,11 +363,11 @@ install_reality() {
     read -p "Please enter sni: " user_sni
     sed -i "s/SNI/$user_sni/" /etc/sing-box/config.json
 
-    # generate uuid and replace "UUID" in the config.json file
+    # Generate uuid and replace "UUID" in the config.json file
     uuid=$(cat /proc/sys/kernel/random/uuid)
     sed -i "s/UUID/$uuid/" /etc/sing-box/config.json
     
-    # generate reality key-pair
+    # Generate reality key-pair
     output=$(sing-box generate reality-keypair)
     
     private_key=$(echo "$output" | grep -oP 'PrivateKey: \K\S+')
@@ -367,11 +375,11 @@ install_reality() {
     
     sed -i "s/PRIVATE-KEY/$private_key/" /etc/sing-box/config.json
     
-    # generate short id
+    # Generate short id
     short_id=$(openssl rand -hex 8)
     sed -i "s/SHORT-ID/$short_id/" /etc/sing-box/config.json
     
-    # generate service name
+    # Generate service name
     service_name=$(openssl rand -hex 4)
     sed -i "s/SERVICE-NAME/$service_name/" /etc/sing-box/config.json
     
@@ -397,7 +405,8 @@ install_reality() {
     sudo systemctl enable --now sing-box
 
     # Construct and display the resulting URL
-    result_url="ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
+    result_url=" 
+    ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
     ---------------------------------------------------------------
     ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Realit"
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/sing-box/config.txt  # Red color for URL
@@ -420,6 +429,7 @@ install_reality() {
     # Function to modify reality configuration
     modify_reality_config() {
     file_to_check="/etc/sing-box/config.json"
+    
     if [ -e "$file_to_check" ]; then
 
     # Stop the sing-box service
@@ -439,11 +449,11 @@ install_reality() {
     read -p "Please enter sni: " user_sni
     sed -i "s/SNI/$user_sni/" /etc/sing-box/config.json
 
-    # generate uuid and replace "UUID" in the config.json file
+    # Generate uuid and replace "UUID" in the config.json file
     uuid=$(cat /proc/sys/kernel/random/uuid)
     sed -i "s/UUID/$uuid/" /etc/sing-box/config.json
     
-    # generate reality key-pair
+    # Generate reality key-pair
     output=$(sing-box generate reality-keypair)
     
     private_key=$(echo "$output" | grep -oP 'PrivateKey: \K\S+')
@@ -451,11 +461,11 @@ install_reality() {
     
     sed -i "s/PRIVATE-KEY/$private_key/" /etc/sing-box/config.json
     
-    # generate short id
+    # Generate short id
     short_id=$(openssl rand -hex 8)
     sed -i "s/SHORT-ID/$short_id/" /etc/sing-box/config.json
     
-    # generate service name
+    # Generate service name
     service_name=$(openssl rand -hex 4)
     sed -i "s/SERVICE-NAME/$service_name/" /etc/sing-box/config.json
     
@@ -477,7 +487,8 @@ install_reality() {
     sudo systemctl enable --now sing-box
 
     # Construct and display the resulting URL
-    result_url="ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
+    result_url=" 
+    ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
     ---------------------------------------------------------------
     ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Realit"
     echo -e "Config URL: \e[91m$result_url\e[0m" > /etc/sing-box/config.txt  # Red color for URL
@@ -496,6 +507,7 @@ install_reality() {
     echo "Reality configuration modified."
     
     else
+    
     echo "Reality is not installed yet."
     
     fi
@@ -503,7 +515,7 @@ install_reality() {
     exit 0  # Exit the script immediately with a successful status
 }
 
-# Function to uninstall reality
+    # Function to uninstall reality
 uninstall_reality() {
     # Stop the sing-box service
     sudo systemctl stop sing-box
@@ -518,7 +530,7 @@ uninstall_reality() {
     exit 0  # Exit the script immediately with a successful status
 }
 
-# Function to uninstall warp    
+    # Function to uninstall warp    
 uninstall_warp() {
     # Uninstall warp client
     bash <(curl -fsSL git.io/warp.sh) uninstall
@@ -528,9 +540,13 @@ uninstall_warp() {
     exit 0  # Exit the script immediately with a successful status
 } 
 
-# Function to show hysteria config    
+    # Function to show hysteria config    
 show_hysteria_config() {
-cat /etc/hysteria2/config.txt
+    file_to_check="/etc/hysteria2/config.txt"
+    
+    if [ -e "$file_to_check" ]; then
+    
+    cat /etc/hysteria2/config.txt
 
     ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/hysteria2/config.txt)
     ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/hysteria2/config.txt)
@@ -540,13 +556,23 @@ cat /etc/hysteria2/config.txt
 
     echo IPv6:
     qrencode -t ANSIUTF8 <<< "$ipv6qr"
+    
+    else
+    
+    echo "Hysteria2 is not installed yet."
+    
+    fi
 
     exit 0  # Exit the script immediately with a successful status
 }
 
-# Function to show tuic config    
+    # Function to show tuic config    
 show_tuic_config() {
-cat /etc/tuic/config.txt
+    file_to_check="/etc/tuic/config.txt"
+    
+    if [ -e "$file_to_check" ]; then
+    
+    cat /etc/tuic/config.txt
 
     ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/tuic/config.txt)
     ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/tuic/config.txt)
@@ -556,13 +582,23 @@ cat /etc/tuic/config.txt
 
     echo IPv6:
     qrencode -t ANSIUTF8 <<< "$ipv6qr"
+    
+    else
+    
+    echo "TUIC is not installed yet."
+    
+    fi
 
     exit 0  # Exit the script immediately with a successful status
 }
 
-# Function to show reality config    
+    # Function to show reality config    
 show_reality_config() {
-cat /etc/sing-box/config.txt
+    file_to_check="/etc/sing-box/config.txt"
+    
+    if [ -e "$file_to_check" ]; then
+    
+    cat /etc/sing-box/config.txt
 
     ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/sing-box/config.txt)
     ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/sing-box/config.txt)
@@ -572,10 +608,17 @@ cat /etc/sing-box/config.txt
 
     echo IPv6:
     qrencode -t ANSIUTF8 <<< "$ipv6qr"
+    
+    else
+    
+    echo "Reality is not installed yet."
+    
+    fi
+    
     exit 0  # Exit the script immediately with a successful status
 }
 
-# Main menu loop
+    # Main menu loop
 while true; do
     echo -e "Please select an option:"
     echo -e "1: \e[93mInstall Hysteria2\e[0m"
