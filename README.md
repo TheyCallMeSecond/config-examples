@@ -35,7 +35,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-
 
 
 ------------
-برای نصب هیستریا2 به صورت دستی داخل فولدر Hysteria برید
+برای نصب هیستریا2 به صورت دستی داخل فولدر [Hysteria](https://github.com/TheyCallMeSecond/config-examples/tree/main/Hysteria "Hysteria") برید
 
 
 ------------
