@@ -544,7 +544,8 @@ install_shadowtls() {
     mkdir -p /etc/shadowtls && curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS-warp.json
 
     # Download the ShadowTLS.json file
-    curl -Lo /etc/shadowtls/config.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS.json
+    curl -Lo /etc/shadowtls/nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
+    curl -Lo /etc/shadowtls/nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
 
     # Download the ST.service file
     curl -Lo /etc/systemd/system/ST.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/ST.service && systemctl daemon-reload
@@ -552,12 +553,14 @@ install_shadowtls() {
     # Prompt the user to enter a port and replace "PORT" in the config files
     read -p "Please enter a port: " user_port
     sed -i "s/PORT/$user_port/" /etc/shadowtls/config.json
-    sed -i "s/PORT/$user_port/" /etc/shadowtls/config.txt
+    sed -i "s/PORT/$user_port/" /etc/shadowtls/nekorayconfig.txt
+    sed -i "s/PORT/$user_port/" /etc/shadowtls/nekoboxconfig.txt
 
     # Prompt the user to enter a sni and replace "SNI" in the config files
     read -p "Please enter sni: " user_sni
     sed -i "s/SNI/$user_sni/" /etc/shadowtls/config.json
-    sed -i "s/SNI/$user_sni/" /etc/shadowtls/config.txt
+    sed -i "s/SNI/$user_sni/" /etc/shadowtls/nekorayconfig.txt
+    sed -i "s/SNI/$user_sni/" /etc/shadowtls/nekoboxconfig.txt    
 
     # Generate  name
     name=$(openssl rand -hex 4)
@@ -566,16 +569,19 @@ install_shadowtls() {
     # Generate a password and replace "PASSWORD" in the config files
     password=$(openssl rand -base64 24)
     sed -i "s/PASSWORD/$password/" /etc/shadowtls/config.json
-    sed -i "s/PASSWORD/$password/" /etc/shadowtls/config.txt
+    sed -i "s/PASSWORD/$password/" /etc/shadowtls/nekorayconfig.txt
+    sed -i "s/PASSWORD/$password/" /etc/shadowtls/nekoboxconfig.txt
 
     # Generate a password and replace "PASSWORD2" in the config files
     password2=$(openssl rand -base64 24)
     sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/config.json
-    sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/config.txt
+    sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/nekorayconfig.txt
+    sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/nekoboxconfig.txt
 
     # Use a public DNS service to determine the public IP address and replace with IP in config.txt file
     public_ipv4=$(curl -s https://v4.ident.me)
-    sed -i "s/IP/$public_ipv4/" /etc/shadowtls/config.txt
+    sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekorayconfig.txt
+    sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekoboxconfig.txt
 
     # WARP+ installation
     warp_check="/lib/systemd/system/warp-svc.service"
@@ -606,7 +612,15 @@ install_shadowtls() {
 
     # Display the resulting config
 
-    cat /etc/shadowtls/config.txt
+    echo "ShadowTLS config for Nekoray : "
+
+    cat /etc/shadowtls/nekorayconfig.txt
+
+    echo "ShadowTLS config for Nekobox : "
+
+    nekobox=$(cat /etc/shadowtls/nekoboxconfig.txt)
+
+    qrencode -t ANSIUTF8 <<<"$nekobox"
 
     echo "ShadowTLS setup completed."
 
@@ -629,17 +643,20 @@ modify_shadowtls_config() {
         mkdir -p /etc/shadowtls && curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS-warp.json
 
         # Download the ShadowTLS.json file
-        curl -Lo /etc/shadowtls/config.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS.json
+        curl -Lo /etc/shadowtls/nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
+        curl -Lo /etc/shadowtls/nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
 
         # Prompt the user to enter a port and replace "PORT" in the config files
         read -p "Please enter a port: " user_port
         sed -i "s/PORT/$user_port/" /etc/shadowtls/config.json
-        sed -i "s/PORT/$user_port/" /etc/shadowtls/config.txt
+        sed -i "s/PORT/$user_port/" /etc/shadowtls/nekorayconfig.txt
+        sed -i "s/PORT/$user_port/" /etc/shadowtls/nekoboxconfig.txt
 
         # Prompt the user to enter a sni and replace "SNI" in the config files
         read -p "Please enter sni: " user_sni
         sed -i "s/SNI/$user_sni/" /etc/shadowtls/config.json
-        sed -i "s/SNI/$user_sni/" /etc/shadowtls/config.txt
+        sed -i "s/SNI/$user_sni/" /etc/shadowtls/nekorayconfig.txt
+        sed -i "s/SNI/$user_sni/" /etc/shadowtls/nekoboxconfig.txt
 
         # Generate  name
         name=$(openssl rand -hex 4)
@@ -648,23 +665,34 @@ modify_shadowtls_config() {
         # Generate a password and replace "PASSWORD" in the config files
         password=$(openssl rand -base64 24)
         sed -i "s/PASSWORD/$password/" /etc/shadowtls/config.json
-        sed -i "s/PASSWORD/$password/" /etc/shadowtls/config.txt
+        sed -i "s/PASSWORD/$password/" /etc/shadowtls/nekorayconfig.txt
+        sed -i "s/PASSWORD/$password/" /etc/shadowtls/nekoboxconfig.txt
 
         # Generate a password and replace "PASSWORD2" in the config files
         password2=$(openssl rand -base64 24)
         sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/config.json
-        sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/config.txt
+        sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/nekorayconfig.txt
+        sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/nekoboxconfig.txt
 
         # Use a public DNS service to determine the public IP address and replace with IP in config.txt file
         public_ipv4=$(curl -s https://v4.ident.me)
-        sed -i "s/IP/$public_ipv4/" /etc/shadowtls/config.txt
+        sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekorayconfig.txt
+        sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekoboxconfig.txt
 
         # start the ST service
         sudo systemctl start ST
 
         # Display the resulting config
 
-        cat /etc/shadowtls/config.txt
+        echo "ShadowTLS config for Nekoray : "
+
+        cat /etc/shadowtls/nekorayconfig.txt
+
+        echo "ShadowTLS config for Nekobox : "
+
+        nekobox=$(cat /etc/shadowtls/nekoboxconfig.txt)
+
+        qrencode -t ANSIUTF8 <<<"$nekobox"
 
         echo "ShadowTLS configuration modified."
 
@@ -772,11 +800,19 @@ show_reality_config() {
 
 # Function to show shadowtls config
 show_shadowtls_config() {
-    shadowtls_check="/etc/shadowtls/config.txt"
+    shadowtls_check="/etc/shadowtls/nekorayconfig.txt"
 
     if [ -e "$shadowtls_check" ]; then
 
-        cat /etc/shadowtls/config.txt
+        echo "ShadowTLS config for Nekoray : "
+
+        cat /etc/shadowtls/nekorayconfig.txt
+
+        echo "ShadowTLS config for Nekobox : "
+
+        nekobox=$(cat /etc/shadowtls/nekoboxconfig.txt)
+
+        qrencode -t ANSIUTF8 <<<"$nekobox"
 
     else
 
