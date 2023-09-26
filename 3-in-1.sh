@@ -342,9 +342,9 @@ install_reality() {
 
     # Download sing-box binary
     mkdir /root/singbox && cd /root/singbox || exit
-    wget https://github.com/SagerNet/sing-box/releases/download/v1.4.3/sing-box-1.4.3-linux-amd64.tar.gz
-    tar xvzf sing-box-1.4.3-linux-amd64.tar.gz
-    cd sing-box-1.4.3-linux-amd64 || exit
+    wget https://github.com/SagerNet/sing-box/releases/download/v1.4.5/sing-box-1.4.5-linux-amd64.tar.gz
+    tar xvzf sing-box-1.4.5-linux-amd64.tar.gz
+    cd sing-box-1.4.5-linux-amd64 || exit
     mv -f sing-box /usr/bin
     cd && rm -rf singbox
 
@@ -529,12 +529,165 @@ uninstall_reality() {
     exit 0 # Exit the script immediately with a successful status
 }
 
-# Function to uninstall warp
-uninstall_warp() {
-    # Uninstall warp client
-    bash <(curl -fsSL git.io/warp.sh) uninstall
+install_shadowtls() {
+    apt update && apt install -y qrencode
 
-    echo "WARP uninstalled."
+    # Download sing-box binary
+    mkdir /root/singbox && cd /root/singbox || exit
+    wget https://github.com/SagerNet/sing-box/releases/download/v1.4.5/sing-box-1.4.5-linux-amd64.tar.gz
+    tar xvzf sing-box-1.4.5-linux-amd64.tar.gz
+    cd sing-box-1.4.5-linux-amd64 || exit
+    mv -f sing-box /usr/bin/ST
+    cd && rm -rf singbox
+
+    # Create a directory for shadowtls configuration and download the ShadowTLS.json file
+    mkdir -p /etc/shadowtls && curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS-warp.json
+
+    # Download the ShadowTLS.json file
+    curl -Lo /etc/shadowtls/config.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS.json
+
+    # Download the ST.service file
+    curl -Lo /etc/systemd/system/ST.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/ST.service && systemctl daemon-reload
+
+    # Prompt the user to enter a port and replace "PORT" in the config files
+    read -p "Please enter a port: " user_port
+    sed -i "s/PORT/$user_port/" /etc/shadowtls/config.json
+    sed -i "s/PORT/$user_port/" /etc/shadowtls/config.txt
+
+    # Prompt the user to enter a sni and replace "SNI" in the config files
+    read -p "Please enter sni: " user_sni
+    sed -i "s/SNI/$user_sni/" /etc/shadowtls/config.json
+    sed -i "s/SNI/$user_sni/" /etc/shadowtls/config.txt
+
+    # Generate  name
+    name=$(openssl rand -hex 4)
+    sed -i "s/NAME/$name/" /etc/shadowtls/config.json
+
+    # Generate a password and replace "PASSWORD" in the config files
+    password=$(openssl rand -base64 24)
+    sed -i "s/PASSWORD/$password/" /etc/shadowtls/config.json
+    sed -i "s/PASSWORD/$password/" /etc/shadowtls/config.txt
+
+    # Generate a password and replace "PASSWORD2" in the config files
+    password2=$(openssl rand -base64 24)
+    sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/config.json
+    sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/config.txt
+
+    # Use a public DNS service to determine the public IP address and replace with IP in config.txt file
+    public_ipv4=$(curl -s https://v4.ident.me)
+    sed -i "s/IP/$public_ipv4/" /etc/shadowtls/config.txt
+
+    # WARP+ installation
+    warp_check="/lib/systemd/system/warp-svc.service"
+
+    if [ -e "$warp_check" ]; then
+
+        echo "WARP is running."
+
+    else
+
+        # Execute the WARP setup script (with user key replacement)
+        bash <(curl -fsSL git.io/warp.sh) proxy
+
+        # Prompt the user for their WARP+ key
+        read -p "Enter your WARP+ key: " warp_key
+
+        # Replace the placeholder in the command and run it
+        warp_command="warp-cli set-license $warp_key"
+        eval "$warp_command"
+
+        # Restart WARP
+        bash <(curl -fsSL git.io/warp.sh) restart
+
+    fi
+
+    # Enable and start the ST service
+    sudo systemctl enable --now ST
+
+    # Display the resulting config
+
+    cat /etc/shadowtls/config.txt
+
+    echo "ShadowTLS setup completed."
+
+    exit 0 # Exit the script immediately with a successful status
+}
+
+# Function to modify shadowtls configuration
+modify_shadowtls_config() {
+    shadowtls_check="/etc/shadowtls/config.json"
+
+    if [ -e "$shadowtls_check" ]; then
+
+        # Stop the sing-box service
+        sudo systemctl stop ST
+
+        # Remove the existing configuration
+        rm -rf /etc/shadowtls
+
+        # Create a directory for shadowtls configuration and download the ShadowTLS.json file
+        mkdir -p /etc/shadowtls && curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS-warp.json
+
+        # Download the ShadowTLS.json file
+        curl -Lo /etc/shadowtls/config.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS.json
+
+        # Prompt the user to enter a port and replace "PORT" in the config files
+        read -p "Please enter a port: " user_port
+        sed -i "s/PORT/$user_port/" /etc/shadowtls/config.json
+        sed -i "s/PORT/$user_port/" /etc/shadowtls/config.txt
+
+        # Prompt the user to enter a sni and replace "SNI" in the config files
+        read -p "Please enter sni: " user_sni
+        sed -i "s/SNI/$user_sni/" /etc/shadowtls/config.json
+        sed -i "s/SNI/$user_sni/" /etc/shadowtls/config.txt
+
+        # Generate  name
+        name=$(openssl rand -hex 4)
+        sed -i "s/NAME/$name/" /etc/shadowtls/config.json
+
+        # Generate a password and replace "PASSWORD" in the config files
+        password=$(openssl rand -base64 24)
+        sed -i "s/PASSWORD/$password/" /etc/shadowtls/config.json
+        sed -i "s/PASSWORD/$password/" /etc/shadowtls/config.txt
+
+        # Generate a password and replace "PASSWORD2" in the config files
+        password2=$(openssl rand -base64 24)
+        sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/config.json
+        sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/config.txt
+
+        # Use a public DNS service to determine the public IP address and replace with IP in config.txt file
+        public_ipv4=$(curl -s https://v4.ident.me)
+        sed -i "s/IP/$public_ipv4/" /etc/shadowtls/config.txt
+
+        # start the ST service
+        sudo systemctl start ST
+
+        # Display the resulting config
+
+        cat /etc/shadowtls/config.txt
+
+        echo "ShadowTLS configuration modified."
+
+    else
+
+        echo "ShadowTLS is not installed yet."
+
+    fi
+
+    exit 0 # Exit the script immediately with a successful status
+}
+
+# Function to uninstall shadowtls
+uninstall_shadowtls() {
+    # Stop the ST service
+    sudo systemctl stop ST
+
+    # Remove sing-box binary, configuration, and service file
+    sudo rm -f /usr/bin/ST
+    rm -rf /etc/shadowtls
+    sudo rm -f /etc/systemd/system/ST.service
+
+    echo "ShadowTLS uninstalled."
 
     exit 0 # Exit the script immediately with a successful status
 }
@@ -617,6 +770,41 @@ show_reality_config() {
     exit 0 # Exit the script immediately with a successful status
 }
 
+# Function to show shadowtls config
+show_shadowtls_config() {
+    shadowtls_check="/etc/shadowtls/config.txt"
+
+    if [ -e "$shadowtls_check" ]; then
+
+        cat /etc/shadowtls/config.txt
+
+    else
+
+        echo "ShadowTLS is not installed yet."
+
+    fi
+
+    exit 0 # Exit the script immediately with a successful status
+}
+
+# Function to install warp
+install_warp() {
+    warp_check="/lib/systemd/system/warp-svc.service"
+
+    if [ -e "$warp_check" ]; then
+
+        echo "WARP is running."
+
+    else
+
+        # Execute the WARP setup script (with user key replacement)
+        bash <(curl -fsSL git.io/warp.sh) proxy
+
+    fi
+
+    exit 0 # Exit the script immediately with a successful status
+}
+
 # Function to change warp+ key
 change_warp_key() {
     warp_check="/lib/systemd/system/warp-svc.service"
@@ -642,20 +830,12 @@ change_warp_key() {
     exit 0 # Exit the script immediately with a successful status
 }
 
-# Function to install warp
-install_warp() {
-    warp_check="/lib/systemd/system/warp-svc.service"
+# Function to uninstall warp
+uninstall_warp() {
+    # Uninstall warp client
+    bash <(curl -fsSL git.io/warp.sh) uninstall
 
-    if [ -e "$warp_check" ]; then
-
-        echo "WARP is running."
-
-    else
-
-        # Execute the WARP setup script (with user key replacement)
-        bash <(curl -fsSL git.io/warp.sh) proxy
-
-    fi
+    echo "WARP uninstalled."
 
     exit 0 # Exit the script immediately with a successful status
 }
@@ -679,9 +859,14 @@ while true; do
     echo -e "11: \e[93mShow Reality Config\e[0m"
     echo -e "12: \e[93mUninstall Reality\e[0m"
     echo -------------------------------------------
-    echo -e "13: \e[93mInstall WARP\e[0m"    
-    echo -e "14: \e[93mChange WARP+ Key\e[0m"
-    echo -e "15: \e[93mUninstall WARP\e[0m"
+    echo -e "13: \e[93mInstall ShadowTLS\e[0m"
+    echo -e "14: \e[93mModify ShadowTLS Config\e[0m"
+    echo -e "15: \e[93mShow ShadowTLS Config\e[0m"
+    echo -e "16: \e[93mUninstall ShadowTLS\e[0m"
+    echo -------------------------------------------
+    echo -e "17: \e[93mInstall WARP\e[0m"
+    echo -e "18: \e[93mChange WARP+ Key\e[0m"
+    echo -e "19: \e[93mUninstall WARP\e[0m"
     echo -------------------------------------------
     echo -e "0:  \e[91mExit\e[0m"
 
@@ -725,12 +910,24 @@ while true; do
         uninstall_reality
         ;;
     13)
-        install_warp
+        install_shadowtls
         ;;
     14)
-        change_warp_key
-        ;;        
+        modify_shadowtls_config
+        ;;
     15)
+        show_shadowtls_config
+        ;;
+    16)
+        uninstall_shadowtls
+        ;;
+    17)
+        install_warp
+        ;;
+    18)
+        change_warp_key
+        ;;
+    19)
         uninstall_warp
         ;;
     0)
