@@ -1,0 +1,57 @@
+{
+    "dns": {
+        "servers": [
+            {
+                "address": "tls://1.1.1.1"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "detour": "shadowsocks-in",
+            "handshake": {
+                "server": "SNI",
+                "server_port": 443
+            },
+            "listen": "::",
+            "listen_port": PORT,
+            "strict_mode": true,
+            "type": "shadowtls",
+            "users": [
+                {
+                    "name": "NAME",
+                    "password": "PASSWORD"
+                }
+            ],
+            "version": 3
+        },
+        {
+            "listen": "127.0.0.1",
+            "method": "chacha20-ietf-poly1305",
+            "network": "tcp",
+            "password": "PASSWORD2",
+            "tag": "shadowsocks-in",
+            "type": "shadowsocks"
+        }
+    ],
+    "log": {
+        "disabled": true
+    },
+    "outbounds": [
+      {
+         "type":"socks",
+         "tag":"socks-out",
+         "server":"127.0.0.1",
+         "server_port":40000,
+         "version":"5"
+      }
+   ],
+    "route": {
+        "rules": [
+            {
+                "outbound": "socks-out",
+                "protocol": "socks"
+            }
+        ]
+    }
+}
