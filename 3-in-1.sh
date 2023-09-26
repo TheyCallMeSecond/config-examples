@@ -865,7 +865,7 @@ while true; do
     echo -e "16: \e[93mUninstall ShadowTLS\e[0m"
     echo -------------------------------------------
     echo -e "17: \e[93mInstall WARP\e[0m"
-    echo -e "18: \e[93mChange WARP+ Key\e[0m"
+    echo -e "18: \e[93mSet/Change WARP+ Key\e[0m"
     echo -e "19: \e[93mUninstall WARP\e[0m"
     echo -------------------------------------------
     echo -e "0:  \e[91mExit\e[0m"
