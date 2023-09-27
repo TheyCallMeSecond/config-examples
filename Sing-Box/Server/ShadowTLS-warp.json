@@ -20,7 +20,7 @@
             "users": [
                 {
                     "name": "NAME",
-                    "password": "PASSWORD"
+                    "password": "STPASS"
                 }
             ],
             "version": 3
@@ -29,7 +29,7 @@
             "listen": "127.0.0.1",
             "method": "chacha20-ietf-poly1305",
             "network": "tcp",
-            "password": "PASSWORD2",
+            "password": "SSPASS",
             "tag": "shadowsocks-in",
             "type": "shadowsocks"
         }
