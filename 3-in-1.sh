@@ -567,13 +567,13 @@ install_shadowtls() {
     sed -i "s/NAME/$name/" /etc/shadowtls/config.json
 
     # Generate a password and replace "PASSWORD" in the config files
-    stpass=$(openssl rand -base64 24)
+    stpass=$(openssl rand -hex 16)
     sed -i "s/STPASS/$stpass/" /etc/shadowtls/config.json
     sed -i "s/STPASS/$stpass/" /etc/shadowtls/nekorayconfig.txt
     sed -i "s/STPASS/$stpass/" /etc/shadowtls/nekoboxconfig.txt
 
     # Generate a password and replace "PASSWORD2" in the config files
-    sspass=$(openssl rand -base64 24)
+    sspass=$(openssl rand -hex 16)
     sed -i "s/SSPASS/$sspass/" /etc/shadowtls/config.json
     sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekorayconfig.txt
     sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekoboxconfig.txt
@@ -669,13 +669,13 @@ modify_shadowtls_config() {
         sed -i "s/NAME/$name/" /etc/shadowtls/config.json
 
         # Generate a password and replace "PASSWORD" in the config files
-        stpass=$(openssl rand -base64 24)
+        stpass=$(openssl rand -hex 16)
         sed -i "s/STPASS/$stpass/" /etc/shadowtls/config.json
         sed -i "s/STPASS/$stpass/" /etc/shadowtls/nekorayconfig.txt
         sed -i "s/STPASS/$stpass/" /etc/shadowtls/nekoboxconfig.txt
 
         # Generate a password and replace "PASSWORD2" in the config files
-        sspass=$(openssl rand -base64 24)
+        sspass=$(openssl rand -hex 16)
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/config.json
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekorayconfig.txt
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekoboxconfig.txt
