@@ -567,16 +567,16 @@ install_shadowtls() {
     sed -i "s/NAME/$name/" /etc/shadowtls/config.json
 
     # Generate a password and replace "PASSWORD" in the config files
-    password=$(openssl rand -base64 24)
-    sed -i "s/PASSWORD/$password/" /etc/shadowtls/config.json
-    sed -i "s/PASSWORD/$password/" /etc/shadowtls/nekorayconfig.txt
-    sed -i "s/PASSWORD/$password/" /etc/shadowtls/nekoboxconfig.txt
+    stpass=$(openssl rand -base64 24)
+    sed -i "s/STPASS/$stpass/" /etc/shadowtls/config.json
+    sed -i "s/STPASS/$stpass/" /etc/shadowtls/nekorayconfig.txt
+    sed -i "s/STPASS/$stpass/" /etc/shadowtls/nekoboxconfig.txt
 
     # Generate a password and replace "PASSWORD2" in the config files
-    password2=$(openssl rand -base64 24)
-    sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/config.json
-    sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/nekorayconfig.txt
-    sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/nekoboxconfig.txt
+    sspass=$(openssl rand -base64 24)
+    sed -i "s/SSPASS/$sspass/" /etc/shadowtls/config.json
+    sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekorayconfig.txt
+    sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekoboxconfig.txt
 
     # Use a public DNS service to determine the public IP address and replace with IP in config.txt file
     public_ipv4=$(curl -s https://v4.ident.me)
@@ -614,13 +614,19 @@ install_shadowtls() {
 
     echo "ShadowTLS config for Nekoray : "
 
+    echo
+
     cat /etc/shadowtls/nekorayconfig.txt
+
+    echo
 
     echo "ShadowTLS config for Nekobox : "
 
-    nekobox=$(cat /etc/shadowtls/nekoboxconfig.txt)
+    echo
 
-    qrencode -t ANSIUTF8 <<<"$nekobox"
+    cat /etc/shadowtls/nekoboxconfig.txt
+
+    echo
 
     echo "ShadowTLS setup completed."
 
@@ -663,16 +669,16 @@ modify_shadowtls_config() {
         sed -i "s/NAME/$name/" /etc/shadowtls/config.json
 
         # Generate a password and replace "PASSWORD" in the config files
-        password=$(openssl rand -base64 24)
-        sed -i "s/PASSWORD/$password/" /etc/shadowtls/config.json
-        sed -i "s/PASSWORD/$password/" /etc/shadowtls/nekorayconfig.txt
-        sed -i "s/PASSWORD/$password/" /etc/shadowtls/nekoboxconfig.txt
+        stpass=$(openssl rand -base64 24)
+        sed -i "s/STPASS/$stpass/" /etc/shadowtls/config.json
+        sed -i "s/STPASS/$stpass/" /etc/shadowtls/nekorayconfig.txt
+        sed -i "s/STPASS/$stpass/" /etc/shadowtls/nekoboxconfig.txt
 
         # Generate a password and replace "PASSWORD2" in the config files
-        password2=$(openssl rand -base64 24)
-        sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/config.json
-        sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/nekorayconfig.txt
-        sed -i "s/PASSWORD2/$password2/" /etc/shadowtls/nekoboxconfig.txt
+        sspass=$(openssl rand -base64 24)
+        sed -i "s/SSPASS/$sspass/" /etc/shadowtls/config.json
+        sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekorayconfig.txt
+        sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekoboxconfig.txt
 
         # Use a public DNS service to determine the public IP address and replace with IP in config.txt file
         public_ipv4=$(curl -s https://v4.ident.me)
@@ -686,13 +692,19 @@ modify_shadowtls_config() {
 
         echo "ShadowTLS config for Nekoray : "
 
+        echo
+
         cat /etc/shadowtls/nekorayconfig.txt
+
+        echo
 
         echo "ShadowTLS config for Nekobox : "
 
-        nekobox=$(cat /etc/shadowtls/nekoboxconfig.txt)
+        echo
 
-        qrencode -t ANSIUTF8 <<<"$nekobox"
+        cat /etc/shadowtls/nekoboxconfig.txt
+
+        echo
 
         echo "ShadowTLS configuration modified."
 
@@ -806,13 +818,20 @@ show_shadowtls_config() {
 
         echo "ShadowTLS config for Nekoray : "
 
+        echo
+
         cat /etc/shadowtls/nekorayconfig.txt
+
+        echo
 
         echo "ShadowTLS config for Nekobox : "
 
-        nekobox=$(cat /etc/shadowtls/nekoboxconfig.txt)
+        echo
 
-        qrencode -t ANSIUTF8 <<<"$nekobox"
+        cat /etc/shadowtls/nekoboxconfig.txt
+
+        echo
+
 
     else
 
