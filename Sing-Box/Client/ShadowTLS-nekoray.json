@@ -29,7 +29,7 @@
         {
             "detour": "shadowtls-out",
             "method": "chacha20-ietf-poly1305",
-            "password": "PASSWORD2",
+            "password": "SSPASS",
             "tag": "ss",
             "type": "shadowsocks",
             "udp_over_tcp": {
@@ -38,7 +38,7 @@
             }
         },
         {
-            "password": "PASSWORD",
+            "password": "STPASS",
             "server": "IP",
             "server_port": PORT,
             "tag": "shadowtls-out",
