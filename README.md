@@ -1,5 +1,5 @@
 <p align="center">
-نصب و کانفیگ اتوماتیک Reality, TUIC, Hysteria2
+نصب و کانفیگ اتوماتیک ShadowTLS,Reality, TUIC, Hysteria2
 </p>
 
 ------------
@@ -32,19 +32,21 @@
 ```bash
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/3-in-1.sh)"
 ```
-[![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/24.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/24.png?raw=true "bash screen")
+[![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/25.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/25.png?raw=true "bash screen")
 
 ------------
 
 #### نکات :
 
-- با نصب ریلیتی و هیستریا وارپ به صورت اتوماتیک نصب میشه (بدون وارپ کار نمی کنن)
+- با نصب ریلیتی و هیستریا و شدو تی ال اس وارپ به صورت اتوماتیک نصب میشه (بدون وارپ کار نمی کنن)
 
 - تویک از وارپ پشتیبانی نمی کنه
 
 - میتونین از اسکریپت برای نصب وارپ به صورت جدا هم استفاده کنید
 
-- نمایش خروجی کانفیگ به صورت لینک و کیو‌آر کد برای آیپی ورژن 6 و 4 جداگونه
+- نمایش خروجی کانفیگ به صورت لینک و کیو‌آر کد برای آیپی ورژن 6 و 4 جداگونه (برای شدو تی ال اس دو مدل خروجی برای نکوری و نکوباکس داده میشه که باید داخل این دو نرم افزار کاستم کانفیگ بسازید و کانفیگ مرتبط رو داخلش کپی کنید)
+
+- همچنین برای شدو تی ال اس  بر روی اندروید و آی او اس می تونین از کلاینت رسمی سینگ باکس هم استفاده کنید (از کانفیگ خروجیه مخصوص نکوباکس استفاده کنید)
 
 
 
@@ -59,6 +61,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-
 - Android
   - [v2rayNG](https://github.com/2dust/v2rayNg/releases)
   - [NekoBox](https://github.com/MatsuriDayo/NekoBoxForAndroid/releases)
+  - [sing-box (SFA)](https://github.com/SagerNet/sing-box/releases)
 - Windows
   - [v2rayN](https://github.com/2dust/v2rayN/releases)
 - Windows, Linux, macOS
@@ -67,4 +70,5 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-
 - iOS
   - [FoXray](https://apps.apple.com/app/foxray/id6448898396)
   - [Shadowrocket](https://apps.apple.com/app/shadowrocket/id932747118)
+  - [sing-box (SFM)](https://github.com/SagerNet/sing-box/releases)
   - [Stash](https://apps.apple.com/app/stash/id1596063349)
