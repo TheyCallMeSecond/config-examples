@@ -14,7 +14,7 @@ install_hysteria() {
     curl -Lo /etc/systemd/system/hysteria2.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/hysteria2.service && systemctl daemon-reload
 
     # Get certificate
-    mkdir /root/cert && cd /root/cert || exit
+    mkdir /root/selfcert && cd /root/selfcert || exit
 
     openssl genrsa -out ca.key 2048
 
@@ -30,7 +30,7 @@ install_hysteria() {
 
     cd || exit
 
-    rm -rf /root/cert
+    rm -rf /root/selfcert
 
     # Prompt the user to enter a port and replace "PORT" in the server.yaml file
     read -p "Please enter a port: " user_port
@@ -110,7 +110,7 @@ modify_hysteria_config() {
         mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.yaml https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/server-auto-warp.yaml
 
         # Get certificate
-        mkdir /root/cert && cd /root/cert || exit
+        mkdir /root/selfcert && cd /root/selfcert || exit
 
         openssl genrsa -out ca.key 2048
 
@@ -126,7 +126,7 @@ modify_hysteria_config() {
 
         cd || exit
 
-        rm -rf /root/cert
+        rm -rf /root/selfcert
 
         # Prompt the user to enter a port and replace "PORT" in the server.yaml file
         read -p "Please enter a port: " user_port
@@ -204,7 +204,7 @@ install_tuic() {
     sed -i "s/PORT/$user_port/" /etc/tuic/server.json
 
     # Get certificate
-    mkdir /root/cert && cd /root/cert || exit
+    mkdir /root/selfcert && cd /root/selfcert || exit
 
     openssl genrsa -out ca.key 2048
 
@@ -220,7 +220,7 @@ install_tuic() {
 
     cd || exit
 
-    rm -rf /root/cert
+    rm -rf /root/selfcert
 
     # Generate a password and replace "PASSWORD" in the server.json file
     password=$(openssl rand -hex 8)
@@ -280,7 +280,7 @@ modify_tuic_config() {
         sed -i "s/PORT/$user_port/" /etc/tuic/server.json
 
         # Get certificate
-        mkdir /root/cert && cd /root/cert || exit
+        mkdir /root/selfcert && cd /root/selfcert || exit
 
         openssl genrsa -out ca.key 2048
 
@@ -296,7 +296,7 @@ modify_tuic_config() {
 
         cd || exit
 
-        rm -rf /root/cert
+        rm -rf /root/selfcert
 
         # Generate a password and replace "PASSWORD" in the server.json file
         password=$(openssl rand -hex 8)
