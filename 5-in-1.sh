@@ -13,21 +13,32 @@ install_hysteria() {
     # Download the hysteria2.service file
     curl -Lo /etc/systemd/system/hysteria2.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/hysteria2.service && systemctl daemon-reload
 
+    # Get certificate
+    mkdir /root/cert && cd /root/cert || exit
+
+    openssl genrsa -out ca.key 2048
+
+    openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=Google Root CA" -out ca.crt
+
+    openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=*.google.com" -out server.csr
+
+    openssl x509 -req -extfile <(printf "subjectAltName=DNS:google.com,DNS:www.google.com") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
+
+    mv server.crt /etc/hysteria2/server.crt
+
+    mv server.key /etc/hysteria2/server.key
+
+    cd || exit
+
+    rm -rf /root/cert
+
     # Prompt the user to enter a port and replace "PORT" in the server.yaml file
     read -p "Please enter a port: " user_port
     sed -i "s/PORT/$user_port/" /etc/hysteria2/server.yaml
 
-    # Prompt the user to enter a domain and replace "DOMAIN" in the server.yaml file
-    read -p "Please enter your domain: " user_domain
-    sed -i "s/DOMAIN/$user_domain/" /etc/hysteria2/server.yaml
-
     # Generate a password and replace "PASSWORD" in the server.yaml file
     password=$(openssl rand -hex 8)
     sed -i "s/PASSWORD/$password/" /etc/hysteria2/server.yaml
-
-    # Prompt the user to enter an email and replace "EMAIL" in the server.yaml file
-    read -p "Please enter your email: " user_email
-    sed -i "s/EMAIL/$user_email/" /etc/hysteria2/server.yaml
 
     # Use a public DNS service to determine the public IP address
     public_ipv4=$(curl -s https://v4.ident.me)
@@ -58,14 +69,13 @@ install_hysteria() {
     fi
 
     # Enable and start the Hysteria2 service
-    sudo systemctl enable hysteria2
-    sudo systemctl start hysteria2
+    sudo systemctl enable --now hysteria2
 
     # Construct and display the resulting URL & QR
     result_url=" 
-    ipv4 : hy2://$password@$public_ipv4:$user_port?insecure=1&sni=$user_domain#HY2
+    ipv4 : hy2://$password@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
     ---------------------------------------------------------------
-    ipv6 : hy2://$password@[$public_ipv6]:$user_port?insecure=1&sni=$user_domain#HY2"
+    ipv6 : hy2://$password@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2"
     echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/hysteria2/config.txt # Red color for URL
 
     cat /etc/hysteria2/config.txt
@@ -99,35 +109,45 @@ modify_hysteria_config() {
         # Download the server-auto.yaml file
         mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.yaml https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/server-auto-warp.yaml
 
+        # Get certificate
+        mkdir /root/cert && cd /root/cert || exit
+
+        openssl genrsa -out ca.key 2048
+
+        openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=Google Root CA" -out ca.crt
+
+        openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=*.google.com" -out server.csr
+
+        openssl x509 -req -extfile <(printf "subjectAltName=DNS:google.com,DNS:www.google.com") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
+
+        mv server.crt /etc/hysteria2/server.crt
+
+        mv server.key /etc/hysteria2/server.key
+
+        cd || exit
+
+        rm -rf /root/cert
+
         # Prompt the user to enter a port and replace "PORT" in the server.yaml file
         read -p "Please enter a port: " user_port
         sed -i "s/PORT/$user_port/" /etc/hysteria2/server.yaml
 
-        # Prompt the user to enter a domain and replace "DOMAIN" in the server.yaml file
-        read -p "Please enter your domain: " user_domain
-        sed -i "s/DOMAIN/$user_domain/" /etc/hysteria2/server.yaml
-
         # Generate a password and replace "PASSWORD" in the server.yaml file
         password=$(openssl rand -hex 8)
         sed -i "s/PASSWORD/$password/" /etc/hysteria2/server.yaml
-
-        # Prompt the user to enter an email and replace "EMAIL" in the server.yaml file
-        read -p "Please enter your email: " user_email
-        sed -i "s/EMAIL/$user_email/" /etc/hysteria2/server.yaml
 
         # Use a public DNS service to determine the public IP address
         public_ipv4=$(curl -s https://v4.ident.me)
         public_ipv6=$(curl -s https://v6.ident.me)
 
         # Enable and start the Hysteria2 service
-        sudo systemctl enable hysteria2
-        sudo systemctl start hysteria2
+        sudo systemctl enable --now hysteria2
 
         # Construct and display the resulting URL
         result_url=" 
-        ipv4 : hy2://$password@$public_ipv4:$user_port?insecure=1&sni=$user_domain#HY2
+        ipv4 : hy2://$password@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
         ---------------------------------------------------------------
-        ipv6 : hy2://$password@[$public_ipv6]:$user_port?insecure=1&sni=$user_domain#HY2"
+        ipv6 : hy2://$password@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2"
         echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/hysteria2/config.txt # Red color for URL
 
         cat /etc/hysteria2/config.txt
