@@ -530,7 +530,6 @@ uninstall_reality() {
 }
 
 install_shadowtls() {
-    apt update && apt install -y qrencode
 
     # Download sing-box binary
     mkdir /root/singbox && cd /root/singbox || exit
