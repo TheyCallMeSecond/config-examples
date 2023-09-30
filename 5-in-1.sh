@@ -918,10 +918,73 @@ uninstall_warp() {
     exit 0 # Exit the script immediately with a successful status
 }
 
+# Function to update sing-box core
+update_sing-box_core() {
+    rlt_core_check="/usr/bin/sing-box" 
+
+    if [ -e "$rlt_core_check" ]; then
+
+        systemctl stop sing-box
+
+        rm /usr/bin/sing-box
+
+        # Download sing-box binary
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL |grep -o -E '/.?[0-9|\.]+$'| grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/sing-box"
+        cd && rm -rf singbox
+
+        systemctl start sing-box
+
+        echo "Reality sing-box core has been updated"
+
+    else
+
+        echo "Reality is not installed yet."
+
+    fi
+
+        st_core_check="/usr/bin/ST" 
+
+    if [ -e "$st_core_check" ]; then
+
+        systemctl stop ST
+
+        rm /usr/bin/ST
+
+        # Download sing-box binary
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL |grep -o -E '/.?[0-9|\.]+$'| grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/ST"
+        cd && rm -rf singbox
+
+        systemctl start ST
+
+        echo "ShadowTLS sing-box core has been updated"
+
+    else
+
+        echo "ShadowTLS is not installed yet."
+
+    fi
+
+    exit 0 # Exit the script immediately with status
+}
+
 # Main menu loop
 while true; do
     echo -e "    \e[91mPlease select an option:\e[0m"
     echo -e
+    echo -e "00: \e[95mUpdate Sing-Box Core\e[0m"
+    echo -------------------------------------------
     echo -e "1:  \e[93mInstall Hysteria2\e[0m"
     echo -e "2:  \e[93mModify Hysteria2 Config\e[0m"
     echo -e "3:  \e[93mShow Hysteria2 Config\e[0m"
@@ -946,11 +1009,14 @@ while true; do
     echo -e "18: \e[93mSet/Change WARP+ Key\e[0m"
     echo -e "19: \e[93mUninstall WARP\e[0m"
     echo -------------------------------------------
-    echo -e "0:  \e[91mExit\e[0m"
+    echo -e "0:  \e[95mExit\e[0m"
 
     read -p "Enter your choice: " user_choice
 
     case $user_choice in
+    00)
+        update_sing-box_core
+        ;;
     1)
         install_hysteria
         ;;
