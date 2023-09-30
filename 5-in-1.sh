@@ -241,21 +241,6 @@ install_tuic() {
     public_ipv4=$(curl -s https://v4.ident.me)
     public_ipv6=$(curl -s https://v6.ident.me)
 
-    # Enable and start the tuic service
-    sudo systemctl enable --now TS
-
-    # Construct and display the resulting URL
-    result_url=" 
-    ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
-    ---------------------------------------------------------------
-    ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
-    echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/tuic/config.txt # Red color for URL
-
-    cat /etc/tuic/config.txt
-
-    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/tuic/config.txt)
-    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/tuic/config.txt)
-
     # WARP+ installation
     warp_check="/lib/systemd/system/warp-svc.service"
 
@@ -278,7 +263,22 @@ install_tuic() {
         # Restart WARP
         bash <(curl -fsSL git.io/warp.sh) restart
 
-    fi    
+    fi
+
+    # Enable and start the tuic service
+    sudo systemctl enable --now TS
+
+    # Construct and display the resulting URL
+    result_url=" 
+    ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
+    ---------------------------------------------------------------
+    ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
+    echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/tuic/config.txt # Red color for URL
+
+    cat /etc/tuic/config.txt
+
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/tuic/config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/tuic/config.txt)    
 
     echo IPv4:
     qrencode -t ANSIUTF8 <<<"$ipv4qr"
