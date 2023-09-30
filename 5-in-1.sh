@@ -2,7 +2,7 @@
 
 # Function to install Hysteria
 install_hysteria() {
-    apt update && apt install -y qrencode
+    apt update && apt install -y qrencode jq openssl
 
     # Download Hysteria binary and make it executable
     curl -Lo /root/hysteria2 https://github.com/apernet/hysteria/releases/latest/download/hysteria-linux-amd64 && chmod +x /root/hysteria2 && mv -f /root/hysteria2 /usr/bin
@@ -45,7 +45,7 @@ install_hysteria() {
     public_ipv6=$(curl -s https://v6.ident.me)
 
     # WARP+ installation
-    warp_check="/lib/systemd/system/warp-svc.service"
+    warp_check="/etc/systemd/system/SBW.service"
 
     if [ -e "$warp_check" ]; then
 
@@ -53,18 +53,35 @@ install_hysteria() {
 
     else
 
-        # Execute the WARP setup script (with user key replacement)
-        bash <(curl -fsSL git.io/warp.sh) proxy
+        # Download sing-box core for WARP+ wireguard config
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL |grep -o -E '/.?[0-9|\.]+$'| grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SBW"
+        cd && rm -rf singbox
 
-        # Prompt the user for their WARP+ key
-        read -p "Enter your WARP+ key: " warp_key
+        # Download SBW service file
+        curl -Lo /etc/systemd/system/SBW.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SBW.service && systemctl daemon-reload
 
-        # Replace the placeholder in the command and run it
-        warp_command="warp-cli set-license $warp_key"
-        eval "$warp_command"
+        # Generate WARP+ wireguard config file for sing-box
+        mkdir /etc/sbw && cd /etc/sbw || exit
 
-        # Restart WARP
-        bash <(curl -fsSL git.io/warp.sh) restart
+        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/main.sh
+        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-api
+        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-go
+
+        chmod +x main.sh
+        ./main.sh
+
+        rm -f warp-go warp-api main.sh warp.conf
+
+        cd || exit
+
+        # Start WARP+ sing-box proxy
+        systemctl enable --now SBW
 
     fi
 
@@ -188,7 +205,7 @@ uninstall_hysteria() {
 }
 
 install_tuic() {
-    apt update && apt install -y qrencode
+    apt update && apt install -y qrencode jq openssl
 
     # Download sing-box binary
     mkdir /root/singbox && cd /root/singbox || exit
@@ -242,7 +259,7 @@ install_tuic() {
     public_ipv6=$(curl -s https://v6.ident.me)
 
     # WARP+ installation
-    warp_check="/lib/systemd/system/warp-svc.service"
+    warp_check="/etc/systemd/system/SBW.service"
 
     if [ -e "$warp_check" ]; then
 
@@ -250,18 +267,35 @@ install_tuic() {
 
     else
 
-        # Execute the WARP setup script (with user key replacement)
-        bash <(curl -fsSL git.io/warp.sh) proxy
+        # Download sing-box core for WARP+ wireguard config
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL |grep -o -E '/.?[0-9|\.]+$'| grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SBW"
+        cd && rm -rf singbox
 
-        # Prompt the user for their WARP+ key
-        read -p "Enter your WARP+ key: " warp_key
+        # Download SBW service file
+        curl -Lo /etc/systemd/system/SBW.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SBW.service && systemctl daemon-reload
 
-        # Replace the placeholder in the command and run it
-        warp_command="warp-cli set-license $warp_key"
-        eval "$warp_command"
+        # Generate WARP+ wireguard config file for sing-box
+        mkdir /etc/sbw && cd /etc/sbw || exit
 
-        # Restart WARP
-        bash <(curl -fsSL git.io/warp.sh) restart
+        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/main.sh
+        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-api
+        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-go
+
+        chmod +x main.sh
+        ./main.sh
+
+        rm -f warp-go warp-api main.sh warp.conf
+
+        cd || exit
+
+        # Start WARP+ sing-box proxy
+        systemctl enable --now SBW
 
     fi
 
@@ -389,7 +423,7 @@ uninstall_tuic() {
 }
 
 install_reality() {
-    apt update && apt install -y qrencode
+    apt update && apt install -y qrencode jq openssl
 
     # Download sing-box binary
     mkdir /root/singbox && cd /root/singbox || exit
@@ -440,7 +474,7 @@ install_reality() {
     public_ipv6=$(curl -s https://v6.ident.me)
 
     # WARP+ installation
-    warp_check="/lib/systemd/system/warp-svc.service"
+    warp_check="/etc/systemd/system/SBW.service"
 
     if [ -e "$warp_check" ]; then
 
@@ -448,18 +482,35 @@ install_reality() {
 
     else
 
-        # Execute the WARP setup script (with user key replacement)
-        bash <(curl -fsSL git.io/warp.sh) proxy
+        # Download sing-box core for WARP+ wireguard config
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL |grep -o -E '/.?[0-9|\.]+$'| grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SBW"
+        cd && rm -rf singbox
 
-        # Prompt the user for their WARP+ key
-        read -p "Enter your WARP+ key: " warp_key
+        # Download SBW service file
+        curl -Lo /etc/systemd/system/SBW.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SBW.service && systemctl daemon-reload
 
-        # Replace the placeholder in the command and run it
-        warp_command="warp-cli set-license $warp_key"
-        eval "$warp_command"
+        # Generate WARP+ wireguard config file for sing-box
+        mkdir /etc/sbw && cd /etc/sbw || exit
 
-        # Restart WARP
-        bash <(curl -fsSL git.io/warp.sh) restart
+        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/main.sh
+        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-api
+        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-go
+
+        chmod +x main.sh
+        ./main.sh
+
+        rm -f warp-go warp-api main.sh warp.conf
+
+        cd || exit
+
+        # Start WARP+ sing-box proxy
+        systemctl enable --now SBW
 
     fi
 
@@ -583,6 +634,7 @@ uninstall_reality() {
 }
 
 install_shadowtls() {
+    apt update && apt install -y jq openssl
 
     # Download sing-box binary
     mkdir /root/singbox && cd /root/singbox || exit
@@ -638,7 +690,7 @@ install_shadowtls() {
     sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekoboxconfig.txt
 
     # WARP+ installation
-    warp_check="/lib/systemd/system/warp-svc.service"
+    warp_check="/etc/systemd/system/SBW.service"
 
     if [ -e "$warp_check" ]; then
 
@@ -646,18 +698,35 @@ install_shadowtls() {
 
     else
 
-        # Execute the WARP setup script (with user key replacement)
-        bash <(curl -fsSL git.io/warp.sh) proxy
+        # Download sing-box core for WARP+ wireguard config
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL |grep -o -E '/.?[0-9|\.]+$'| grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SBW"
+        cd && rm -rf singbox
 
-        # Prompt the user for their WARP+ key
-        read -p "Enter your WARP+ key: " warp_key
+        # Download SBW service file
+        curl -Lo /etc/systemd/system/SBW.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SBW.service && systemctl daemon-reload
 
-        # Replace the placeholder in the command and run it
-        warp_command="warp-cli set-license $warp_key"
-        eval "$warp_command"
+        # Generate WARP+ wireguard config file for sing-box
+        mkdir /etc/sbw && cd /etc/sbw || exit
 
-        # Restart WARP
-        bash <(curl -fsSL git.io/warp.sh) restart
+        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/main.sh
+        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-api
+        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-go
+
+        chmod +x main.sh
+        ./main.sh
+
+        rm -f warp-go warp-api main.sh warp.conf
+
+        cd || exit
+
+        # Start WARP+ sing-box proxy
+        systemctl enable --now SBW
 
     fi
 
@@ -896,39 +965,13 @@ show_shadowtls_config() {
     exit 0 # Exit the script immediately with a successful status
 }
 
-# Function to install warp
-install_warp() {
-    warp_check="/lib/systemd/system/warp-svc.service"
+# Function to show reality config
+show_warp_config() {
+    warp_conf_check="/etc/sbw/proxy.json"
 
-    if [ -e "$warp_check" ]; then
+    if [ -e "$warp_conf_check" ]; then
 
-        echo "WARP is running."
-
-    else
-
-        # Execute the WARP setup script (with user key replacement)
-        bash <(curl -fsSL git.io/warp.sh) proxy
-
-    fi
-
-    exit 0 # Exit the script immediately with a successful status
-}
-
-# Function to change warp+ key
-change_warp_key() {
-    warp_check="/lib/systemd/system/warp-svc.service"
-
-    if [ -e "$warp_check" ]; then
-
-        # Prompt the user for their WARP+ key
-        read -p "Enter your WARP+ key: " warp_key
-
-        # Replace the placeholder in the command and run it
-        warp_command="warp-cli set-license $warp_key"
-        eval "$warp_command"
-
-        # Restart WARP
-        bash <(curl -fsSL git.io/warp.sh) restart
+        cat /etc/sbw/proxy.json
 
     else
 
@@ -939,10 +982,63 @@ change_warp_key() {
     exit 0 # Exit the script immediately with a successful status
 }
 
+# Function to install warp
+install_warp() {
+    # WARP+ installation
+    warp_check="/etc/systemd/system/SBW.service"
+
+    if [ -e "$warp_check" ]; then
+
+        echo "WARP is running."
+
+    else
+
+        # Download sing-box core for WARP+ wireguard config
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL |grep -o -E '/.?[0-9|\.]+$'| grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SBW"
+        cd && rm -rf singbox
+
+        # Download SBW service file
+        curl -Lo /etc/systemd/system/SBW.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SBW.service && systemctl daemon-reload
+
+        # Generate WARP+ wireguard config file for sing-box
+        mkdir /etc/sbw && cd /etc/sbw || exit
+
+        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/main.sh
+        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-api
+        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-go
+
+        chmod +x main.sh
+        ./main.sh
+
+        rm -f warp-go warp-api main.sh warp.conf
+
+        cd || exit
+
+        # Start WARP+ sing-box proxy
+        systemctl enable --now SBW
+
+        echo "WARP installed successfuly"
+
+    fi
+
+    exit 0 # Exit the script immediately with a successful status
+}
+
 # Function to uninstall warp
 uninstall_warp() {
-    # Uninstall warp client
-    bash <(curl -fsSL git.io/warp.sh) uninstall
+    # Stop the SBW service
+    sudo systemctl stop SBW
+
+    # Remove sing-box binary, configuration, and service file
+    sudo rm -f /usr/bin/SBW
+    rm -rf /etc/sbw
+    sudo rm -f /etc/systemd/system/SBW.service
 
     echo "WARP uninstalled."
 
@@ -1035,6 +1131,34 @@ update_sing-box_core() {
 
     fi
 
+            wg_core_check="/usr/bin/SBW" 
+
+    if [ -e "$wg_core_check" ]; then
+
+        systemctl stop SBW
+
+        rm /usr/bin/SBW
+
+        # Download sing-box binary
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL |grep -o -E '/.?[0-9|\.]+$'| grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SBW"
+        cd && rm -rf singbox
+
+        systemctl start SBW
+
+        echo "WARP sing-box core has been updated"
+
+    else
+
+        echo "WARP is not installed yet."
+
+    fi
+
     exit 0 # Exit the script immediately with status
 }
 
@@ -1065,7 +1189,7 @@ while true; do
     echo -e "16: \e[93mUninstall ShadowTLS\e[0m"
     echo -------------------------------------------
     echo -e "17: \e[93mInstall WARP\e[0m"
-    echo -e "18: \e[93mSet/Change WARP+ Key\e[0m"
+    echo -e "18: \e[93mShow WARP Config\e[0m"
     echo -e "19: \e[93mUninstall WARP\e[0m"
     echo -------------------------------------------
     echo -e "0:  \e[95mExit\e[0m"
@@ -1128,8 +1252,8 @@ while true; do
         install_warp
         ;;
     18)
-        change_warp_key
-        ;;
+        show_warp_config
+        ;;        
     19)
         uninstall_warp
         ;;
