@@ -971,7 +971,7 @@ show_warp_config() {
 
     if [ -e "$warp_conf_check" ]; then
 
-        cat /etc/sbw/proxy.json
+        cat /etc/sbw/proxy.json | jq
 
     else
 
