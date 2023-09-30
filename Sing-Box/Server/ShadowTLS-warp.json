@@ -42,7 +42,7 @@
          "type":"socks",
          "tag":"socks-out",
          "server":"127.0.0.1",
-         "server_port":40000,
+         "server_port":2000,
          "version":"5"
       }
    ],
