@@ -965,7 +965,7 @@ show_shadowtls_config() {
     exit 0 # Exit the script immediately with a successful status
 }
 
-# Function to show reality config
+# Function to show warp config
 show_warp_config() {
     warp_conf_check="/etc/sbw/proxy.json"
 
