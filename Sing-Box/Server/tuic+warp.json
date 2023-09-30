@@ -1,0 +1,49 @@
+{
+"inbounds":[
+{
+  "type": "tuic",
+  "tag": "tuic-in",
+  "listen": "::",
+  "listen_port": PORT,
+  "users": [
+    {
+      "name": "theTCS",
+      "uuid": "UUID",
+      "password": "PASSWORD"
+    }
+  ],
+  "congestion_control": "bbr",
+  "auth_timeout": "3s",
+  "zero_rtt_handshake": false,
+  "heartbeat": "3s",
+  "tls": {
+    "enabled": true,
+    "server_name": "www.apple.com",
+    "certificate_path": "/etc/tuic/server.crt",
+    "key_path": "/etc/tuic/server.key"
+  }
+}
+],
+
+"log":{
+
+  "level":"warn",
+
+  "timestamp":true
+
+},
+"outbounds":[
+
+  {
+
+     "type":"socks",
+     "tag":"socks-out",
+     "server":"127.0.0.1",
+     "server_port":40000,
+     "version":"5"
+
+  }
+
+]
+
+}
