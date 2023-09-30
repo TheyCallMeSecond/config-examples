@@ -35,9 +35,6 @@ if [ $account_type = 2 ]; then
    echo ""
   yellow "Important: Please make sure the account status of the 1.1.1.1 APP on your phone or computer is WARP+!"
    echo ""
-  read -rp "Enter WARP account license key (26 characters): " warpkey
-  until [ $warpkey = ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]; do
-    red "WARP account license key format input error, please re-enter!"
     read -rp "Enter WARP account license key (26 characters): " warpkey
   done
   read -rp "Please enter a custom device name, if not entered, the default random device name will be used: " device_name
