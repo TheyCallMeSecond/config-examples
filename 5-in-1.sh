@@ -362,10 +362,12 @@ install_reality() {
 
     # Download sing-box binary
     mkdir /root/singbox && cd /root/singbox || exit
-    wget https://github.com/SagerNet/sing-box/releases/download/v1.5.0/sing-box-1.5.0-linux-amd64.tar.gz
-    tar xvzf sing-box-1.5.0-linux-amd64.tar.gz
-    cd sing-box-1.5.0-linux-amd64 || exit
-    mv -f sing-box /usr/bin
+    LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+    LATEST_VERSION="$(echo $LATEST_URL |grep -o -E '/.?[0-9|\.]+$'| grep -o -E '[0-9|\.]+')"
+    LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+    wget "$LINK"
+    tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+    cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/sing-box"
     cd && rm -rf singbox
 
     # Create a directory for sing-box configuration and download the Reality-gRPC.json file
@@ -553,10 +555,12 @@ install_shadowtls() {
 
     # Download sing-box binary
     mkdir /root/singbox && cd /root/singbox || exit
-    wget https://github.com/SagerNet/sing-box/releases/download/v1.5.0/sing-box-1.5.0-linux-amd64.tar.gz
-    tar xvzf sing-box-1.5.0-linux-amd64.tar.gz
-    cd sing-box-1.5.0-linux-amd64 || exit
-    mv -f sing-box /usr/bin/ST
+    LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+    LATEST_VERSION="$(echo $LATEST_URL |grep -o -E '/.?[0-9|\.]+$'| grep -o -E '[0-9|\.]+')"
+    LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+    wget "$LINK"
+    tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+    cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/ST"
     cd && rm -rf singbox
 
     # Create a directory for shadowtls configuration and download the ShadowTLS.json file
