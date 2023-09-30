@@ -138,5 +138,3 @@ clear
 green "WARP-GO's Sing-box configuration file has been successfully generated!"
 yellow "The following is the content of the Sing-box configuration file:"
 red "$(cat proxy.json | jq)"
-echo ""
-yellow "Please use this method locally: https://blog.misaka.rest/2023/03/12/cf-warp-yxip/ prefer an available Endpoint IP"
