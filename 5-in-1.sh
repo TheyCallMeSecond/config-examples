@@ -362,9 +362,9 @@ install_reality() {
 
     # Download sing-box binary
     mkdir /root/singbox && cd /root/singbox || exit
-    wget https://github.com/SagerNet/sing-box/releases/download/v1.4.5/sing-box-1.4.5-linux-amd64.tar.gz
-    tar xvzf sing-box-1.4.5-linux-amd64.tar.gz
-    cd sing-box-1.4.5-linux-amd64 || exit
+    wget https://github.com/SagerNet/sing-box/releases/download/v1.5.0/sing-box-1.5.0-linux-amd64.tar.gz
+    tar xvzf sing-box-1.5.0-linux-amd64.tar.gz
+    cd sing-box-1.5.0-linux-amd64 || exit
     mv -f sing-box /usr/bin
     cd && rm -rf singbox
 
@@ -553,9 +553,9 @@ install_shadowtls() {
 
     # Download sing-box binary
     mkdir /root/singbox && cd /root/singbox || exit
-    wget https://github.com/SagerNet/sing-box/releases/download/v1.4.5/sing-box-1.4.5-linux-amd64.tar.gz
-    tar xvzf sing-box-1.4.5-linux-amd64.tar.gz
-    cd sing-box-1.4.5-linux-amd64 || exit
+    wget https://github.com/SagerNet/sing-box/releases/download/v1.5.0/sing-box-1.5.0-linux-amd64.tar.gz
+    tar xvzf sing-box-1.5.0-linux-amd64.tar.gz
+    cd sing-box-1.5.0-linux-amd64 || exit
     mv -f sing-box /usr/bin/ST
     cd && rm -rf singbox
 
