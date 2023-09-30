@@ -28,7 +28,7 @@ echo -e "${GREEN}2.${PLAIN} WARP+"
 echo -e "${GREEN}3.${PLAIN} WARP Teams"
 echo ""
 read -p "Please enter options [1-3]: " account_type
-if [[ $account_type == 2 ]]; then
+if [ $account_type = 2 ]; then
   yellow "How to obtain CloudFlare WARP account key information:"
   green "Computer: Download and install CloudFlare WARP → Settings → Preferences → Accounts → Copy key into script"
   green "Mobile: Download and install 1.1.1.1 APP → Menu → Account → Copy the key to the script"
@@ -36,12 +36,12 @@ if [[ $account_type == 2 ]]; then
   yellow "Important: Please make sure the account status of the 1.1.1.1 APP on your phone or computer is WARP+!"
    echo ""
   read -rp "Enter WARP account license key (26 characters): " warpkey
-  until [[ $warpkey =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]]; do
+  until [ $warpkey =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]; do
     red "WARP account license key format input error, please re-enter!"
     read -rp "Enter WARP account license key (26 characters): " warpkey
   done
   read -rp "Please enter a custom device name, if not entered, the default random device name will be used: " device_name
-  [[ -z $device_name ]] && device_name=$(date +%s%N | md5sum | cut -c 1-6)
+  [ -z $device_name ] && device_name=$(date +%s%N | md5sum | cut -c 1-6)
 
   result_output=$(./warp-api)
 
@@ -68,12 +68,12 @@ KeepAlive = 30
 EOF
 
   ./warp-go --update --config=./warp.conf --license=$warpkey --device-name=$device_name
-elif [[ $account_type == 3 ]]; then
+elif [ $account_type = 3 ]; then
   yellow "请在此网站：https://web--public--warp-team-api--coia-mfs4.code.run/ 获取你的 WARP Teams 账户 TOKEN"
   read -rp "请输入 WARP Teams 账户的 TOKEN：" teams_token
-  if [[ -n $teams_token ]]; then
+  if [ -n $teams_token ]; then
     read -rp "请输入自定义设备名，如未输入则使用默认随机设备名: " device_name
-    [[ -z $device_name ]] && device_name=$(date +%s%N | md5sum | cut -c 1-6)
+    [ -z $device_name ] && device_name=$(date +%s%N | md5sum | cut -c 1-6)
 
     result_output=$(./warp-api)
 
