@@ -190,14 +190,21 @@ uninstall_hysteria() {
 install_tuic() {
     apt update && apt install -y qrencode
 
-    # Download tuic binary and make it executable
-    curl -Lo /root/tuic https://github.com/EAimTY/tuic/releases/download/tuic-server-1.0.0/tuic-server-1.0.0-x86_64-unknown-linux-gnu && chmod +x /root/tuic && mv -f /root/tuic /usr/bin
+    # Download sing-box binary
+    mkdir /root/singbox && cd /root/singbox || exit
+    LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+    LATEST_VERSION="$(echo $LATEST_URL |grep -o -E '/.?[0-9|\.]+$'| grep -o -E '[0-9|\.]+')"
+    LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+    wget "$LINK"
+    tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+    cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/TS"
+    cd && rm -rf singbox
 
     # Create a directory for tuic configuration and download the server.json file
-    mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://github.com/TheyCallMeSecond/config-examples/raw/main/TUIC/server.json
+    mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/tuic%2Bwarp.json
 
     # Download the tuic.service file
-    curl -Lo /etc/systemd/system/tuic.service https://github.com/TheyCallMeSecond/config-examples/raw/main/TUIC/tuic.service && systemctl daemon-reload
+    curl -Lo /etc/systemd/system/TS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/TS.service && systemctl daemon-reload
 
     # Prompt the user to enter a port and replace "PORT" in the server.json file
     read -p "Please enter a port: " user_port
@@ -235,7 +242,7 @@ install_tuic() {
     public_ipv6=$(curl -s https://v6.ident.me)
 
     # Enable and start the tuic service
-    sudo systemctl enable --now tuic
+    sudo systemctl enable --now TS
 
     # Construct and display the resulting URL
     result_url=" 
@@ -248,6 +255,30 @@ install_tuic() {
 
     ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/tuic/config.txt)
     ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/tuic/config.txt)
+
+    # WARP+ installation
+    warp_check="/lib/systemd/system/warp-svc.service"
+
+    if [ -e "$warp_check" ]; then
+
+        echo "WARP is running."
+
+    else
+
+        # Execute the WARP setup script (with user key replacement)
+        bash <(curl -fsSL git.io/warp.sh) proxy
+
+        # Prompt the user for their WARP+ key
+        read -p "Enter your WARP+ key: " warp_key
+
+        # Replace the placeholder in the command and run it
+        warp_command="warp-cli set-license $warp_key"
+        eval "$warp_command"
+
+        # Restart WARP
+        bash <(curl -fsSL git.io/warp.sh) restart
+
+    fi    
 
     echo IPv4:
     qrencode -t ANSIUTF8 <<<"$ipv4qr"
@@ -267,13 +298,13 @@ modify_tuic_config() {
     if [ -e "$tuic_check" ]; then
 
         # Stop the tuic service
-        sudo systemctl stop tuic
+        sudo systemctl stop TS
 
         # Remove the existing configuration
         rm -rf /etc/tuic
 
         # Create a directory for tuic configuration and download the server.json file
-        mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://github.com/TheyCallMeSecond/config-examples/raw/main/TUIC/server.json
+        mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/tuic%2Bwarp.json
 
         # Prompt the user to enter a port and replace "PORT" in the server.json file
         read -p "Please enter a port: " user_port
@@ -311,7 +342,7 @@ modify_tuic_config() {
         public_ipv6=$(curl -s https://v6.ident.me)
 
         # Enable and start the tuic service
-        sudo systemctl enable --now tuic
+        sudo systemctl enable --now TS
 
         # Construct and display the resulting URL
         result_url=" 
@@ -345,12 +376,12 @@ modify_tuic_config() {
 # Function to uninstall tuic
 uninstall_tuic() {
     # Stop the tuic service
-    sudo systemctl stop tuic
+    sudo systemctl stop TS
 
     # Remove Hysteria binary, configuration, and service file
-    sudo rm -f /usr/bin/tuic
+    sudo rm -f /usr/bin/TS
     rm -rf /etc/tuic
-    sudo rm -f /etc/systemd/system/tuic.service
+    sudo rm -f /etc/systemd/system/TS.service
 
     echo "TUIC uninstalled."
 
@@ -901,7 +932,7 @@ change_warp_key() {
 
     else
 
-        echo "WARP is not running."
+        echo "WARP is not installed yet."
 
     fi
 
@@ -973,6 +1004,34 @@ update_sing-box_core() {
     else
 
         echo "ShadowTLS is not installed yet."
+
+    fi
+
+        ts_core_check="/usr/bin/TS" 
+
+    if [ -e "$ts_core_check" ]; then
+
+        systemctl stop TS
+
+        rm /usr/bin/TS
+
+        # Download sing-box binary
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL |grep -o -E '/.?[0-9|\.]+$'| grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/TS"
+        cd && rm -rf singbox
+
+        systemctl start TS
+
+        echo "TUIC sing-box core has been updated"
+
+    else
+
+        echo "TUIC is not installed yet."
 
     fi
 
