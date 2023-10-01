@@ -76,7 +76,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-
 
   ------------
  
-  # Special Thanks
+  ## Special Thanks
 
 <br>
 
