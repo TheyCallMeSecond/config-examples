@@ -69,6 +69,7 @@
                 "type": "grpc"
             },
             "type": "vless",
+            "flow":"xtls-rprx-vision"
             "uuid": "UUID"
         },
         {
