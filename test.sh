@@ -1518,7 +1518,7 @@ disable_warp_hysteria() {
 
             # Set the new yaml object
             new_yaml='  - name: direct
-                type: direct'
+    type: direct'
 
             # Change outbound from socks to direct
             awk -v new_yaml="$new_yaml" 'NR<41 || NR>44 {print} NR==41 {print new_yaml}' /etc/hysteria2/server.yaml >/etc/hysteria2/server.tmp
