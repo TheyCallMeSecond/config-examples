@@ -1358,21 +1358,30 @@ disable_warp_reality() {
     reality_check="/etc/sing-box/config.json"
 
     if [ -e "$reality_check" ]; then
-        systemctl stop sing-box
+        file="/etc/sing-box/config.json" 
+        threshold=98                     
 
-        # Set the new JSON object
-        new_json='{
+        line_count=$(wc -l <"$file")
+
+        if [ "$line_count" -gt "$threshold" ]; then
+            systemctl stop sing-box
+
+            # Set the new JSON object
+            new_json='{
             "tag": "direct",
             "type": "direct"
         }'
 
-        # Change outbound from socks to direct
-        awk -v new_json="$new_json" 'NR<83 || NR>95 {print} NR==83 {print new_json}' /etc/sing-box/config.json >/etc/sing-box/config.tmp
-        mv /etc/sing-box/config.tmp /etc/sing-box/config.json
+            # Change outbound from socks to direct
+            awk -v new_json="$new_json" 'NR<83 || NR>95 {print} NR==83 {print new_json}' /etc/sing-box/config.json >/etc/sing-box/config.tmp
+            mv /etc/sing-box/config.tmp /etc/sing-box/config.json
 
-        systemctl start sing-box
+            systemctl start sing-box
 
-        echo "WARP is disabled now"
+            echo "WARP is disabled now"
+        else
+            echo "WARP is already disable"
+        fi
 
     else
 
@@ -1385,26 +1394,34 @@ disable_warp_reality() {
 
 # Function to disable warp on shadowtls
 disable_warp_shadowtls() {
-    shadowtls_check="/etc/shadowtls/config.json"
+    shadowtls_check="/etc/sing-box/config.json"
 
     if [ -e "$shadowtls_check" ]; then
-        systemctl stop ST
+        file="/etc/shadowtls/config.json"
+        threshold=56
 
-        # Set the new JSON object
-        new_json='{
+        line_count=$(wc -l <"$file")
+
+        if [ "$line_count" -gt "$threshold" ]; then
+            systemctl stop ST
+
+            # Set the new JSON object
+            new_json='{
             "tag": "direct",
             "type": "direct"
         }
         ]'
-        
 
-        # Change outbound from socks to direct
-        awk -v new_json="$new_json" 'NR<41 || NR>56 {print} NR==41 {print new_json}' /etc/shadowtls/config.json >/etc/shadowtls/config.tmp
-        mv /etc/shadowtls/config.tmp /etc/shadowtls/config.json
+            # Change outbound from socks to direct
+            awk -v new_json="$new_json" 'NR<41 || NR>56 {print} NR==41 {print new_json}' /etc/shadowtls/config.json >/etc/shadowtls/config.tmp
+            mv /etc/shadowtls/config.tmp /etc/shadowtls/config.json
 
-        systemctl start ST
+            systemctl start ST
 
-        echo "WARP is disabled now"
+            echo "WARP is disabled now"
+        else
+            echo "WARP is already disable"
+        fi
 
     else
 
@@ -1420,21 +1437,30 @@ disable_warp_tuic() {
     tuic_check="/etc/tuic/server.json"
 
     if [ -e "$tuic_check" ]; then
-        systemctl stop TS
+        file="/etc/tuic/server.json"
+        threshold=42
 
-        # Set the new JSON object
-        new_json='{
+        line_count=$(wc -l <"$file")
+
+        if [ "$line_count" -gt "$threshold" ]; then
+            systemctl stop TS
+
+            # Set the new JSON object
+            new_json='{
             "tag": "direct",
             "type": "direct"
         }'
 
-        # Change outbound from socks to direct
-        awk -v new_json="$new_json" 'NR<35 || NR>41 {print} NR==35 {print new_json}' /etc/tuic/server.json >/etc/tuic/server.tmp
-        mv /etc/tuic/server.tmp /etc/tuic/server.json
+            # Change outbound from socks to direct
+            awk -v new_json="$new_json" 'NR<35 || NR>41 {print} NR==35 {print new_json}' /etc/tuic/server.json >/etc/tuic/server.tmp
+            mv /etc/tuic/server.tmp /etc/tuic/server.json
 
-        systemctl start TS
+            systemctl start TS
 
-        echo "WARP is disabled now"
+            echo "WARP is disabled now"
+        else
+            echo "WARP is already disable"
+        fi
 
     else
 
@@ -1450,19 +1476,28 @@ disable_warp_hysteria() {
     hysteria_check="/etc/hysteria2/server.yaml"
 
     if [ -e "$hysteria_check" ]; then
-        systemctl stop hysteria2
+        file="/etc/hysteria2/server.yaml"
+        threshold=50
 
-        # Set the new yaml object
-        new_yaml='  - name: direct
-    type: direct'
+        line_count=$(wc -l <"$file")
 
-        # Change outbound from socks to direct
-        awk -v new_yaml="$new_yaml" 'NR<41 || NR>44 {print} NR==41 {print new_yaml}' /etc/hysteria2/server.yaml >/etc/hysteria2/server.tmp
-        mv /etc/hysteria2/server.tmp /etc/hysteria2/server.yaml
+        if [ "$line_count" -gt "$threshold" ]; then
+            systemctl stop hysteria2
 
-        systemctl start hysteria2
+            # Set the new yaml object
+            new_yaml='  - name: direct
+                type: direct'
 
-        echo "WARP is disabled now"
+            # Change outbound from socks to direct
+            awk -v new_yaml="$new_yaml" 'NR<41 || NR>44 {print} NR==41 {print new_yaml}' /etc/hysteria2/server.yaml >/etc/hysteria2/server.tmp
+            mv /etc/hysteria2/server.tmp /etc/hysteria2/server.yaml
+
+            systemctl start hysteria2
+
+            echo "WARP is disabled now"
+        else
+            echo "WARP is already disable"
+        fi
 
     else
 
