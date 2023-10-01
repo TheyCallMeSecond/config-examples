@@ -30,7 +30,7 @@
 ```bash
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/all-in-one.sh)"
 ```
-[![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/28.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/28.png?raw=true "bash screen")
+[![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/29.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/29.png?raw=true "bash screen")
 
 ------------
 
