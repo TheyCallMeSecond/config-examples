@@ -80,9 +80,9 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-
 
 <br>
 
-**[hawshemi]** - *For server optimizer*
+   **[hawshemi]** - *For server optimizer*
 
-**[misaka]** - *For warp config generator*
+   **[misaka]** - *For warp config generator*
 
 <!----------------------------------{ Thanks }--------------------------------->
 
