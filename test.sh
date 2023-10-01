@@ -4,6 +4,14 @@
 install_hysteria() {
     apt update && apt install -y qrencode jq openssl
 
+    # Stop the Hysteria2 service
+    sudo systemctl stop hysteria2
+
+    # Remove Hysteria binary, configuration, and service file
+    sudo rm -f /usr/bin/hysteria2
+    rm -rf /etc/hysteria2
+    sudo rm -f /etc/systemd/system/hysteria2.service
+
     # Download Hysteria binary and make it executable
     curl -Lo /root/hysteria2 https://github.com/apernet/hysteria/releases/latest/download/hysteria-linux-amd64 && chmod +x /root/hysteria2 && mv -f /root/hysteria2 /usr/bin
 
@@ -254,6 +262,14 @@ uninstall_hysteria() {
 
 install_tuic() {
     apt update && apt install -y qrencode jq openssl
+
+    # Stop the tuic service
+    sudo systemctl stop TS
+
+    # Remove Hysteria binary, configuration, and service file
+    sudo rm -f /usr/bin/TS
+    rm -rf /etc/tuic
+    sudo rm -f /etc/systemd/system/TS.service
 
     # Download sing-box binary
     mkdir /root/singbox && cd /root/singbox || exit
@@ -521,6 +537,14 @@ uninstall_tuic() {
 install_reality() {
     apt update && apt install -y qrencode jq openssl
 
+    # Stop the sing-box service
+    sudo systemctl stop sing-box
+
+    # Remove sing-box binary, configuration, and service file
+    sudo rm -f /usr/bin/sing-box
+    rm -rf /etc/sing-box
+    sudo rm -f /etc/systemd/system/sing-box.service
+
     # Download sing-box binary
     mkdir /root/singbox && cd /root/singbox || exit
     LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
@@ -779,6 +803,14 @@ uninstall_reality() {
 
 install_shadowtls() {
     apt update && apt install -y jq openssl
+
+    # Stop the ST service
+    sudo systemctl stop ST
+
+    # Remove sing-box binary, configuration, and service file
+    sudo rm -f /usr/bin/ST
+    rm -rf /etc/shadowtls
+    sudo rm -f /etc/systemd/system/ST.service
 
     # Download sing-box binary
     mkdir /root/singbox && cd /root/singbox || exit
@@ -1358,8 +1390,8 @@ disable_warp_reality() {
     reality_check="/etc/sing-box/config.json"
 
     if [ -e "$reality_check" ]; then
-        file="/etc/sing-box/config.json" 
-        threshold=98                     
+        file="/etc/sing-box/config.json"
+        threshold=98
 
         line_count=$(wc -l <"$file")
 
@@ -1486,7 +1518,7 @@ disable_warp_hysteria() {
 
             # Set the new yaml object
             new_yaml='  - name: direct
-                type: direct'
+                          type: direct'
 
             # Change outbound from socks to direct
             awk -v new_yaml="$new_yaml" 'NR<41 || NR>44 {print} NR==41 {print new_yaml}' /etc/hysteria2/server.yaml >/etc/hysteria2/server.tmp
