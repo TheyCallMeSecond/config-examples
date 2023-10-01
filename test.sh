@@ -1394,14 +1394,13 @@ disable_warp_shadowtls() {
         new_json='{
             "tag": "direct",
             "type": "direct"
-        }'
+        }
+        ]'
+        
 
         # Change outbound from socks to direct
-        awk -v new_json="$new_json" 'NR<41 || NR>47 {print} NR==41 {print new_json}' /etc/shadowtls/config.json >/etc/shadowtls/config.tmp
+        awk -v new_json="$new_json" 'NR<41 || NR>56 {print} NR==41 {print new_json}' /etc/shadowtls/config.json >/etc/shadowtls/config.tmp
         mv /etc/shadowtls/config.tmp /etc/shadowtls/config.json
-
-        # Change outboubd rule from socks to dns
-        sed -i '49,50s/socks/dns/g' /etc/shadowtls/config.json
 
         systemctl start ST
 
