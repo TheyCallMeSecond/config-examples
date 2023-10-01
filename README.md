@@ -73,3 +73,21 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-
   - [Shadowrocket](https://apps.apple.com/app/shadowrocket/id932747118)
   - [sing-box (SFM)](https://github.com/SagerNet/sing-box/releases)
   - [Stash](https://apps.apple.com/app/stash/id1596063349)
+
+  ------------
+ 
+  # Special Thanks
+
+<br>
+
+**[hawshemi]** - *For server optimizer*
+
+**[misaka]** - *For warp config generator*
+
+<!----------------------------------{ Thanks }--------------------------------->
+
+[hawshemi]: https://github.com/hawshemi/Linux-Optimizer
+[misaka]: https://replit.com/@misaka-blog/warpgo-profile-generator
+
+
+
