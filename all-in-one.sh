@@ -1426,7 +1426,7 @@ disable_warp_reality() {
 
 # Function to disable warp on shadowtls
 disable_warp_shadowtls() {
-    shadowtls_check="/etc/sing-box/config.json"
+    shadowtls_check="/etc/shadowtls/config.json"
 
     if [ -e "$shadowtls_check" ]; then
         file="/etc/shadowtls/config.json"
