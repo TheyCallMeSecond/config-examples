@@ -1,57 +1,47 @@
 {
-    "dns": {
-        "servers": [
-            {
-                "address": "tls://1.1.1.1"
-            }
-        ]
-    },
-    "inbounds": [
-        {
-            "detour": "shadowsocks-in",
-            "handshake": {
-                "server": "SNI",
-                "server_port": 443
-            },
-            "listen": "::",
-            "listen_port": PORT,
-            "strict_mode": true,
-            "type": "shadowtls",
-            "users": [
-                {
-                    "name": "NAME",
-                    "password": "STPASS"
-                }
-            ],
-            "version": 3
-        },
-        {
-            "listen": "127.0.0.1",
-            "method": "chacha20-ietf-poly1305",
-            "network": "tcp",
-            "password": "SSPASS",
-            "tag": "shadowsocks-in",
-            "type": "shadowsocks"
-        }
-    ],
-    "log": {
-        "disabled": true
-    },
-    "outbounds": [
+  "dns": {
+    "servers": [
       {
-         "type":"socks",
-         "tag":"socks-out",
-         "server":"127.0.0.1",
-         "server_port":2000,
-         "version":"5"
+        "address": "tls://1.1.1.1"
       }
-   ],
-    "route": {
-        "rules": [
-            {
-                "outbound": "socks-out",
-                "protocol": "socks"
-            }
-        ]
+    ]
+  },
+  "inbounds": [
+    {
+      "type": "shadowtls",
+      "detour": "shadowsocks-in",
+      "listen": "::",
+      "listen_port": PORT,
+      "strict_mode": true,
+      "version": 3,
+      "handshake": {
+        "server": "SNI",
+        "server_port": 443
+      },
+      "users": [
+        {
+          "name": "NAME",
+          "password": "STPASS"
+        }
+      ]
+    },
+    {
+      "type": "shadowsocks",
+      "tag": "shadowsocks-in",
+      "listen": "127.0.0.1",
+      "method": "chacha20-ietf-poly1305",
+      "network": "tcp",
+      "password": "SSPASS"
     }
+  ],
+  "log": {
+    "level": "warn",
+    "timestamp": true
+  },
+  "outbounds": [
+    {
+      "tag": "direct",
+      "type": "direct"
+    }
+  ]
 }
