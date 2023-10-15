@@ -1,0 +1,41 @@
+{
+  "inbounds": [
+    {
+      "type": "hysteria2",
+      "tag": "hy2-in",
+      "listen": "::",
+      "listen_port": PORT,
+      "users": [
+        {
+          "name": "NAME",
+          "password": "PASSWORD"
+        }
+      ],
+      "ignore_client_bandwidth": true,
+      "tls": {
+        "alpn": [
+          "h3"
+        ],
+        "enabled": true,
+        "server_name": "www.google.com",
+        "certificate_path": "/etc/hysteria2/server.crt",
+        "key_path": "/etc/hysteria2/server.key"
+      },
+      "masquerade": "https://www.google.com",
+      "brutal_debug": false
+    }
+  ],
+  "log": {
+    "level": "warn",
+    "timestamp": true
+  },
+  "outbounds": [
+    {
+      "type": "socks",
+      "tag": "socks-out",
+      "server": "127.0.0.1",
+      "server_port": 2000,
+      "version": "5"
+    }
+  ]
+}
