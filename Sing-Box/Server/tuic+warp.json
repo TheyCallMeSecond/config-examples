@@ -1,43 +1,40 @@
 {
-    "inbounds": [
+  "inbounds": [
+    {
+      "type": "tuic",
+      "tag": "tuic-in",
+      "listen": "::",
+      "listen_port": PORT,
+      "auth_timeout": "3s",
+      "congestion_control": "bbr",
+      "heartbeat": "3s",
+      "zero_rtt_handshake": false,
+      "tls": {
+        "alpn": [
+          "h3"
+        ],
+        "enabled": true,
+        "server_name": "www.apple.com",        
+        "certificate_path": "/etc/tuic/server.crt",
+        "key_path": "/etc/tuic/server.key"
+      },
+      "users": [
         {
-            "auth_timeout": "3s",
-            "congestion_control": "bbr",
-            "heartbeat": "3s",
-            "listen": "::",
-            "listen_port": PORT,
-            "tag": "tuic-in",
-            "tls": {
-                "alpn": [
-                    "h3"
-                ],
-                "certificate_path": "/etc/tuic/server.crt",
-                "enabled": true,
-                "key_path": "/etc/tuic/server.key",
-                "server_name": "www.apple.com"
-            },
-            "type": "tuic",
-            "users": [
-                {
-                    "name": "theTCS",
-                    "password": "PASSWORD",
-                    "uuid": "UUID"
-                }
-            ],
-            "zero_rtt_handshake": false
+          "name": "theTCS",
+          "password": "PASSWORD",
+          "uuid": "UUID"
         }
-    ],
-    "log": {
-        "level": "warn",
-        "timestamp": true
-    },
-    "outbounds": [
-        {
-            "server": "127.0.0.1",
-            "server_port": 2000,
-            "tag": "socks-out",
-            "type": "socks",
-            "version": "5"
-        }
-    ]
+      ]
+    }
+  ],
+  "log": {
+    "level": "warn",
+    "timestamp": true
+  },
+  "outbounds": [
+    {
+      "tag": "direct",
+      "type": "direct"
+    }
+  ]
 }
