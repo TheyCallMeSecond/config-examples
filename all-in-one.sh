@@ -5,21 +5,28 @@ install_hysteria() {
     apt update && apt install -y qrencode jq openssl
 
     # Stop the Hysteria2 service
-    sudo systemctl stop hysteria2
+    sudo systemctl stop SH
 
     # Remove Hysteria binary, configuration, and service file
-    sudo rm -f /usr/bin/hysteria2
+    sudo rm -f /usr/bin/SH
     rm -rf /etc/hysteria2
-    sudo rm -f /etc/systemd/system/hysteria2.service
+    sudo rm -f /etc/systemd/system/SH.service
 
-    # Download Hysteria binary and make it executable
-    curl -Lo /root/hysteria2 https://github.com/apernet/hysteria/releases/latest/download/hysteria-linux-amd64 && chmod +x /root/hysteria2 && mv -f /root/hysteria2 /usr/bin
+    # Download sing-box binary
+    mkdir /root/singbox && cd /root/singbox || exit
+    LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+    LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
+    LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+    wget "$LINK"
+    tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+    cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SH"
+    cd && rm -rf singbox
 
-    # Create a directory for Hysteria configuration and download the server.yaml file
-    mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.yaml https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/server-auto-warp.yaml
+    # Create a directory for Hysteria configuration and download the server.json file
+    mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/hysteria2-warp.json
 
-    # Download the hysteria2.service file
-    curl -Lo /etc/systemd/system/hysteria2.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/hysteria2.service && systemctl daemon-reload
+    # Download the SH.service file
+    curl -Lo /etc/systemd/system/SH.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SH.service && systemctl daemon-reload
 
     # Get certificate
     mkdir /root/selfcert && cd /root/selfcert || exit
@@ -40,58 +47,21 @@ install_hysteria() {
 
     rm -rf /root/selfcert
 
-    # Prompt the user to enter a port and replace "PORT" in the server.yaml file
+    # Prompt the user to enter a port and replace "PORT" in the server.json file
     read -p "Please enter a port: " user_port
-    sed -i "s/PORT/$user_port/" /etc/hysteria2/server.yaml
+    sed -i "s/PORT/$user_port/" /etc/hysteria2/server.json
 
-    # Generate a password and replace "PASSWORD" in the server.yaml file
+    # Generate a password and replace "PASSWORD" in the server.json file
     password=$(openssl rand -hex 8)
-    sed -i "s/PASSWORD/$password/" /etc/hysteria2/server.yaml
+    sed -i "s/PASSWORD/$password/" /etc/hysteria2/server.json
+
+    # Generate a name and replace "NAME" in the server.json file
+    name=$(openssl rand -hex 4)
+    sed -i "s/NAME/$name/" /etc/hysteria2/server.json
 
     # Use a public DNS service to determine the public IP address
     public_ipv4=$(curl -s https://v4.ident.me)
     public_ipv6=$(curl -s https://v6.ident.me)
-
-    # WARP+ installation
-    warp_check="/etc/systemd/system/SBW.service"
-
-    if [ -e "$warp_check" ]; then
-
-        echo "WARP is running."
-
-    else
-
-        # Download sing-box core for WARP+ wireguard config
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SBW"
-        cd && rm -rf singbox
-
-        # Download SBW service file
-        curl -Lo /etc/systemd/system/SBW.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SBW.service && systemctl daemon-reload
-
-        # Generate WARP+ wireguard config file for sing-box
-        mkdir /etc/sbw && cd /etc/sbw || exit
-
-        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/main.sh
-        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-api
-        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-go
-
-        chmod +x main.sh
-        ./main.sh
-
-        rm -f warp-go warp-api main.sh warp.conf
-
-        cd || exit
-
-        # Start WARP+ sing-box proxy
-        systemctl enable --now SBW
-
-    fi
 
     # UFW optimization
     if sudo ufw status | grep -q "Status: active"; then
@@ -117,8 +87,8 @@ install_hysteria() {
 
     fi
 
-    # Enable and start the Hysteria2 service
-    sudo systemctl enable --now hysteria2
+    # Enable and start the SH service
+    sudo systemctl enable --now SH
 
     # Construct and display the resulting URL & QR
     result_url=" 
@@ -145,18 +115,18 @@ install_hysteria() {
 
 # Function to modify Hysteria configuration
 modify_hysteria_config() {
-    hysteria_check="/etc/hysteria2/server.yaml"
+    hysteria_check="/etc/hysteria2/server.json"
 
     if [ -e "$hysteria_check" ]; then
 
         # Stop the Hysteria2 service
-        sudo systemctl stop hysteria2
+        sudo systemctl stop SH
 
         # Remove the existing configuration
         rm -rf /etc/hysteria2
 
-        # Download the server-auto.yaml file
-        mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.yaml https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/2/server-auto-warp.yaml
+        # Create a directory for Hysteria configuration and download the server.json file
+        mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/hysteria2-warp.json
 
         # Get certificate
         mkdir /root/selfcert && cd /root/selfcert || exit
@@ -177,13 +147,17 @@ modify_hysteria_config() {
 
         rm -rf /root/selfcert
 
-        # Prompt the user to enter a port and replace "PORT" in the server.yaml file
+        # Prompt the user to enter a port and replace "PORT" in the server.json file
         read -p "Please enter a port: " user_port
-        sed -i "s/PORT/$user_port/" /etc/hysteria2/server.yaml
+        sed -i "s/PORT/$user_port/" /etc/hysteria2/server.json
 
-        # Generate a password and replace "PASSWORD" in the server.yaml file
+        # Generate a password and replace "PASSWORD" in the server.json file
         password=$(openssl rand -hex 8)
-        sed -i "s/PASSWORD/$password/" /etc/hysteria2/server.yaml
+        sed -i "s/PASSWORD/$password/" /etc/hysteria2/server.json
+
+        # Generate a name and replace "NAME" in the server.json file
+        name=$(openssl rand -hex 4)
+        sed -i "s/NAME/$name/" /etc/hysteria2/server.json
 
         # Use a public DNS service to determine the public IP address
         public_ipv4=$(curl -s https://v4.ident.me)
@@ -214,7 +188,7 @@ modify_hysteria_config() {
         fi
 
         # Start the Hysteria2 service
-        sudo systemctl start hysteria2
+        sudo systemctl start SH
 
         # Construct and display the resulting URL
         result_url=" 
@@ -243,17 +217,18 @@ modify_hysteria_config() {
     fi
 
     exit 0 # Exit the script immediately with a successful status
+
 }
 
 # Function to uninstall Hysteria
 uninstall_hysteria() {
     # Stop the Hysteria2 service
-    sudo systemctl stop hysteria2
+    sudo systemctl stop SH
 
     # Remove Hysteria binary, configuration, and service file
-    sudo rm -f /usr/bin/hysteria2
+    sudo rm -f /usr/bin/SH
     rm -rf /etc/hysteria2
-    sudo rm -f /etc/systemd/system/hysteria2.service
+    sudo rm -f /etc/systemd/system/SH.service
 
     echo "Hysteria2 uninstalled."
 
@@ -321,47 +296,6 @@ install_tuic() {
     # Use a public DNS service to determine the public IP address
     public_ipv4=$(curl -s https://v4.ident.me)
     public_ipv6=$(curl -s https://v6.ident.me)
-
-    # WARP+ installation
-    warp_check="/etc/systemd/system/SBW.service"
-
-    if [ -e "$warp_check" ]; then
-
-        echo "WARP is running."
-
-    else
-
-        # Download sing-box core for WARP+ wireguard config
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SBW"
-        cd && rm -rf singbox
-
-        # Download SBW service file
-        curl -Lo /etc/systemd/system/SBW.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SBW.service && systemctl daemon-reload
-
-        # Generate WARP+ wireguard config file for sing-box
-        mkdir /etc/sbw && cd /etc/sbw || exit
-
-        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/main.sh
-        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-api
-        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-go
-
-        chmod +x main.sh
-        ./main.sh
-
-        rm -f warp-go warp-api main.sh warp.conf
-
-        cd || exit
-
-        # Start WARP+ sing-box proxy
-        systemctl enable --now SBW
-
-    fi
 
     # UFW optimization
     if sudo ufw status | grep -q "Status: active"; then
@@ -593,47 +527,6 @@ install_reality() {
     public_ipv4=$(curl -s https://v4.ident.me)
     public_ipv6=$(curl -s https://v6.ident.me)
 
-    # WARP+ installation
-    warp_check="/etc/systemd/system/SBW.service"
-
-    if [ -e "$warp_check" ]; then
-
-        echo "WARP is running."
-
-    else
-
-        # Download sing-box core for WARP+ wireguard config
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SBW"
-        cd && rm -rf singbox
-
-        # Download SBW service file
-        curl -Lo /etc/systemd/system/SBW.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SBW.service && systemctl daemon-reload
-
-        # Generate WARP+ wireguard config file for sing-box
-        mkdir /etc/sbw && cd /etc/sbw || exit
-
-        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/main.sh
-        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-api
-        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-go
-
-        chmod +x main.sh
-        ./main.sh
-
-        rm -f warp-go warp-api main.sh warp.conf
-
-        cd || exit
-
-        # Start WARP+ sing-box proxy
-        systemctl enable --now SBW
-
-    fi
-
     # UFW optimization
     if sudo ufw status | grep -q "Status: active"; then
 
@@ -864,47 +757,6 @@ install_shadowtls() {
     public_ipv4=$(curl -s https://v4.ident.me)
     sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekorayconfig.txt
     sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekoboxconfig.txt
-
-    # WARP+ installation
-    warp_check="/etc/systemd/system/SBW.service"
-
-    if [ -e "$warp_check" ]; then
-
-        echo "WARP is running."
-
-    else
-
-        # Download sing-box core for WARP+ wireguard config
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SBW"
-        cd && rm -rf singbox
-
-        # Download SBW service file
-        curl -Lo /etc/systemd/system/SBW.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SBW.service && systemctl daemon-reload
-
-        # Generate WARP+ wireguard config file for sing-box
-        mkdir /etc/sbw && cd /etc/sbw || exit
-
-        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/main.sh
-        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-api
-        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-go
-
-        chmod +x main.sh
-        ./main.sh
-
-        rm -f warp-go warp-api main.sh warp.conf
-
-        cd || exit
-
-        # Start WARP+ sing-box proxy
-        systemctl enable --now SBW
-
-    fi
 
     # UFW optimization
     if sudo ufw status | grep -q "Status: active"; then
@@ -1382,43 +1234,86 @@ update_sing-box_core() {
 
     fi
 
+    sh_core_check="/usr/bin/SH"
+
+    if [ -e "$sh_core_check" ]; then
+
+        systemctl stop SH
+
+        rm /usr/bin/SH
+
+        # Download sing-box binary
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SH"
+        cd && rm -rf singbox
+
+        systemctl start SH
+
+        echo "Hysteria2 sing-box core has been updated"
+
+    else
+
+        echo "Hysteria2 is not installed yet."
+
+    fi
+
     exit 0 # Exit the script immediately with status
 }
 
 # Function to disable warp on reality
 disable_warp_reality() {
-    reality_check="/etc/sing-box/config.json"
+    file="/etc/sing-box/config.json"
+    warp="/etc/sbw/proxy.json"
 
-    if [ -e "$reality_check" ]; then
-        file="/etc/sing-box/config.json"
-        threshold=98
+    if [ -e "$file" ]; then
 
-        line_count=$(wc -l <"$file")
+        if [ -e "$warp" ]; then
 
-        if [ "$line_count" -gt "$threshold" ]; then
             systemctl stop sing-box
 
-            # Set the new JSON object
-            new_json='{
+            if jq -e '.outbounds[0].type == "socks"' "$file" &>/dev/null; then
+                # Set the new JSON object for outbounds (switch to direct)
+                new_json='{
             "tag": "direct",
             "type": "direct"
         }'
 
-            # Change outbound from socks to direct
-            awk -v new_json="$new_json" 'NR<83 || NR>95 {print} NR==83 {print new_json}' /etc/sing-box/config.json >/etc/sing-box/config.tmp
-            mv /etc/sing-box/config.tmp /etc/sing-box/config.json
+                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
+                mv /tmp/tmp_config.json "$file"
 
-            systemctl start sing-box
+                systemctl start sing-box
 
-            echo "WARP is disabled now"
+                echo "WARP is disabled now"
+            else
+                # Set the new JSON object for outbounds (switch to socks)
+                new_json='{
+            "type": "socks",
+            "tag": "socks-out",
+            "server": "127.0.0.1",
+            "server_port": 2000,
+            "version": "5"
+        }'
+
+                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
+                mv /tmp/tmp_config.json "$file"
+
+                systemctl start sing-box
+
+                echo "WARP is enabled now"
+            fi
+
         else
-            echo "WARP is already disable"
+            echo "WARP is not installed yet"
+
         fi
 
     else
-
         echo "Reality is not installed yet."
-
     fi
 
     exit 0 # Exit the script immediately with a successful status
@@ -1426,39 +1321,53 @@ disable_warp_reality() {
 
 # Function to disable warp on shadowtls
 disable_warp_shadowtls() {
-    shadowtls_check="/etc/shadowtls/config.json"
+    file="/etc/shadowtls/config.json"
+    warp="/etc/sbw/proxy.json"
 
-    if [ -e "$shadowtls_check" ]; then
-        file="/etc/shadowtls/config.json"
-        threshold=56
+    if [ -e "$file" ]; then
 
-        line_count=$(wc -l <"$file")
+        if [ -e "$warp" ]; then
 
-        if [ "$line_count" -gt "$threshold" ]; then
             systemctl stop ST
 
-            # Set the new JSON object
-            new_json='{
+            if jq -e '.outbounds[0].type == "socks"' "$file" &>/dev/null; then
+                # Set the new JSON object for outbounds (switch to direct)
+                new_json='{
             "tag": "direct",
             "type": "direct"
-        }
-        ]'
+        }'
 
-            # Change outbound from socks to direct
-            awk -v new_json="$new_json" 'NR<41 || NR>56 {print} NR==41 {print new_json}' /etc/shadowtls/config.json >/etc/shadowtls/config.tmp
-            mv /etc/shadowtls/config.tmp /etc/shadowtls/config.json
+                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
+                mv /tmp/tmp_config.json "$file"
 
-            systemctl start ST
+                systemctl start ST
 
-            echo "WARP is disabled now"
+                echo "WARP is disabled now"
+            else
+                # Set the new JSON object for outbounds (switch to socks)
+                new_json='{
+            "type": "socks",
+            "tag": "socks-out",
+            "server": "127.0.0.1",
+            "server_port": 2000,
+            "version": "5"
+        }'
+
+                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
+                mv /tmp/tmp_config.json "$file"
+
+                systemctl start ST
+
+                echo "WARP is enabled now"
+            fi
+
         else
-            echo "WARP is already disable"
+            echo "WARP is not installed yet"
+
         fi
 
     else
-
         echo "ShadowTLS is not installed yet."
-
     fi
 
     exit 0 # Exit the script immediately with a successful status
@@ -1466,38 +1375,53 @@ disable_warp_shadowtls() {
 
 # Function to disable warp on tuic
 disable_warp_tuic() {
-    tuic_check="/etc/tuic/server.json"
+    file="/etc/tuic/server.json"
+    warp="/etc/sbw/proxy.json"
 
-    if [ -e "$tuic_check" ]; then
-        file="/etc/tuic/server.json"
-        threshold=42
+    if [ -e "$file" ]; then
 
-        line_count=$(wc -l <"$file")
+        if [ -e "$warp" ]; then
 
-        if [ "$line_count" -gt "$threshold" ]; then
             systemctl stop TS
 
-            # Set the new JSON object
-            new_json='{
+            if jq -e '.outbounds[0].type == "socks"' "$file" &>/dev/null; then
+                # Set the new JSON object for outbounds (switch to direct)
+                new_json='{
             "tag": "direct",
             "type": "direct"
         }'
 
-            # Change outbound from socks to direct
-            awk -v new_json="$new_json" 'NR<35 || NR>41 {print} NR==35 {print new_json}' /etc/tuic/server.json >/etc/tuic/server.tmp
-            mv /etc/tuic/server.tmp /etc/tuic/server.json
+                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
+                mv /tmp/tmp_config.json "$file"
 
-            systemctl start TS
+                systemctl start TS
 
-            echo "WARP is disabled now"
+                echo "WARP is disabled now"
+            else
+                # Set the new JSON object for outbounds (switch to socks)
+                new_json='{
+            "type": "socks",
+            "tag": "socks-out",
+            "server": "127.0.0.1",
+            "server_port": 2000,
+            "version": "5"
+        }'
+
+                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
+                mv /tmp/tmp_config.json "$file"
+
+                systemctl start TS
+
+                echo "WARP is enabled now"
+            fi
+
         else
-            echo "WARP is already disable"
+            echo "WARP is not installed yet"
+
         fi
 
     else
-
         echo "TUIC is not installed yet."
-
     fi
 
     exit 0 # Exit the script immediately with a successful status
@@ -1505,36 +1429,53 @@ disable_warp_tuic() {
 
 # Function to disable warp on hysteria2
 disable_warp_hysteria() {
-    hysteria_check="/etc/hysteria2/server.yaml"
+    file="/etc/hysteria2/server.json"
+    warp="/etc/sbw/proxy.json"
 
-    if [ -e "$hysteria_check" ]; then
-        file="/etc/hysteria2/server.yaml"
-        threshold=50
+    if [ -e "$file" ]; then
 
-        line_count=$(wc -l <"$file")
+        if [ -e "$warp" ]; then
 
-        if [ "$line_count" -gt "$threshold" ]; then
-            systemctl stop hysteria2
+            systemctl stop SH
 
-            # Set the new yaml object
-            new_yaml='  - name: direct
-    type: direct'
+            if jq -e '.outbounds[0].type == "socks"' "$file" &>/dev/null; then
+                # Set the new JSON object for outbounds (switch to direct)
+                new_json='{
+            "tag": "direct",
+            "type": "direct"
+        }'
 
-            # Change outbound from socks to direct
-            awk -v new_yaml="$new_yaml" 'NR<41 || NR>44 {print} NR==41 {print new_yaml}' /etc/hysteria2/server.yaml >/etc/hysteria2/server.tmp
-            mv /etc/hysteria2/server.tmp /etc/hysteria2/server.yaml
+                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
+                mv /tmp/tmp_config.json "$file"
 
-            systemctl start hysteria2
+                systemctl start SH
 
-            echo "WARP is disabled now"
+                echo "WARP is disabled now"
+            else
+                # Set the new JSON object for outbounds (switch to socks)
+                new_json='{
+            "type": "socks",
+            "tag": "socks-out",
+            "server": "127.0.0.1",
+            "server_port": 2000,
+            "version": "5"
+        }'
+
+                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
+                mv /tmp/tmp_config.json "$file"
+
+                systemctl start SH
+
+                echo "WARP is enabled now"
+            fi
+
         else
-            echo "WARP is already disable"
+            echo "WARP is not installed yet"
+
         fi
 
     else
-
-        echo "Hysteria is not installed yet."
-
+        echo "Hysteria2 is not installed yet."
     fi
 
     exit 0 # Exit the script immediately with a successful status
@@ -1542,507 +1483,8 @@ disable_warp_hysteria() {
 
 # Function to optimize server
 optimize_server() {
-    # Green, Yellow & Red Messages.
-    green_msg() {
-        tput setaf 2
-        echo "[*] ----- $1"
-        tput sgr0
-    }
 
-    yellow_msg() {
-        tput setaf 3
-        echo "[*] ----- $1"
-        tput sgr0
-    }
-
-    red_msg() {
-        tput setaf 1
-        echo "[*] ----- $1"
-        tput sgr0
-    }
-
-    # Declare Paths & Settings.
-    SYS_PATH="/etc/sysctl.conf"
-    LIM_PATH="/etc/security/limits.conf"
-    PROF_PATH="/etc/profile"
-    SSH_PATH="/etc/ssh/sshd_config"
-
-    # Root
-    check_if_running_as_root() {
-        # If you want to run as another user, please modify $EUID to be owned by this user
-        if [[ "$EUID" -ne '0' ]]; then
-            echo
-            red_msg 'Error: You must run this script as root!'
-            echo
-            sleep 0.5
-            exit 1
-        fi
-    }
-
-    # Check Root
-    check_if_running_as_root
-    sleep 0.5
-
-    # Ask Reboot
-    ask_reboot() {
-        yellow_msg 'Reboot now? (Recommended) (y/n)'
-        echo
-        while true; do
-            read choice
-            echo
-            if [[ "$choice" == 'y' || "$choice" == 'Y' ]]; then
-                sleep 0.5
-                reboot
-                exit 0
-            fi
-            if [[ "$choice" == 'n' || "$choice" == 'N' ]]; then
-                break
-            fi
-        done
-    }
-
-    # Update & Upgrade & Remove & Clean
-    complete_update() {
-        echo
-        yellow_msg 'Updating the System.'
-        echo
-        sleep 0.5
-
-        sudo apt update
-        sudo apt -y upgrade
-        sudo apt -y dist-upgrade
-        sudo apt -y autoremove
-        sleep 0.5
-
-        # Again :D
-        sudo apt -y autoclean
-        sudo apt -y clean
-        sudo apt update
-        sudo apt -y upgrade
-        sudo apt -y dist-upgrade
-        sudo apt -y autoremove
-
-        echo
-        green_msg 'System Updated Successfully.'
-        echo
-        sleep 0.5
-    }
-
-    ## Install useful packages
-    installations() {
-        echo
-        yellow_msg 'Installing Useful Packages.'
-        echo
-        sleep 0.5
-
-        # Networking packages
-        sudo apt -y install apt-transport-https iptables iptables-persistent nftables
-
-        # System utilities
-        sudo apt -y install apt-utils bash-completion busybox ca-certificates cron curl gnupg2 locales lsb-release nano preload screen software-properties-common ufw unzip vim wget xxd zip
-
-        # Programming and development tools
-        sudo apt -y install autoconf automake bash-completion build-essential git libtool make pkg-config python3 python3-pip
-
-        # Additional libraries and dependencies
-        sudo apt -y install bc binutils binutils-common binutils-x86-64-linux-gnu ubuntu-keyring haveged jq libsodium-dev libsqlite3-dev libssl-dev packagekit qrencode socat
-
-        # Miscellaneous
-        sudo apt -y install dialog htop net-tools
-
-        echo
-        green_msg 'Useful Packages Installed Succesfully.'
-        echo
-        sleep 0.5
-    }
-
-    # Enable packages at server boot
-    enable_packages() {
-        sudo systemctl enable cron haveged nftables preload
-        echo
-        green_msg 'Packages Enabled Succesfully.'
-        echo
-        sleep 0.5
-    }
-
-    ## SYSCTL Optimization
-    sysctl_optimizations() {
-        # Make a backup of the original sysctl.conf file
-        cp $SYS_PATH /etc/sysctl.conf.bak
-
-        echo
-        yellow_msg 'Default sysctl.conf file Saved. Directory: /etc/sysctl.conf.bak'
-        echo
-        sleep 1
-
-        echo
-        yellow_msg 'Optimizing the Network.'
-        echo
-        sleep 0.5
-
-        # Replace the new sysctl.conf file.
-        wget "https://raw.githubusercontent.com/TheyCallMeSecond/Linux-Optimizer/main/files/sysctl.conf" -q -O $SYS_PATH
-
-        sysctl -p
-        echo
-
-        green_msg 'Network is Optimized.'
-        echo
-        sleep 0.5
-    }
-
-    # Remove old SSH config to prevent duplicates.
-    remove_old_ssh_conf() {
-        # Make a backup of the original sshd_config file
-        cp $SSH_PATH /etc/ssh/sshd_config.bak
-
-        echo
-        yellow_msg 'Default SSH Config file Saved. Directory: /etc/ssh/sshd_config.bak'
-        echo
-        sleep 1
-
-        # Disable DNS lookups for connecting clients
-        sed -i 's/#UseDNS yes/UseDNS no/' $SSH_PATH
-
-        # Enable compression for SSH connections
-        sed -i 's/#Compression no/Compression yes/' $SSH_PATH
-
-        # Remove less efficient encryption ciphers
-        sed -i 's/Ciphers .*/Ciphers aes256-ctr,chacha20-poly1305@openssh.com/' $SSH_PATH
-
-        # Remove these lines
-        sed -i '/MaxAuthTries/d' $SSH_PATH
-        sed -i '/MaxSessions/d' $SSH_PATH
-        sed -i '/TCPKeepAlive/d' $SSH_PATH
-        sed -i '/ClientAliveInterval/d' $SSH_PATH
-        sed -i '/ClientAliveCountMax/d' $SSH_PATH
-        sed -i '/AllowAgentForwarding/d' $SSH_PATH
-        sed -i '/AllowTcpForwarding/d' $SSH_PATH
-        sed -i '/GatewayPorts/d' $SSH_PATH
-        sed -i '/PermitTunnel/d' $SSH_PATH
-        sed -i '/X11Forwarding/d' $SSH_PATH
-    }
-
-    ## Update SSH config
-    update_sshd_conf() {
-        echo
-        yellow_msg 'Optimizing SSH.'
-        echo
-        sleep 0.5
-
-        # Enable TCP keep-alive messages
-        echo "TCPKeepAlive yes" | tee -a $SSH_PATH
-
-        # Configure client keep-alive messages
-        echo "ClientAliveInterval 3000" | tee -a $SSH_PATH
-        echo "ClientAliveCountMax 100" | tee -a $SSH_PATH
-
-        # Allow agent forwarding
-        echo "AllowAgentForwarding yes" | tee -a $SSH_PATH
-
-        # Allow TCP forwarding
-        echo "AllowTcpForwarding yes" | tee -a $SSH_PATH
-
-        # Enable gateway ports
-        echo "GatewayPorts yes" | tee -a $SSH_PATH
-
-        # Enable tunneling
-        echo "PermitTunnel yes" | tee -a $SSH_PATH
-
-        # Enable X11 graphical interface forwarding
-        echo "X11Forwarding yes" | tee -a $SSH_PATH
-
-        # Restart the SSH service to apply the changes
-        service ssh restart
-
-        echo
-        green_msg 'SSH is Optimized.'
-        echo
-        sleep 0.5
-    }
-
-    # System Limits Optimizations
-    limits_optimizations() {
-        echo
-        yellow_msg 'Optimizing System Limits.'
-        echo
-        sleep 0.5
-
-        # Clear old ulimits
-        sed -i '/ulimit -c/d' $PROF_PATH
-        sed -i '/ulimit -d/d' $PROF_PATH
-        sed -i '/ulimit -f/d' $PROF_PATH
-        sed -i '/ulimit -i/d' $PROF_PATH
-        sed -i '/ulimit -n/d' $PROF_PATH
-        sed -i '/ulimit -q/d' $PROF_PATH
-        sed -i '/ulimit -u/d' $PROF_PATH
-        sed -i '/ulimit -v/d' $PROF_PATH
-        sed -i '/ulimit -x/d' $PROF_PATH
-        sed -i '/ulimit -s/d' $PROF_PATH
-        sed -i '/ulimit -l/d' $PROF_PATH
-
-        # Add new ulimits
-        # The maximum size of core files created.
-        echo "ulimit -c unlimited" | tee -a $PROF_PATH
-
-        # The maximum size of a process's data segment
-        echo "ulimit -d unlimited" | tee -a $PROF_PATH
-
-        # The maximum size of files created by the shell (default option)
-        echo "ulimit -f unlimited" | tee -a $PROF_PATH
-
-        # The maximum number of pending signals
-        echo "ulimit -i unlimited" | tee -a $PROF_PATH
-
-        # The maximum number of open file descriptors
-        echo "ulimit -n 999999" | tee -a $PROF_PATH
-
-        # The maximum POSIX message queue size
-        echo "ulimit -q unlimited" | tee -a $PROF_PATH
-
-        # The maximum number of processes available to a single user
-        echo "ulimit -u unlimited" | tee -a $PROF_PATH
-
-        # The maximum amount of virtual memory available to the process
-        echo "ulimit -v unlimited" | tee -a $PROF_PATH
-
-        # The maximum number of file locks
-        echo "ulimit -x unlimited" | tee -a $PROF_PATH
-
-        # The maximum stack size
-        echo "ulimit -s 8192" | tee -a $PROF_PATH
-
-        # The maximum size that may be locked into memory
-        echo "ulimit -l unlimited" | tee -a $PROF_PATH
-
-        # Update the limits.conf
-        wget "https://raw.githubusercontent.com/TheyCallMeSecond/Linux-Optimizer/main/files/limits.conf" -q -O $LIM_PATH
-
-        echo
-        green_msg 'System Limits are Optimized.'
-        echo
-        sleep 0.5
-    }
-
-    ## UFW Optimizations
-    ufw_optimizations() {
-        echo
-        yellow_msg 'Optimizing UFW.'
-        echo
-        sleep 0.5
-
-        # Purge firewalld to install UFW.
-        sudo apt -y purge firewalld
-
-        # Install UFW if it isn't installed.
-        sudo apt install -y ufw
-
-        # Disable UFW
-        sudo ufw disable
-
-        # Open default ports.
-        sudo ufw allow 21
-        sudo ufw allow 21/udp
-        sudo ufw allow 22
-        sudo ufw allow 22/udp
-        sudo ufw allow 80
-        sudo ufw allow 80/udp
-        sudo ufw allow 443
-        sudo ufw allow 443/udp
-        sleep 0.5
-
-        # Change the UFW config to use System config.
-        sed -i 's+/etc/ufw/sysctl.conf+/etc/sysctl.conf+gI' /etc/default/ufw
-
-        # Enable & Reload
-        echo "y" | sudo ufw enable
-        sudo ufw reload
-        echo
-        green_msg 'UFW is Optimized.'
-        echo
-        sleep 0.5
-    }
-
-    # Show the Menu
-    show_menu() {
-        echo
-        yellow_msg 'Choose One Option: '
-        echo
-        green_msg '1 - Apply Everything. (RECOMMENDED)'
-        echo
-        green_msg '2 - Everything Without Useful Packages.'
-        green_msg '3 - Everything Without Useful Packages & UFW Optimizations.'
-        green_msg '4 - Update the OS.'
-        green_msg '5 - Install Useful Packages.'
-        green_msg '6 - Optimize the Network, SSH & System Limits.'
-        green_msg '7 - Optimize UFW.'
-        echo
-        red_msg 'q - Exit.'
-        echo
-    }
-
-    # Choosing Program
-    main() {
-        while true; do
-            show_menu
-            read -p 'Enter Your Choice: ' choice
-            case $choice in
-            1)
-                apply_everything
-
-                echo
-                green_msg '========================='
-                green_msg 'Done.'
-                green_msg '========================='
-
-                ask_reboot
-                ;;
-            2)
-                complete_update
-                sleep 0.5
-
-                sysctl_optimizations
-                sleep 0.5
-
-                remove_old_ssh_conf
-                sleep 0.5
-
-                update_sshd_conf
-                sleep 0.5
-
-                limits_optimizations
-                sleep 0.5
-
-                ufw_optimizations
-                sleep 0.5
-
-                echo
-                green_msg '========================='
-                green_msg 'Done.'
-                green_msg '========================='
-
-                ask_reboot
-                ;;
-            3)
-                complete_update
-                sleep 0.5
-
-                sysctl_optimizations
-                sleep 0.5
-
-                remove_old_ssh_conf
-                sleep 0.5
-
-                update_sshd_conf
-                sleep 0.5
-
-                limits_optimizations
-                sleep 0.5
-
-                echo
-                green_msg '========================='
-                green_msg 'Done.'
-                green_msg '========================='
-
-                ask_reboot
-                ;;
-            4)
-                complete_update
-                sleep 0.5
-
-                echo
-                green_msg '========================='
-                green_msg 'Done.'
-                green_msg '========================='
-
-                ask_reboot
-                ;;
-
-            5)
-                complete_update
-                installations
-                sleep 0.5
-
-                echo
-                green_msg '========================='
-                green_msg 'Done.'
-                green_msg '========================='
-
-                ask_reboot
-                ;;
-
-            6)
-
-                sysctl_optimizations
-                sleep 0.5
-
-                remove_old_ssh_conf
-                sleep 0.5
-
-                update_sshd_conf
-                sleep 0.5
-
-                limits_optimizations
-                sleep 0.5
-
-                echo
-                green_msg '========================='
-                green_msg 'Done.'
-                green_msg '========================='
-
-                ask_reboot
-                ;;
-            7)
-                ufw_optimizations
-                sleep 0.5
-
-                echo
-                green_msg '========================='
-                green_msg 'Done.'
-                green_msg '========================='
-
-                ask_reboot
-                ;;
-            q)
-                exit 0
-                ;;
-
-            *)
-                red_msg 'Wrong input!'
-                ;;
-            esac
-        done
-    }
-
-    # Apply Everything
-    apply_everything() {
-
-        complete_update
-        sleep 0.5
-
-        installations
-        sleep 0.5
-
-        enable_packages
-        sleep 0.5
-
-        sysctl_optimizations
-        sleep 0.5
-
-        remove_old_ssh_conf
-        sleep 0.5
-
-        update_sshd_conf
-        sleep 0.5
-
-        limits_optimizations
-        sleep 0.5
-
-        ufw_optimizations
-        sleep 0.5
-    }
-
-    main
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/server-optimizer.sh)"
 
     exit 0
 
@@ -2058,25 +1500,25 @@ while true; do
     echo -e "1:  \e[93mInstall Hysteria2\e[0m"
     echo -e "2:  \e[93mModify Hysteria2 Config\e[0m"
     echo -e "3:  \e[93mShow Hysteria2 Config\e[0m"
-    echo -e "4:  \e[93mDisable WARP on Hysteria2\e[0m"
+    echo -e "4:  \e[93mEnable/Disable WARP on Hysteria2\e[0m"
     echo -e "5:  \e[93mUninstall Hysteria2\e[0m"
     echo -------------------------------------------
     echo -e "6:  \e[93mInstall TUIC\e[0m"
     echo -e "7:  \e[93mModify TUIC Config\e[0m"
     echo -e "8:  \e[93mShow TUIC Config\e[0m"
-    echo -e "9:  \e[93mDisable WARP on TUIC\e[0m"
+    echo -e "9:  \e[93mEnable/Disable WARP on TUIC\e[0m"
     echo -e "10: \e[93mUninstall TUIC\e[0m"
     echo -------------------------------------------
     echo -e "11: \e[93mInstall Reality\e[0m"
     echo -e "12: \e[93mModify Reality Config\e[0m"
     echo -e "13: \e[93mShow Reality Config\e[0m"
-    echo -e "14: \e[93mDisable WARP on Reality\e[0m"
+    echo -e "14: \e[93mEnable/Disable WARP on Reality\e[0m"
     echo -e "15: \e[93mUninstall Reality\e[0m"
     echo -------------------------------------------
     echo -e "16: \e[93mInstall ShadowTLS\e[0m"
     echo -e "17: \e[93mModify ShadowTLS Config\e[0m"
     echo -e "18: \e[93mShow ShadowTLS Config\e[0m"
-    echo -e "19: \e[93mDisable WARP on ShadowTLS\e[0m"
+    echo -e "19: \e[93mEnable/Disable WARP on ShadowTLS\e[0m"
     echo -e "20: \e[93mUninstall ShadowTLS\e[0m"
     echo -------------------------------------------
     echo -e "21: \e[93mInstall WARP\e[0m"
