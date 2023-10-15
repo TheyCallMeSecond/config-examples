@@ -5,13 +5,14 @@
       "tag": "hy2-in",
       "listen": "::",
       "listen_port": PORT,
+      "ignore_client_bandwidth": true,
+      "masquerade": "https://www.google.com",
       "users": [
         {
           "name": "NAME",
           "password": "PASSWORD"
         }
       ],
-      "ignore_client_bandwidth": true,
       "tls": {
         "alpn": [
           "h3"
@@ -20,8 +21,7 @@
         "server_name": "www.google.com",
         "certificate_path": "/etc/hysteria2/server.crt",
         "key_path": "/etc/hysteria2/server.key"
-      },
-      "masquerade": "https://www.google.com"
+      }
     }
   ],
   "log": {
