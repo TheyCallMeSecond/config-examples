@@ -21,8 +21,7 @@
         "certificate_path": "/etc/hysteria2/server.crt",
         "key_path": "/etc/hysteria2/server.key"
       },
-      "masquerade": "https://www.google.com",
-      "brutal_debug": false
+      "masquerade": "https://www.google.com"
     }
   ],
   "log": {
