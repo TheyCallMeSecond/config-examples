@@ -1119,7 +1119,7 @@ uninstall_warp() {
 
     if [ -e "$file1" ]; then
 
-        systemctl stop TS
+        systemctl stop sing-box
 
         if jq -e '.outbounds[0].type == "socks"' "$file1" &>/dev/null; then
             # Set the new JSON object for outbounds (switch to direct)
@@ -1131,7 +1131,7 @@ uninstall_warp() {
             jq '.outbounds = ['"$new_json"']' "$file1" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file1"
 
-            systemctl start TS
+            systemctl start sing-box
 
             echo "WARP is disabled on Reality"
         else
@@ -1147,7 +1147,7 @@ uninstall_warp() {
 
     if [ -e "$file2" ]; then
 
-        systemctl stop TS
+        systemctl stop ST
 
         if jq -e '.outbounds[0].type == "socks"' "$file2" &>/dev/null; then
             # Set the new JSON object for outbounds (switch to direct)
@@ -1159,7 +1159,7 @@ uninstall_warp() {
             jq '.outbounds = ['"$new_json"']' "$file2" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file2"
 
-            systemctl start TS
+            systemctl start ST
 
             echo "WARP is disabled on ShadowTLS"
         else
@@ -1203,7 +1203,7 @@ uninstall_warp() {
 
     if [ -e "$file4" ]; then
 
-        systemctl stop TS
+        systemctl stop SH
 
         if jq -e '.outbounds[0].type == "socks"' "$file4" &>/dev/null; then
             # Set the new JSON object for outbounds (switch to direct)
@@ -1215,7 +1215,7 @@ uninstall_warp() {
             jq '.outbounds = ['"$new_json"']' "$file4" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file4"
 
-            systemctl start TS
+            systemctl start SH
 
             echo "WARP is disabled on Hysteria2"
         else
