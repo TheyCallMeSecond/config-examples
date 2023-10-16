@@ -23,7 +23,7 @@ install_hysteria() {
     cd && rm -rf singbox
 
     # Create a directory for Hysteria configuration and download the server.json file
-    mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/hysteria2-warp.json
+    mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Hysteria2.json
 
     # Download the SH.service file
     curl -Lo /etc/systemd/system/SH.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SH.service && systemctl daemon-reload
@@ -126,7 +126,7 @@ modify_hysteria_config() {
         rm -rf /etc/hysteria2
 
         # Create a directory for Hysteria configuration and download the server.json file
-        mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/hysteria2-warp.json
+        mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Hysteria2.json
 
         # Get certificate
         mkdir /root/selfcert && cd /root/selfcert || exit
@@ -257,7 +257,7 @@ install_tuic() {
     cd && rm -rf singbox
 
     # Create a directory for tuic configuration and download the server.json file
-    mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/tuic%2Bwarp.json
+    mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Tuic.json
 
     # Download the tuic.service file
     curl -Lo /etc/systemd/system/TS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/TS.service && systemctl daemon-reload
@@ -360,7 +360,7 @@ modify_tuic_config() {
         rm -rf /etc/tuic
 
         # Create a directory for tuic configuration and download the server.json file
-        mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/tuic%2Bwarp.json
+        mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Tuic.json
 
         # Prompt the user to enter a port and replace "PORT" in the server.json file
         read -p "Please enter a port: " user_port
@@ -490,7 +490,7 @@ install_reality() {
     cd && rm -rf singbox
 
     # Create a directory for sing-box configuration and download the Reality-gRPC.json file
-    mkdir -p /etc/sing-box && curl -Lo /etc/sing-box/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC+warp.json
+    mkdir -p /etc/sing-box && curl -Lo /etc/sing-box/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC.json
 
     # Download the sing-box.service file
     curl -Lo /etc/systemd/system/sing-box.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/sing-box.service && systemctl daemon-reload
@@ -589,7 +589,7 @@ modify_reality_config() {
         rm -rf /etc/sing-box
 
         # Create a directory for sing-box configuration and download the config.json file
-        mkdir -p /etc/sing-box && curl -Lo /etc/sing-box/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC+warp.json
+        mkdir -p /etc/sing-box && curl -Lo /etc/sing-box/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC.json
 
         # Prompt the user to enter a port and replace "PORT" in the config.json file
         read -p "Please enter a port: " user_port
@@ -716,7 +716,7 @@ install_shadowtls() {
     cd && rm -rf singbox
 
     # Create a directory for shadowtls configuration and download the ShadowTLS.json file
-    mkdir -p /etc/shadowtls && curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS-warp.json
+    mkdir -p /etc/shadowtls && curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS.json
 
     # Download client config files
     curl -Lo /etc/shadowtls/nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
@@ -821,7 +821,7 @@ modify_shadowtls_config() {
         rm -rf /etc/shadowtls
 
         # Create a directory for shadowtls configuration and download the ShadowTLS.json file
-        mkdir -p /etc/shadowtls && curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS-warp.json
+        mkdir -p /etc/shadowtls && curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS.json
 
         # Download client config files
         curl -Lo /etc/shadowtls/nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
