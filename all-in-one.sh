@@ -1115,6 +1115,118 @@ uninstall_warp() {
     rm -rf /etc/sbw
     sudo rm -f /etc/systemd/system/SBW.service
 
+    file1="/etc/sing-box/config.json"
+
+    if [ -e "$file1" ]; then
+
+        systemctl stop TS
+
+        if jq -e '.outbounds[0].type == "socks"' "$file1" &>/dev/null; then
+            # Set the new JSON object for outbounds (switch to direct)
+            new_json='{
+            "tag": "direct",
+            "type": "direct"
+        }'
+
+            jq '.outbounds = ['"$new_json"']' "$file1" >/tmp/tmp_config.json
+            mv /tmp/tmp_config.json "$file1"
+
+            systemctl start TS
+
+            echo "WARP is disabled on Reality"
+        else
+
+            echo
+        fi
+
+    else
+        echo
+    fi
+
+    file2="/etc/shadowtls/config.json"
+
+    if [ -e "$file2" ]; then
+
+        systemctl stop TS
+
+        if jq -e '.outbounds[0].type == "socks"' "$file2" &>/dev/null; then
+            # Set the new JSON object for outbounds (switch to direct)
+            new_json='{
+            "tag": "direct",
+            "type": "direct"
+        }'
+
+            jq '.outbounds = ['"$new_json"']' "$file2" >/tmp/tmp_config.json
+            mv /tmp/tmp_config.json "$file2"
+
+            systemctl start TS
+
+            echo "WARP is disabled on ShadowTLS"
+        else
+
+            echo
+        fi
+
+    else
+        echo
+    fi
+
+    file3="/etc/tuic/server.json"
+
+    if [ -e "$file3" ]; then
+
+        systemctl stop TS
+
+        if jq -e '.outbounds[0].type == "socks"' "$file3" &>/dev/null; then
+            # Set the new JSON object for outbounds (switch to direct)
+            new_json='{
+            "tag": "direct",
+            "type": "direct"
+        }'
+
+            jq '.outbounds = ['"$new_json"']' "$file3" >/tmp/tmp_config.json
+            mv /tmp/tmp_config.json "$file3"
+
+            systemctl start TS
+
+            echo "WARP is disabled on TUIC"
+        else
+
+            echo
+        fi
+
+    else
+        echo
+    fi
+
+    file4="/etc/hysteria2/server.json"
+
+    if [ -e "$file4" ]; then
+
+        systemctl stop TS
+
+        if jq -e '.outbounds[0].type == "socks"' "$file4" &>/dev/null; then
+            # Set the new JSON object for outbounds (switch to direct)
+            new_json='{
+            "tag": "direct",
+            "type": "direct"
+        }'
+
+            jq '.outbounds = ['"$new_json"']' "$file4" >/tmp/tmp_config.json
+            mv /tmp/tmp_config.json "$file4"
+
+            systemctl start TS
+
+            echo "WARP is disabled on Hysteria2"
+        else
+
+            echo
+        fi
+
+    else
+        echo
+    fi
+
     echo "WARP uninstalled."
 
     exit 0 # Exit the script immediately with a successful status
