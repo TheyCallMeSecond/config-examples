@@ -214,7 +214,7 @@ modify_hysteria_config() {
 
     else
 
-        dialog --msgbox "Hysteria2 is not installed yet." 1 30
+        dialog --msgbox "Hysteria2 is not installed yet." 10 30
 
         menu
 
