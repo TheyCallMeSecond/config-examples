@@ -220,7 +220,6 @@ modify_hysteria_config() {
 
     fi
 
-
 }
 
 # Function to uninstall Hysteria
@@ -1400,6 +1399,8 @@ update_sing-box_core() {
         echo "Hysteria2 is not installed yet."
 
     fi
+
+    dialog --msgbox "Sing-Box Cores Has Been Updated" 10 30
 
     menu
 }
