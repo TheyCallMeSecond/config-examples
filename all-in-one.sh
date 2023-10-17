@@ -110,7 +110,7 @@ install_hysteria() {
 
     echo "Hysteria2 setup completed."
 
-    exit 0 # Exit the script immediately with a successful status
+    exit 0
 }
 
 # Function to modify Hysteria configuration
@@ -210,13 +210,16 @@ modify_hysteria_config() {
 
         echo "Hysteria2 configuration modified."
 
+        exit 0
+
     else
 
-        echo "Hysteria2 is not installed yet."
+        dialog --msgbox "Hysteria2 is not installed yet." 1 30
+
+        menu
 
     fi
 
-    exit 0 # Exit the script immediately with a successful status
 
 }
 
@@ -230,9 +233,9 @@ uninstall_hysteria() {
     rm -rf /etc/hysteria2
     sudo rm -f /etc/systemd/system/SH.service
 
-    echo "Hysteria2 uninstalled."
+    dialog --msgbox "Hysteria2 uninstalled." 10 30
 
-    exit 0 # Exit the script immediately with a successful status
+    menu
 }
 
 install_tuic() {
@@ -344,7 +347,7 @@ install_tuic() {
 
     echo "TUIC setup completed."
 
-    exit 0 # Exit the script immediately with a successful status
+    exit 0
 }
 
 # Function to modify tuic configuration
@@ -444,13 +447,16 @@ modify_tuic_config() {
 
         echo "TUIC configuration modified."
 
+        exit 0
+
     else
 
-        echo "TUIC is not installed yet."
+        dialog --msgbox "TUIC is not installed yet." 10 30
+
+        menu
 
     fi
 
-    exit 0 # Exit the script immediately with a successful status
 }
 
 # Function to uninstall tuic
@@ -463,9 +469,9 @@ uninstall_tuic() {
     rm -rf /etc/tuic
     sudo rm -f /etc/systemd/system/TS.service
 
-    echo "TUIC uninstalled."
+    dialog --msgbox "TUIC uninstalled." 10 30
 
-    exit 0 # Exit the script immediately with a successful status
+    menu
 }
 
 install_reality() {
@@ -573,7 +579,7 @@ install_reality() {
     qrencode -t ANSIUTF8 <<<"$ipv6qr"
     echo "Reality setup completed."
 
-    exit 0 # Exit the script immediately with a successful status
+    exit 0
 }
 
 # Function to modify reality configuration
@@ -670,13 +676,16 @@ modify_reality_config() {
 
         echo "Reality configuration modified."
 
+        exit 0
+
     else
 
-        echo "Reality is not installed yet."
+        dialog --msgbox "Reality is not installed yet." 10 30
+
+        menu
 
     fi
 
-    exit 0 # Exit the script immediately with a successful status
 }
 
 # Function to uninstall reality
@@ -689,9 +698,9 @@ uninstall_reality() {
     rm -rf /etc/sing-box
     sudo rm -f /etc/systemd/system/sing-box.service
 
-    echo "Reality uninstalled."
+    dialog --msgbox "Reality uninstalled." 10 30
 
-    exit 0 # Exit the script immediately with a successful status
+    menu
 }
 
 install_shadowtls() {
@@ -805,7 +814,7 @@ install_shadowtls() {
 
     echo "ShadowTLS setup completed."
 
-    exit 0 # Exit the script immediately with a successful status
+    exit 0
 }
 
 # Function to modify shadowtls configuration
@@ -907,13 +916,16 @@ modify_shadowtls_config() {
 
         echo "ShadowTLS configuration modified."
 
+        exit 0
+
     else
 
-        echo "ShadowTLS is not installed yet."
+        dialog --msgbox "ShadowTLS is not installed yet." 10 30
+
+        menu
 
     fi
 
-    exit 0 # Exit the script immediately with a successful status
 }
 
 # Function to uninstall shadowtls
@@ -926,9 +938,9 @@ uninstall_shadowtls() {
     rm -rf /etc/shadowtls
     sudo rm -f /etc/systemd/system/ST.service
 
-    echo "ShadowTLS uninstalled."
+    dialog --msgbox "ShadowTLS uninstalled." 10 30
 
-    exit 0 # Exit the script immediately with a successful status
+    menu
 }
 
 # Function to show hysteria config
@@ -948,13 +960,16 @@ show_hysteria_config() {
         echo IPv6:
         qrencode -t ANSIUTF8 <<<"$ipv6qr"
 
+        exit 0
+
     else
 
-        echo "Hysteria2 is not installed yet."
+        dialog --msgbox "Hysteria2 is not installed yet." 10 30
+
+        menu
 
     fi
 
-    exit 0 # Exit the script immediately with a successful status
 }
 
 # Function to show tuic config
@@ -974,13 +989,16 @@ show_tuic_config() {
         echo IPv6:
         qrencode -t ANSIUTF8 <<<"$ipv6qr"
 
+        exit 0
+
     else
 
-        echo "TUIC is not installed yet."
+        dialog --msgbox "TUIC is not installed yet." 10 30
+
+        menu
 
     fi
 
-    exit 0 # Exit the script immediately with a successful status
 }
 
 # Function to show reality config
@@ -1000,13 +1018,16 @@ show_reality_config() {
         echo IPv6:
         qrencode -t ANSIUTF8 <<<"$ipv6qr"
 
+        exit 0
+
     else
 
-        echo "Reality is not installed yet."
+        dialog --msgbox "Reality is not installed yet." 10 30
+
+        menu
 
     fi
 
-    exit 0 # Exit the script immediately with a successful status
 }
 
 # Function to show shadowtls config
@@ -1031,13 +1052,16 @@ show_shadowtls_config() {
 
         echo
 
+        exit 0
+
     else
 
-        echo "ShadowTLS is not installed yet."
+        dialog --msgbox "ShadowTLS is not installed yet." 10 30
+
+        menu
 
     fi
 
-    exit 0 # Exit the script immediately with a successful status
 }
 
 # Function to show warp config
@@ -1048,13 +1072,16 @@ show_warp_config() {
 
         cat /etc/sbw/proxy.json | jq
 
+        exit 0
+
     else
 
-        echo "WARP is not installed yet."
+        dialog --msgbox "WARP is not installed yet." 10 30
+
+        menu
 
     fi
 
-    exit 0 # Exit the script immediately with a successful status
 }
 
 # Function to install warp
@@ -1098,11 +1125,11 @@ install_warp() {
         # Start WARP+ sing-box proxy
         systemctl enable --now SBW
 
-        echo "WARP installed successfuly"
+        dialog --msgbox "WARP installed successfuly" 10 30
 
     fi
 
-    exit 0 # Exit the script immediately with a successful status
+    menu
 }
 
 # Function to uninstall warp
@@ -1227,9 +1254,9 @@ uninstall_warp() {
         echo
     fi
 
-    echo "WARP uninstalled."
+    dialog --msgbox "WARP uninstalled." 10 30
 
-    exit 0 # Exit the script immediately with a successful status
+    menu
 }
 
 # Function to update sing-box core
@@ -1374,7 +1401,7 @@ update_sing-box_core() {
 
     fi
 
-    exit 0 # Exit the script immediately with status
+    menu
 }
 
 # Function to disable warp on reality
@@ -1400,7 +1427,7 @@ disable_warp_reality() {
 
                 systemctl start sing-box
 
-                echo "WARP is disabled now"
+                dialog --msgbox "WARP is disabled now" 10 30
             else
                 # Set the new JSON object for outbounds (switch to socks)
                 new_json='{
@@ -1416,19 +1443,19 @@ disable_warp_reality() {
 
                 systemctl start sing-box
 
-                echo "WARP is enabled now"
+                ecdialog --msgboxho "WARP is enabled now" 10 30
             fi
 
         else
-            echo "WARP is not installed yet"
+            dialog --msgbox "WARP is not installed yet" 10 30
 
         fi
 
     else
-        echo "Reality is not installed yet."
+        dialog --msgbox "Reality is not installed yet." 10 30
     fi
 
-    exit 0 # Exit the script immediately with a successful status
+    menu
 }
 
 # Function to disable warp on shadowtls
@@ -1454,7 +1481,7 @@ disable_warp_shadowtls() {
 
                 systemctl start ST
 
-                echo "WARP is disabled now"
+                dialog --msgbox "WARP is disabled now" 10 30
             else
                 # Set the new JSON object for outbounds (switch to socks)
                 new_json='{
@@ -1470,19 +1497,19 @@ disable_warp_shadowtls() {
 
                 systemctl start ST
 
-                echo "WARP is enabled now"
+                dialog --msgbox "WARP is enabled now" 10 30
             fi
 
         else
-            echo "WARP is not installed yet"
+            dialog --msgbox "WARP is not installed yet" 10 30
 
         fi
 
     else
-        echo "ShadowTLS is not installed yet."
+        dialog --msgbox "ShadowTLS is not installed yet." 10 30
     fi
 
-    exit 0 # Exit the script immediately with a successful status
+    menu
 }
 
 # Function to disable warp on tuic
@@ -1508,7 +1535,7 @@ disable_warp_tuic() {
 
                 systemctl start TS
 
-                echo "WARP is disabled now"
+                dialog --msgbox "WARP is disabled now" 10 30
             else
                 # Set the new JSON object for outbounds (switch to socks)
                 new_json='{
@@ -1524,19 +1551,19 @@ disable_warp_tuic() {
 
                 systemctl start TS
 
-                echo "WARP is enabled now"
+                dialog --msgbox "WARP is enabled now" 10 30
             fi
 
         else
-            echo "WARP is not installed yet"
+            dialog --msgbox "WARP is not installed yet" 10 30
 
         fi
 
     else
-        echo "TUIC is not installed yet."
+        dialog --msgbox "TUIC is not installed yet." 10 30
     fi
 
-    exit 0 # Exit the script immediately with a successful status
+    menu
 }
 
 # Function to disable warp on hysteria2
@@ -1562,7 +1589,7 @@ disable_warp_hysteria() {
 
                 systemctl start SH
 
-                echo "WARP is disabled now"
+                dialog --msgbox "WARP is disabled now" 10 30
             else
                 # Set the new JSON object for outbounds (switch to socks)
                 new_json='{
@@ -1578,19 +1605,19 @@ disable_warp_hysteria() {
 
                 systemctl start SH
 
-                echo "WARP is enabled now"
+                dialog --msgbox "WARP is enabled now" 10 30
             fi
 
         else
-            echo "WARP is not installed yet"
+            dialog --msgbox "WARP is not installed yet" 10 30
 
         fi
 
     else
-        echo "Hysteria2 is not installed yet."
+        dialog --msgbox "Hysteria2 is not installed yet." 10 30
     fi
 
-    exit 0 # Exit the script immediately with a successful status
+    menu
 }
 
 # Function to optimize server
@@ -1598,131 +1625,202 @@ optimize_server() {
 
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/server-optimizer.sh)"
 
-    exit 0
+    menu
 
 }
 
-# Main menu loop
 while true; do
-    echo -e "    \e[91mPlease select an option:\e[0m"
-    echo -e
-    echo -e "000:\e[95mOptimize Server\e[0m"
-    echo -e "00: \e[95mUpdate Sing-Box Core\e[0m"
-    echo -------------------------------------------
-    echo -e "1:  \e[93mInstall Hysteria2\e[0m"
-    echo -e "2:  \e[93mModify Hysteria2 Config\e[0m"
-    echo -e "3:  \e[93mShow Hysteria2 Config\e[0m"
-    echo -e "4:  \e[93mEnable/Disable WARP on Hysteria2\e[0m"
-    echo -e "5:  \e[93mUninstall Hysteria2\e[0m"
-    echo -------------------------------------------
-    echo -e "6:  \e[93mInstall TUIC\e[0m"
-    echo -e "7:  \e[93mModify TUIC Config\e[0m"
-    echo -e "8:  \e[93mShow TUIC Config\e[0m"
-    echo -e "9:  \e[93mEnable/Disable WARP on TUIC\e[0m"
-    echo -e "10: \e[93mUninstall TUIC\e[0m"
-    echo -------------------------------------------
-    echo -e "11: \e[93mInstall Reality\e[0m"
-    echo -e "12: \e[93mModify Reality Config\e[0m"
-    echo -e "13: \e[93mShow Reality Config\e[0m"
-    echo -e "14: \e[93mEnable/Disable WARP on Reality\e[0m"
-    echo -e "15: \e[93mUninstall Reality\e[0m"
-    echo -------------------------------------------
-    echo -e "16: \e[93mInstall ShadowTLS\e[0m"
-    echo -e "17: \e[93mModify ShadowTLS Config\e[0m"
-    echo -e "18: \e[93mShow ShadowTLS Config\e[0m"
-    echo -e "19: \e[93mEnable/Disable WARP on ShadowTLS\e[0m"
-    echo -e "20: \e[93mUninstall ShadowTLS\e[0m"
-    echo -------------------------------------------
-    echo -e "21: \e[93mInstall WARP\e[0m"
-    echo -e "22: \e[93mShow WARP Config\e[0m"
-    echo -e "23: \e[93mUninstall WARP\e[0m"
-    echo -------------------------------------------
-    echo -e "0:  \e[95mExit\e[0m"
-
-    read -p "Enter your choice: " user_choice
+    user_choice=$(dialog --clear --title "Main Menu" --menu "Please select a protocol:" 16 60 5 \
+        "Server Optimizer" "Optimize the server" \
+        "Update Sing-Box Cores" "Update Sing-Box Cores" \
+        "" "" \
+        "Hysteria2" "Manage Hysteria2" \
+        "Tuic" "Manage Tuic" \
+        "Reality" "Manage Reality" \
+        "ShadowTLS" "Manage ShadowTLS" \
+        "Warp" "Manage Warp" \
+        "Exit" "Exit the script" 3>&1 1>&2 2>&3)
 
     case $user_choice in
-    000)
+    "Server Optimizer")
         optimize_server
         ;;
-    00)
+    "Update Sing-Box Cores")
         update_sing-box_core
         ;;
-    1)
-        install_hysteria
+    "Hysteria2")
+        while true; do
+            user_choice=$(dialog --clear --title "Hysteria2 Menu" --menu "Please select an option:" 25 80 15 \
+                "Install Hysteria2" "Install Hysteria2" \
+                "Modify Hysteria2 Config" "Modify Hysteria2 Config" \
+                "Show Hysteria2 Config" "Show Hysteria2 Config" \
+                "Enable/Disable WARP on Hysteria2" "Enable/Disable WARP on Hysteria2" \
+                "Uninstall Hysteria2" "Uninstall Hysteria2" \
+                "Back" "Back to Main Menu" 3>&1 1>&2 2>&3)
+
+            case $user_choice in
+            "Install Hysteria2")
+                install_hysteria
+                ;;
+            "Modify Hysteria2 Config")
+                modify_hysteria_config
+                ;;
+            "Show Hysteria2 Config")
+                show_hysteria_config
+                ;;
+            "Enable/Disable WARP on Hysteria2")
+                disable_warp_hysteria
+                ;;
+            "Uninstall Hysteria2")
+                uninstall_hysteria
+                ;;
+            "Back")
+                break
+                ;;
+            *)
+                dialog --msgbox "Invalid choice. Please select a valid option." 10 30
+                ;;
+            esac
+        done
         ;;
-    2)
-        modify_hysteria_config
+    "Tuic")
+        while true; do
+            user_choice=$(dialog --clear --title "Tuic Menu" --menu "Please select an option:" 25 80 15 \
+                "Install Tuic" "Install Tuic" \
+                "Modify Tuic Config" "Modify Tuic Config" \
+                "Show Tuic Config" "Show Tuic Config" \
+                "Enable/Disable WARP on Tuic" "Enable/Disable WARP on Tuic" \
+                "Uninstall Tuic" "Uninstall Tuic" \
+                "Back" "Back to Main Menu" 3>&1 1>&2 2>&3)
+
+            case $user_choice in
+            "Install Tuic")
+                install_tuic
+                ;;
+            "Modify Tuic Config")
+                modify_tuic_config
+                ;;
+            "Show Tuic Config")
+                show_tuic_config
+                ;;
+            "Enable/Disable WARP on Tuic")
+                disable_warp_tuic
+                ;;
+            "Uninstall Tuic")
+                uninstall_tuic
+                ;;
+            "Back")
+                break
+                ;;
+            *)
+                dialog --msgbox "Invalid choice. Please select a valid option." 10 30
+                ;;
+            esac
+        done
         ;;
-    3)
-        show_hysteria_config
+    "Reality")
+        while true; do
+            user_choice=$(dialog --clear --title "Reality Menu" --menu "Please select an option:" 25 80 15 \
+                "Install Reality" "Install Reality" \
+                "Modify Reality Config" "Modify Reality Config" \
+                "Show Reality Config" "Show Reality Config" \
+                "Enable/Disable WARP on Reality" "Enable/Disable WARP on Reality" \
+                "Uninstall Reality" "Uninstall Reality" \
+                "Back" "Back to Main Menu" 3>&1 1>&2 2>&3)
+
+            case $user_choice in
+            "Install Reality")
+                install_reality
+                ;;
+            "Modify Reality Config")
+                modify_reality_config
+                ;;
+            "Show Reality Config")
+                show_reality_config
+                ;;
+            "Enable/Disable WARP on Reality")
+                disable_warp_reality
+                ;;
+            "Uninstall Reality")
+                uninstall_reality
+                ;;
+            "Back")
+                break
+                ;;
+            *)
+                dialog --msgbox "Invalid choice. Please select a valid option." 10 30
+                ;;
+            esac
+        done
         ;;
-    4)
-        disable_warp_hysteria
+    "ShadowTLS")
+        while true; do
+            user_choice=$(dialog --clear --title "ShadowTLS Menu" --menu "Please select an option:" 25 80 15 \
+                "Install ShadowTLS" "Install ShadowTLS" \
+                "Modify ShadowTLS Config" "Modify ShadowTLS Config" \
+                "Show ShadowTLS Config" "Show ShadowTLS Config" \
+                "Enable/Disable WARP on ShadowTLS" "Enable/Disable WARP on ShadowTLS" \
+                "Uninstall ShadowTLS" "Uninstall ShadowTLS" \
+                "Back" "Back to Main Menu" 3>&1 1>&2 2>&3)
+
+            case $user_choice in
+            "Install ShadowTLS")
+                install_shadowtls
+                ;;
+            "Modify ShadowTLS Config")
+                modify_shadowtls_config
+                ;;
+            "Show ShadowTLS Config")
+                show_shadowtls_config
+                ;;
+            "Enable/Disable WARP on ShadowTLS")
+                disable_warp_shadowtls
+                ;;
+            "Uninstall ShadowTLS")
+                uninstall_shadowtls
+                ;;
+            "Back")
+                break
+                ;;
+            *)
+                dialog --msgbox "Invalid choice. Please select a valid option." 10 30
+                ;;
+            esac
+        done
         ;;
-    5)
-        uninstall_hysteria
+    "Warp")
+        while true; do
+            user_choice=$(dialog --clear --title "Warp Menu" --menu "Please select an option:" 25 80 15 \
+                "Install Warp" "Install Warp" \
+                "Show Warp Config" "Show Warp Config" \
+                "Uninstall Warp" "Uninstall Warp" \
+                "Back" "Back to Main Menu" 3>&1 1>&2 2>&3)
+
+            case $user_choice in
+            "Install Warp")
+                install_warp
+                ;;
+            "Show Warp Config")
+                show_warp_config
+                ;;
+            "Uninstall Warp")
+                uninstall_warp
+                ;;
+            "Back")
+                break
+                ;;
+            *)
+                dialog --msgbox "Invalid choice. Please select a valid option." 10 30
+                ;;
+            esac
+        done
         ;;
-    6)
-        install_tuic
-        ;;
-    7)
-        modify_tuic_config
-        ;;
-    8)
-        show_tuic_config
-        ;;
-    9)
-        disable_warp_tuic
-        ;;
-    10)
-        uninstall_tuic
-        ;;
-    11)
-        install_reality
-        ;;
-    12)
-        modify_reality_config
-        ;;
-    13)
-        show_reality_config
-        ;;
-    14)
-        disable_warp_reality
-        ;;
-    15)
-        uninstall_reality
-        ;;
-    16)
-        install_shadowtls
-        ;;
-    17)
-        modify_shadowtls_config
-        ;;
-    18)
-        show_shadowtls_config
-        ;;
-    19)
-        disable_warp_shadowtls
-        ;;
-    20)
-        uninstall_shadowtls
-        ;;
-    21)
-        install_warp
-        ;;
-    22)
-        show_warp_config
-        ;;
-    23)
-        uninstall_warp
-        ;;
-    0)
+    "Exit")
         echo "Exiting."
-        exit 0 # Exit the script immediately
+        exit 0
         ;;
     *)
-        echo "Invalid choice. Please select a valid option."
+        dialog --msgbox "Invalid choice. Please select a valid option." 10 30
         ;;
     esac
 done
