@@ -19,8 +19,8 @@
 
  برای اجرای این اسکریپت نیاز به کرل و دیالوگ دارید.اگر روی سرورتون نصب نیست با دستور زیر نصبش کنید
 
->sudo apt install curl
->sudo apt install dialog
+>sudo apt install curl dialog
+
 
  اسکریپت زیر رو روی سرورتون اجرا کنید : 
 
