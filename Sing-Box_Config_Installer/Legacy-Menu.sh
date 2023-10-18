@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "/home/thetcs/Documents/Source.sh" # source <(curl -sSL https://raw.githubusercontent.com/yourusername/yourrepository/master/original_script.sh)
+source <(curl -sSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/Source.sh)
 
 # Main menu loop
 while true; do
