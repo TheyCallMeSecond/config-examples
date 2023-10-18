@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "/home/thetcs/Documents/Source.sh" # source <(curl -sSL https://raw.githubusercontent.com/yourusername/yourrepository/master/original_script.sh)
+source <(curl -sSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/Source.sh)
 
 while true; do
     user_choice=$(dialog --clear --title "Main Menu" --menu "Please select a protocol:" 16 60 5 \
