@@ -10,7 +10,7 @@ legacy() {
 
 tui() {
 
-    bash -c /home/thetcs/Documents/TUI-Menu.sh # bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/TUI-Menu.sh)"
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/TUI-Menu.sh)"
 
     exit 0
 
