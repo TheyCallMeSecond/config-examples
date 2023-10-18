@@ -17,16 +17,16 @@
 #### نصب :
 
 
- برای اجرای این اسکریپت نیاز به کرل و دیالوگ دارید.اگر روی سرورتون نصب نیست با دستور زیر نصبش کنید
+ برای اجرای این اسکریپت نیاز به کرل دارید.اگر روی سرورتون نصب نیست با دستور زیر نصبش کنید
 
->sudo apt install curl dialog
+>sudo apt install curl 
 
 
  اسکریپت زیر رو روی سرورتون اجرا کنید : 
 
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/all-in-one.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/Menu-Selector.sh)"
 ```
 [![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/29.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/29.png?raw=true "bash screen")
 
