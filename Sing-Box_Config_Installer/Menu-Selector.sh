@@ -2,7 +2,7 @@
 
 legacy() {
 
-    bash -c /home/thetcs/Documents/Legacy-Menu.sh # bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Legacy-Menu.sh)"
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/Legacy-Menu.sh)"
 
     exit 0
 
