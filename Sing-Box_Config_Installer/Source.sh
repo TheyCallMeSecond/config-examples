@@ -1419,7 +1419,7 @@ toggle_warp_reality() {
 
                 systemctl start sing-box
 
-                ecdialog --msgboxho "WARP is enabled now" 10 30
+                dialog --msgboxho "WARP is enabled now" 10 30
             fi
 
         else
