@@ -1122,6 +1122,7 @@ uninstall_warp() {
 
     if [ -e "$file1" ]; then
 
+
         if jq -e '.outbounds[0].type == "socks"' "$file1" &>/dev/null; then
             # Set the new JSON object for outbounds (switch to direct)
             new_json='{
@@ -1131,6 +1132,8 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file1" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file1"
+
+            systemctl restart sing-box
 
             echo "WARP is disabled on Reality"
         else
@@ -1146,6 +1149,7 @@ uninstall_warp() {
 
     if [ -e "$file2" ]; then
 
+
         if jq -e '.outbounds[0].type == "socks"' "$file2" &>/dev/null; then
             # Set the new JSON object for outbounds (switch to direct)
             new_json='{
@@ -1155,6 +1159,8 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file2" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file2"
+
+            systemctl restart ST
 
             echo "WARP is disabled on ShadowTLS"
         else
@@ -1170,6 +1176,7 @@ uninstall_warp() {
 
     if [ -e "$file3" ]; then
 
+
         if jq -e '.outbounds[0].type == "socks"' "$file3" &>/dev/null; then
             # Set the new JSON object for outbounds (switch to direct)
             new_json='{
@@ -1179,6 +1186,8 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file3" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file3"
+
+            systemctl restart TS
 
             echo "WARP is disabled on TUIC"
         else
@@ -1194,6 +1203,7 @@ uninstall_warp() {
 
     if [ -e "$file4" ]; then
 
+
         if jq -e '.outbounds[0].type == "socks"' "$file4" &>/dev/null; then
             # Set the new JSON object for outbounds (switch to direct)
             new_json='{
@@ -1203,6 +1213,8 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file4" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file4"
+
+            systemctl restart SH
 
             echo "WARP is disabled on Hysteria2"
         else
@@ -1214,10 +1226,6 @@ uninstall_warp() {
         echo
     fi
 
-     systemctl restart sing-box
-     systemctl restart ST
-     systemctl restart TS
-     systemctl restart SH
     dialog --msgbox "WARP uninstalled." 10 30
 
 }
