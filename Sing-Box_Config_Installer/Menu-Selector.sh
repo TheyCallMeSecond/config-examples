@@ -52,11 +52,13 @@ while true; do
 
     1)
         sudo apt install dialog -y
+        clear
         tui
         ;;
     2)
-        legacy
-        sudo apt install dialog -y        
+        sudo apt install dialog -y      
+        clear
+        legacy      
         ;;
     0)
         echo "Exiting."
