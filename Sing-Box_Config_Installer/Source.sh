@@ -1590,7 +1590,8 @@ toggle_warp_hysteria() {
 
 # Function to optimize server
 optimize_server() {
-
+    
+    clear
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/server-optimizer.sh)"
 
 }
