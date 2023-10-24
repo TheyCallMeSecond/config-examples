@@ -163,13 +163,19 @@ while true; do
         ;;
     "Warp")
         while true; do
-            user_choice=$(dialog --clear --title "Warp Menu" --menu "Please select an option:" 25 80 15 \
-                "Install Warp" "Install Warp" \
-                "Show Warp Config" "Show Warp Config" \
-                "Uninstall Warp" "Uninstall Warp" \
-                "Back" "Back to Main Menu" 3>&1 1>&2 2>&3)
+            user_choice=$(
+                dialog --clear --title "Warp Menu" --menu "Please select an option:" 25 80 15 \
+                    "Generate WARP+ Key" "Generate WARP+ Key" \
+                    "Install Warp" "Install Warp" \
+                    "Show Warp Config" "Show Warp Config" \
+                    "Uninstall Warp" "Uninstall Warp" \
+                    "Back" "Back to Main Menu" 3>&1 1>&2 2>&3
+            )
 
             case $user_choice in
+            "Generate WARP+ Key")
+                warp_key_gen
+                ;;
             "Install Warp")
                 install_warp
                 ;;
