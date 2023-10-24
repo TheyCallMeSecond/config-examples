@@ -961,6 +961,7 @@ show_hysteria_config() {
     else
 
         dialog --msgbox "Hysteria2 is not installed yet." 10 30
+        clear
 
     fi
 
