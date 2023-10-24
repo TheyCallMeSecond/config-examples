@@ -44,84 +44,111 @@ while true; do
 
     case $user_choice in
     000)
+        clear
         optimize_server
         ;;
     00)
+        clear    
         update_sing-box_core
         ;;
     1)
+        clear    
         install_hysteria
         ;;
     2)
+        clear    
         modify_hysteria_config
         ;;
     3)
+        clear    
         show_hysteria_config
         ;;
     4)
+        clear    
         toggle_warp_hysteria
         ;;
     5)
+        clear    
         uninstall_hysteria
         ;;
     6)
+        clear    
         install_tuic
         ;;
     7)
+        clear    
         modify_tuic_config
         ;;
     8)
+        clear    
         show_tuic_config
         ;;
     9)
+        clear    
         toggle_warp_tuic
         ;;
     10)
+        clear    
         uninstall_tuic
         ;;
     11)
+        clear    
         install_reality
         ;;
     12)
+        clear    
         modify_reality_config
         ;;
     13)
+        clear    
         show_reality_config
         ;;
     14)
+        clear    
         toggle_warp_reality
         ;;
     15)
+        clear    
         uninstall_reality
         ;;
     16)
+        clear    
         install_shadowtls
         ;;
     17)
+        clear    
         modify_shadowtls_config
         ;;
     18)
+        clear    
         show_shadowtls_config
         ;;
     19)
+        clear    
         toggle_warp_shadowtls
         ;;
     20)
+        clear    
         uninstall_shadowtls
         ;;
     21)
+        clear    
         warp_key_gen
         ;;
     22)
+        clear    
         install_warp
         ;;
     23)
+        clear    
         show_warp_config
         ;;
     24)
+        clear    
         uninstall_warp
         ;;
     0) 
+        clear    
         echo "Exiting."
         exit 0
         ;;
