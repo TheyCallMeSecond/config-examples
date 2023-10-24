@@ -1061,6 +1061,15 @@ show_warp_config() {
 
 }
 
+# Generate WARP+ Key
+warp_key_gen() {
+    sudo apt install -y python3 python3-pip
+    pip install httpx requests
+
+    curl -s https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/key-generator.py | python3 -
+
+}
+
 # Function to install warp
 install_warp() {
     # WARP+ installation
@@ -1122,7 +1131,6 @@ uninstall_warp() {
 
     if [ -e "$file1" ]; then
 
-
         if jq -e '.outbounds[0].type == "socks"' "$file1" &>/dev/null; then
             # Set the new JSON object for outbounds (switch to direct)
             new_json='{
@@ -1148,7 +1156,6 @@ uninstall_warp() {
     file2="/etc/shadowtls/config.json"
 
     if [ -e "$file2" ]; then
-
 
         if jq -e '.outbounds[0].type == "socks"' "$file2" &>/dev/null; then
             # Set the new JSON object for outbounds (switch to direct)
@@ -1176,7 +1183,6 @@ uninstall_warp() {
 
     if [ -e "$file3" ]; then
 
-
         if jq -e '.outbounds[0].type == "socks"' "$file3" &>/dev/null; then
             # Set the new JSON object for outbounds (switch to direct)
             new_json='{
@@ -1202,7 +1208,6 @@ uninstall_warp() {
     file4="/etc/hysteria2/server.json"
 
     if [ -e "$file4" ]; then
-
 
         if jq -e '.outbounds[0].type == "socks"' "$file4" &>/dev/null; then
             # Set the new JSON object for outbounds (switch to direct)
@@ -1590,7 +1595,7 @@ toggle_warp_hysteria() {
 
 # Function to optimize server
 optimize_server() {
-    
+
     clear
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/server-optimizer.sh)"
 
