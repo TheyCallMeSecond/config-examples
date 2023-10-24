@@ -16,9 +16,11 @@ while true; do
 
     case $user_choice in
     "Server Optimizer")
+        clear    
         optimize_server
         ;;
     "Update Sing-Box Cores")
+        clear    
         update_sing-box_core
         ;;
     "Hysteria2")
@@ -33,18 +35,23 @@ while true; do
 
             case $user_choice in
             "Install Hysteria2")
+                clear
                 install_hysteria
                 ;;
             "Modify Hysteria2 Config")
+                clear
                 modify_hysteria_config
                 ;;
             "Show Hysteria2 Config")
+                clear
                 show_hysteria_config
                 ;;
             "Enable/Disable WARP on Hysteria2")
+                clear
                 toggle_warp_hysteria
                 ;;
             "Uninstall Hysteria2")
+                clear
                 uninstall_hysteria
                 ;;
             "Back")
@@ -68,18 +75,23 @@ while true; do
 
             case $user_choice in
             "Install Tuic")
+                clear            
                 install_tuic
                 ;;
             "Modify Tuic Config")
+                clear
                 modify_tuic_config
                 ;;
             "Show Tuic Config")
+                clear
                 show_tuic_config
                 ;;
             "Enable/Disable WARP on Tuic")
+                clear
                 toggle_warp_tuic
                 ;;
             "Uninstall Tuic")
+                clear
                 uninstall_tuic
                 ;;
             "Back")
@@ -103,18 +115,23 @@ while true; do
 
             case $user_choice in
             "Install Reality")
+                clear
                 install_reality
                 ;;
             "Modify Reality Config")
+                clear
                 modify_reality_config
                 ;;
             "Show Reality Config")
+                clear
                 show_reality_config
                 ;;
             "Enable/Disable WARP on Reality")
+                clear
                 toggle_warp_reality
                 ;;
             "Uninstall Reality")
+                clear
                 uninstall_reality
                 ;;
             "Back")
@@ -138,18 +155,23 @@ while true; do
 
             case $user_choice in
             "Install ShadowTLS")
+                clear
                 install_shadowtls
                 ;;
             "Modify ShadowTLS Config")
+                clear
                 modify_shadowtls_config
                 ;;
             "Show ShadowTLS Config")
+                clear
                 show_shadowtls_config
                 ;;
             "Enable/Disable WARP on ShadowTLS")
+                clear
                 toggle_warp_shadowtls
                 ;;
             "Uninstall ShadowTLS")
+                clear
                 uninstall_shadowtls
                 ;;
             "Back")
@@ -178,12 +200,15 @@ while true; do
                 warp_key_gen
                 ;;
             "Install Warp")
+                clear
                 install_warp
                 ;;
             "Show Warp Config")
+                clear
                 show_warp_config
                 ;;
             "Uninstall Warp")
+                clear
                 uninstall_warp
                 ;;
             "Back")
@@ -196,8 +221,8 @@ while true; do
         done
         ;;
     "Exit")
-        echo "Exiting."
         clear
+        echo "Exiting."
         exit 0
         ;;
     *)
