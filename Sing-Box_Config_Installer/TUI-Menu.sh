@@ -196,8 +196,8 @@ while true; do
         ;;
     "Exit")
         echo "Exiting."
-        exit 0
         clear
+        exit 0
         ;;
     *)
         dialog --msgbox "Invalid choice. Please select a valid option." 10 30
