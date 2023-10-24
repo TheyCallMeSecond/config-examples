@@ -10,7 +10,7 @@
 
 از طریق [این بات تلگرام](https://t.me/generatewarpplusbot "این بات تلگرام") یک کلید WARP+ تهیه کنید و بعد از اتصال دامنه ی خود بهIP سرور, کد زیر را بر روی سرور اجرا کنید
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/HY2-warp-installer.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/HY2-warp-installer.sh)"
 ```
 ------------
 
@@ -20,7 +20,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-
 
 بعد از اتصال دامنه ی خود بهIP سرور, کد زیر را بر روی سرور اجرا کنید
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/HY2-installer.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Hysteria/HY2-installer.sh)"
 ```
 ------------
 ------------
