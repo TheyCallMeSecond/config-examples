@@ -84,7 +84,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-
 
    **[hawshemi]** - *For server optimizer*
 
-   **[misaka]** - *For warp config generator*
+   **[misaka]** - *For warp config and key generator*
 
 <!----------------------------------{ Thanks }--------------------------------->
 
