@@ -110,7 +110,8 @@ install_hysteria() {
 
     echo "Hysteria2 setup completed."
 
-    exit 0
+    echo -e "\e[31mPress Enter to Exit\e[0m"
+    read
 }
 
 # Function to modify Hysteria configuration
@@ -210,7 +211,8 @@ modify_hysteria_config() {
 
         echo "Hysteria2 configuration modified."
 
-        exit 0
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
 
     else
 
@@ -343,7 +345,8 @@ install_tuic() {
 
     echo "TUIC setup completed."
 
-    exit 0
+    echo -e "\e[31mPress Enter to Exit\e[0m"
+    read
 }
 
 # Function to modify tuic configuration
@@ -443,7 +446,8 @@ modify_tuic_config() {
 
         echo "TUIC configuration modified."
 
-        exit 0
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
 
     else
 
@@ -572,7 +576,8 @@ install_reality() {
     qrencode -t ANSIUTF8 <<<"$ipv6qr"
     echo "Reality setup completed."
 
-    exit 0
+    echo -e "\e[31mPress Enter to Exit\e[0m"
+    read
 }
 
 # Function to modify reality configuration
@@ -669,7 +674,8 @@ modify_reality_config() {
 
         echo "Reality configuration modified."
 
-        exit 0
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
 
     else
 
@@ -804,7 +810,8 @@ install_shadowtls() {
 
     echo "ShadowTLS setup completed."
 
-    exit 0
+    echo -e "\e[31mPress Enter to Exit\e[0m"
+    read
 }
 
 # Function to modify shadowtls configuration
@@ -906,7 +913,8 @@ modify_shadowtls_config() {
 
         echo "ShadowTLS configuration modified."
 
-        exit 0
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
 
     else
 
@@ -947,7 +955,8 @@ show_hysteria_config() {
         echo IPv6:
         qrencode -t ANSIUTF8 <<<"$ipv6qr"
 
-        exit 0
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
 
     else
 
@@ -974,7 +983,8 @@ show_tuic_config() {
         echo IPv6:
         qrencode -t ANSIUTF8 <<<"$ipv6qr"
 
-        exit 0
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
 
     else
 
@@ -1001,7 +1011,8 @@ show_reality_config() {
         echo IPv6:
         qrencode -t ANSIUTF8 <<<"$ipv6qr"
 
-        exit 0
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
 
     else
 
@@ -1033,7 +1044,8 @@ show_shadowtls_config() {
 
         echo
 
-        exit 0
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
 
     else
 
@@ -1051,7 +1063,8 @@ show_warp_config() {
 
         cat /etc/sbw/proxy.json | jq
 
-        exit 0
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
 
     else
 
