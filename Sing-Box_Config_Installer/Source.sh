@@ -1066,7 +1066,7 @@ warp_key_gen() {
     sudo apt install -y python3 python3-pip
     pip install httpx requests
 
-    curl -s https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/key-generator.py | python3 
+    curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/key-generator.py | python3 
 
 }
 
