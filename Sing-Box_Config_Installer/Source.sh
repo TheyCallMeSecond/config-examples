@@ -1600,6 +1600,6 @@ toggle_warp_hysteria() {
 optimize_server() {
 
     clear
-    bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/server-optimizer.sh)"
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/server-optimizer.sh)"
 
 }
