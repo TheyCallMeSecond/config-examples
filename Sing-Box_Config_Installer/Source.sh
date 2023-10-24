@@ -1067,7 +1067,7 @@ warp_key_gen() {
     
     pip install httpx requests
 
-    curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/key-generator.py -o key-generator.py
+    curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/key-generator.py -o key-generator.py
     python3 key-generator.py
 
     rm -f key-generator.py
