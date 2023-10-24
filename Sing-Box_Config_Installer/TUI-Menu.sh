@@ -174,6 +174,7 @@ while true; do
 
             case $user_choice in
             "Generate WARP+ Key")
+                clear
                 warp_key_gen
                 ;;
             "Install Warp")
