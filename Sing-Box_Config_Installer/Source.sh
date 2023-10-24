@@ -1064,10 +1064,13 @@ show_warp_config() {
 # Generate WARP+ Key
 warp_key_gen() {
     sudo apt install -y python3 python3-pip
+    
     pip install httpx requests
 
-    echo -e "1\n" | curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/key-generator.py | python3 
+    curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/key-generator.py -o key-generator.py
+    python3 key-generator.py
 
+    rm -f key-generator.py
 }
 
 # Function to install warp
