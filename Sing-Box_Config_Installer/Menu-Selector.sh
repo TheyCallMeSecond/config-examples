@@ -61,6 +61,7 @@ while true; do
         legacy      
         ;;
     0)
+        clear   
         echo "Exiting."
         exit 0 
         ;;
