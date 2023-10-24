@@ -4,7 +4,7 @@ source <(curl -sSL https://raw.githubusercontent.com/TheyCallMeSecond/config-exa
 
 # Main menu loop
 while true; do
-    echo -e "    \e[91mPlease select an option:\e[0m"
+    echo -e "\e[91mPlease select an option:\e[0m"
     echo -e
     echo -e "000:\e[95mOptimize Server\e[0m"
     echo -e "00: \e[95mUpdate Sing-Box Core\e[0m"
