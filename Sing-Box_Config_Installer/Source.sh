@@ -112,6 +112,7 @@ install_hysteria() {
 
     echo -e "\e[31mPress Enter to Exit\e[0m"
     read
+    clear
 }
 
 # Function to modify Hysteria configuration
@@ -213,10 +214,12 @@ modify_hysteria_config() {
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
+        clear
 
     else
 
         dialog --msgbox "Hysteria2 is not installed yet." 10 30
+        clear
 
     fi
 
@@ -233,6 +236,7 @@ uninstall_hysteria() {
     sudo rm -f /etc/systemd/system/SH.service
 
     dialog --msgbox "Hysteria2 uninstalled." 10 30
+    clear
 
 }
 
@@ -347,6 +351,7 @@ install_tuic() {
 
     echo -e "\e[31mPress Enter to Exit\e[0m"
     read
+    clear
 }
 
 # Function to modify tuic configuration
@@ -448,10 +453,12 @@ modify_tuic_config() {
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
+        clear
 
     else
 
         dialog --msgbox "TUIC is not installed yet." 10 30
+        clear
 
     fi
 
@@ -468,6 +475,7 @@ uninstall_tuic() {
     sudo rm -f /etc/systemd/system/TS.service
 
     dialog --msgbox "TUIC uninstalled." 10 30
+    clear
 
 }
 
@@ -578,6 +586,7 @@ install_reality() {
 
     echo -e "\e[31mPress Enter to Exit\e[0m"
     read
+    clear
 }
 
 # Function to modify reality configuration
@@ -676,10 +685,12 @@ modify_reality_config() {
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
+        clear
 
     else
 
         dialog --msgbox "Reality is not installed yet." 10 30
+        clear
 
     fi
 
@@ -696,6 +707,7 @@ uninstall_reality() {
     sudo rm -f /etc/systemd/system/sing-box.service
 
     dialog --msgbox "Reality uninstalled." 10 30
+    clear
 
 }
 
@@ -812,6 +824,7 @@ install_shadowtls() {
 
     echo -e "\e[31mPress Enter to Exit\e[0m"
     read
+    clear
 }
 
 # Function to modify shadowtls configuration
@@ -915,10 +928,12 @@ modify_shadowtls_config() {
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
+        clear
 
     else
 
         dialog --msgbox "ShadowTLS is not installed yet." 10 30
+        clear
 
     fi
 
@@ -935,6 +950,7 @@ uninstall_shadowtls() {
     sudo rm -f /etc/systemd/system/ST.service
 
     dialog --msgbox "ShadowTLS uninstalled." 10 30
+    clear
 
 }
 
@@ -957,6 +973,7 @@ show_hysteria_config() {
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
+        clear
 
     else
 
@@ -986,10 +1003,12 @@ show_tuic_config() {
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
+        clear
 
     else
 
         dialog --msgbox "TUIC is not installed yet." 10 30
+        clear
 
     fi
 
@@ -1014,10 +1033,12 @@ show_reality_config() {
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
+        clear
 
     else
 
         dialog --msgbox "Reality is not installed yet." 10 30
+        clear
 
     fi
 
@@ -1047,10 +1068,12 @@ show_shadowtls_config() {
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
+        clear
 
     else
 
         dialog --msgbox "ShadowTLS is not installed yet." 10 30
+        clear
 
     fi
 
@@ -1066,10 +1089,12 @@ show_warp_config() {
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
+        clear
 
     else
 
         dialog --msgbox "WARP is not installed yet." 10 30
+        clear
 
     fi
 
@@ -1085,6 +1110,8 @@ warp_key_gen() {
     python3 key-generator.py
 
     rm -f key-generator.py
+
+    clear
 }
 
 # Function to install warp
@@ -1095,6 +1122,7 @@ install_warp() {
     if [ -e "$warp_check" ]; then
 
         dialog --msgbox "WARP is running." 10 30
+        clear
 
     else
 
@@ -1129,6 +1157,7 @@ install_warp() {
         systemctl enable --now SBW
 
         dialog --msgbox "WARP installed successfuly" 10 30
+        clear
 
     fi
 
@@ -1249,6 +1278,7 @@ uninstall_warp() {
     fi
 
     dialog --msgbox "WARP uninstalled." 10 30
+    clear
 
 }
 
@@ -1395,6 +1425,7 @@ update_sing-box_core() {
     fi
 
     dialog --msgbox "Sing-Box Cores Has Been Updated" 10 30
+    clear
 
 }
 
@@ -1422,6 +1453,7 @@ toggle_warp_reality() {
                 systemctl start sing-box
 
                 dialog --msgbox "WARP is disabled now" 10 30
+                clear
             else
                 # Set the new JSON object for outbounds (switch to socks)
                 new_json='{
@@ -1438,15 +1470,18 @@ toggle_warp_reality() {
                 systemctl start sing-box
 
                 dialog --msgboxho "WARP is enabled now" 10 30
+                clear
             fi
 
         else
             dialog --msgbox "WARP is not installed yet" 10 30
+            clear
 
         fi
 
     else
         dialog --msgbox "Reality is not installed yet." 10 30
+        clear
     fi
 
 }
@@ -1475,6 +1510,7 @@ toggle_warp_shadowtls() {
                 systemctl start ST
 
                 dialog --msgbox "WARP is disabled now" 10 30
+                clear
             else
                 # Set the new JSON object for outbounds (switch to socks)
                 new_json='{
@@ -1491,15 +1527,18 @@ toggle_warp_shadowtls() {
                 systemctl start ST
 
                 dialog --msgbox "WARP is enabled now" 10 30
+                clear
             fi
 
         else
             dialog --msgbox "WARP is not installed yet" 10 30
+            clear
 
         fi
 
     else
         dialog --msgbox "ShadowTLS is not installed yet." 10 30
+        clear
     fi
 
 }
@@ -1528,6 +1567,7 @@ toggle_warp_tuic() {
                 systemctl start TS
 
                 dialog --msgbox "WARP is disabled now" 10 30
+                clear
             else
                 # Set the new JSON object for outbounds (switch to socks)
                 new_json='{
@@ -1544,15 +1584,18 @@ toggle_warp_tuic() {
                 systemctl start TS
 
                 dialog --msgbox "WARP is enabled now" 10 30
+                clear
             fi
 
         else
             dialog --msgbox "WARP is not installed yet" 10 30
+            clear
 
         fi
 
     else
         dialog --msgbox "TUIC is not installed yet." 10 30
+        clear
     fi
 
 }
@@ -1581,6 +1624,7 @@ toggle_warp_hysteria() {
                 systemctl start SH
 
                 dialog --msgbox "WARP is disabled now" 10 30
+                clear
             else
                 # Set the new JSON object for outbounds (switch to socks)
                 new_json='{
@@ -1597,15 +1641,18 @@ toggle_warp_hysteria() {
                 systemctl start SH
 
                 dialog --msgbox "WARP is enabled now" 10 30
+                clear
             fi
 
         else
             dialog --msgbox "WARP is not installed yet" 10 30
+            clear
 
         fi
 
     else
         dialog --msgbox "Hysteria2 is not installed yet." 10 30
+        clear
     fi
 
 }
@@ -1613,7 +1660,7 @@ toggle_warp_hysteria() {
 # Function to optimize server
 optimize_server() {
 
-    clear
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/server-optimizer.sh)"
+    clear
 
 }
