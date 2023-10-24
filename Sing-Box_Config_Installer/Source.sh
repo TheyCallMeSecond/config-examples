@@ -2,8 +2,6 @@
 
 # Function to install Hysteria
 install_hysteria() {
-    apt update && apt install -y qrencode jq openssl
-
     # Stop the Hysteria2 service
     sudo systemctl stop SH
 
@@ -241,8 +239,6 @@ uninstall_hysteria() {
 }
 
 install_tuic() {
-    apt update && apt install -y qrencode jq openssl
-
     # Stop the tuic service
     sudo systemctl stop TS
 
@@ -480,8 +476,6 @@ uninstall_tuic() {
 }
 
 install_reality() {
-    apt update && apt install -y qrencode jq openssl
-
     # Stop the sing-box service
     sudo systemctl stop sing-box
 
@@ -712,8 +706,6 @@ uninstall_reality() {
 }
 
 install_shadowtls() {
-    apt update && apt install -y jq openssl
-
     # Stop the ST service
     sudo systemctl stop ST
 
@@ -1102,9 +1094,6 @@ show_warp_config() {
 
 # Generate WARP+ Key
 warp_key_gen() {
-    sudo apt install -y python3 python3-pip
-    
-    pip install httpx requests
 
     curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/key-generator.py -o key-generator.py
     python3 key-generator.py
