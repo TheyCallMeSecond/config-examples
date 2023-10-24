@@ -1080,7 +1080,7 @@ install_warp() {
 
     if [ -e "$warp_check" ]; then
 
-        echo "WARP is running."
+        dialog --msgbox "WARP is running." 10 30
 
     else
 
