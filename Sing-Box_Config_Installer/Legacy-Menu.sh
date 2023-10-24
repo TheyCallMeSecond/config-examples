@@ -33,9 +33,10 @@ while true; do
     echo -e "19: \e[93mEnable/Disable WARP on ShadowTLS\e[0m"
     echo -e "20: \e[93mUninstall ShadowTLS\e[0m"
     echo -------------------------------------------
-    echo -e "21: \e[93mInstall WARP\e[0m"
-    echo -e "22: \e[93mShow WARP Config\e[0m"
-    echo -e "23: \e[93mUninstall WARP\e[0m"
+    echo -e "21: \e[93mGenerate WARP+ Key\e[0m"
+    echo -e "22: \e[93mInstall WARP\e[0m"
+    echo -e "23: \e[93mShow WARP Config\e[0m"
+    echo -e "24: \e[93mUninstall WARP\e[0m"
     echo -------------------------------------------
     echo -e "0:  \e[95mExit\e[0m"
 
@@ -109,12 +110,15 @@ while true; do
         uninstall_shadowtls
         ;;
     21)
-        install_warp
+        warp_key_gen
         ;;
     22)
-        show_warp_config
+        install_warp
         ;;
     23)
+        show_warp_config
+        ;;
+    24)
         uninstall_warp
         ;;
     0) 
