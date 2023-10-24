@@ -51,11 +51,13 @@ while true; do
     case $user_choice in
 
     1)
+        sudo apt update
         sudo apt install dialog -y
         clear
         tui
         ;;
     2)
+        sudo apt update    
         sudo apt install dialog -y      
         clear
         legacy      
