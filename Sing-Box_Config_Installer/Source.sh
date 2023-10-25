@@ -72,7 +72,7 @@ install_hysteria() {
         sleep 0.5
 
         # Enable & Reload
-        sudo ufw enable
+        echo "y" | sudo ufw enable
         sudo ufw reload
 
         echo 'UFW is Optimized.'
@@ -174,7 +174,7 @@ modify_hysteria_config() {
             sleep 0.5
 
             # Enable & Reload
-            sudo ufw enable
+            echo "y" | sudo ufw enable
             sudo ufw reload
 
             echo 'UFW is Optimized.'
@@ -309,7 +309,7 @@ install_tuic() {
         sleep 0.5
 
         # Enable & Reload
-        sudo ufw enable
+        echo "y" | sudo ufw enable
         sudo ufw reload
 
         echo 'UFW is Optimized.'
@@ -411,7 +411,7 @@ modify_tuic_config() {
             sleep 0.5
 
             # Enable & Reload
-            sudo ufw enable
+            echo "y" | sudo ufw enable
             sudo ufw reload
 
             echo 'UFW is Optimized.'
@@ -543,7 +543,7 @@ install_reality() {
         sleep 0.5
 
         # Enable & Reload
-        sudo ufw enable
+        echo "y" | sudo ufw enable
         sudo ufw reload
 
         echo 'UFW is Optimized.'
@@ -641,7 +641,7 @@ modify_reality_config() {
             sleep 0.5
 
             # Enable & Reload
-            sudo ufw enable
+            echo "y" | sudo ufw enable
             sudo ufw reload
 
             echo 'UFW is Optimized.'
@@ -778,7 +778,7 @@ install_shadowtls() {
         sleep 0.5
 
         # Enable & Reload
-        sudo ufw enable
+        echo "y" | sudo ufw enable
         sudo ufw reload
 
         echo 'UFW is Optimized.'
@@ -882,7 +882,7 @@ modify_shadowtls_config() {
             sleep 0.5
 
             # Enable & Reload
-            sudo ufw enable
+            echo "y" | sudo ufw enable
             sudo ufw reload
 
             echo 'UFW is Optimized.'
