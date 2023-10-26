@@ -16,7 +16,7 @@
                     "h3"
                 ],
                 "enabled": true,
-                "server_name": "www.google.com",
+                "server_name": "DOMAIN",
                 "certificate_path": "/etc/naive/server.crt",
                 "key_path": "/etc/naive/server.key"
             }
