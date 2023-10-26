@@ -972,16 +972,20 @@ install_naive() {
     # Download the SN.service file
     curl -Lo /etc/systemd/system/SN.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SN.service && systemctl daemon-reload
 
+    # Prompt the user to enter domain and replace "DOMAIN" in the config.json file
+    read -p "Please enter your Domain: " user_domain
+    sed -i "s/DOMAIN/$user_domain/" /etc/naive/config.json
+
     # Get certificate
     mkdir /root/selfcert && cd /root/selfcert || exit
 
     openssl genrsa -out ca.key 2048
 
-    openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=Google Root CA" -out ca.crt
+    openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=$user_domain, Inc./CN=$user_domain Root CA" -out ca.crt
 
-    openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=*.google.com" -out server.csr
+    openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=$user_domain, Inc./CN=*.$user_domain" -out server.csr
 
-    openssl x509 -req -extfile <(printf "subjectAltName=DNS:google.com,DNS:www.google.com") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
+    openssl x509 -req -extfile <(printf "subjectAltName=DNS:$user_domain,DNS:www.$user_domain") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
 
     mv server.crt /etc/naive/server.crt
 
@@ -1002,10 +1006,6 @@ install_naive() {
     # Generate a name and replace "NAME" in the config.json file
     name=$(openssl rand -hex 4)
     sed -i "s/NAME/$name/" /etc/naive/config.json
-
-    # Use a public DNS service to determine the public IP address
-    public_ipv4=$(curl -s https://v4.ident.me)
-    public_ipv6=$(curl -s https://v6.ident.me)
 
     # UFW optimization
     if sudo ufw status | grep -q "Status: active"; then
@@ -1037,21 +1037,14 @@ install_naive() {
 
     # Construct and display the resulting URL & QR
     result_url=" 
-    ipv4 : naive+https://$name:$password@$public_ipv4:$user_port#Naive
-    ---------------------------------------------------------------
-    ipv6 : naive+https://$name:$password@[$public_ipv6]:$user_port#Naive"
+    naive+https://$name:$password@$user_domain:$user_port#Naive"
+
     echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/naive/config.txt # Red color for URL
 
     cat /etc/naive/config.txt
 
-    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/naive/config.txt)
-    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/naive/config.txt)
-
-    echo IPv4:
-    qrencode -t ANSIUTF8 <<<"$ipv4qr"
-
-    echo IPv6:
-    qrencode -t ANSIUTF8 <<<"$ipv6qr"
+    echo QR:
+    qrencode -t ANSIUTF8 <<<"/etc/naive/config.txt"
 
     echo "Naive setup completed."
 
@@ -1075,24 +1068,28 @@ modify_naive_config() {
         # Create a directory for naive configuration and download the config.json file
         mkdir -p /etc/naive && curl -Lo /etc/naive/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Naive.json
 
-        # Get certificate
-        mkdir /root/selfcert && cd /root/selfcert || exit
+    # Prompt the user to enter domain and replace "DOMAIN" in the config.json file
+    read -p "Please enter your Domain: " user_domain
+    sed -i "s/DOMAIN/$user_domain/" /etc/naive/config.json
 
-        openssl genrsa -out ca.key 2048
+    # Get certificate
+    mkdir /root/selfcert && cd /root/selfcert || exit
 
-        openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=Google Root CA" -out ca.crt
+    openssl genrsa -out ca.key 2048
 
-        openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=*.google.com" -out server.csr
+    openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=$user_domain, Inc./CN=$user_domain Root CA" -out ca.crt
 
-        openssl x509 -req -extfile <(printf "subjectAltName=DNS:google.com,DNS:www.google.com") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
+    openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=$user_domain, Inc./CN=*.$user_domain" -out server.csr
 
-        mv server.crt /etc/naive/server.crt
+    openssl x509 -req -extfile <(printf "subjectAltName=DNS:$user_domain,DNS:www.$user_domain") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
 
-        mv server.key /etc/naive/server.key
+    mv server.crt /etc/naive/server.crt
 
-        cd || exit
+    mv server.key /etc/naive/server.key
 
-        rm -rf /root/selfcert
+    cd || exit
+
+    rm -rf /root/selfcert
 
         # Prompt the user to enter a port and replace "PORT" in the config.json file
         read -p "Please enter a port: " user_port
@@ -1105,10 +1102,6 @@ modify_naive_config() {
         # Generate a name and replace "NAME" in the config.json file
         name=$(openssl rand -hex 4)
         sed -i "s/NAME/$name/" /etc/naive/config.json
-
-        # Use a public DNS service to determine the public IP address
-        public_ipv4=$(curl -s https://v4.ident.me)
-        public_ipv6=$(curl -s https://v6.ident.me)
 
         # UFW optimization
         if sudo ufw status | grep -q "Status: active"; then
@@ -1138,25 +1131,18 @@ modify_naive_config() {
         # Start the Naive service
         sudo systemctl start SN
 
-        # Construct and display the resulting URL
-        result_url=" 
-        ipv4 : naive+https://$name:$password@$public_ipv4:$user_port#Naive
-        ---------------------------------------------------------------
-        ipv6 : naive+https://$name:$password@[$public_ipv6]:$user_port#Naive"
-        echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/naive/config.txt # Red color for URL
+    # Construct and display the resulting URL & QR
+    result_url=" 
+    naive+https://$name:$password@$user_domain:$user_port#Naive"
 
-        cat /etc/naive/config.txt
+    echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/naive/config.txt # Red color for URL
 
-        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/naive/config.txt)
-        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/naive/config.txt)
+    cat /etc/naive/config.txt
 
-        echo IPv4:
-        qrencode -t ANSIUTF8 <<<"$ipv4qr"
+    echo QR:
+    qrencode -t ANSIUTF8 <<<"/etc/naive/config.txt"
 
-        echo IPv6:
-        qrencode -t ANSIUTF8 <<<"$ipv6qr"
-
-        echo "Naive configuration modified."
+    echo "Naive setup completed."
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
@@ -1192,16 +1178,10 @@ show_naive_config() {
 
     if [ -e "$naive_check" ]; then
 
-        cat /etc/naive/config.txt
+    cat /etc/naive/config.txt
 
-        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/naive/config.txt)
-        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/naive/config.txt)
-
-        echo IPv4:
-        qrencode -t ANSIUTF8 <<<"$ipv4qr"
-
-        echo IPv6:
-        qrencode -t ANSIUTF8 <<<"$ipv6qr"
+    echo QR:
+    qrencode -t ANSIUTF8 <<<"/etc/naive/config.txt"
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
