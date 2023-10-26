@@ -33,10 +33,16 @@ while true; do
     echo -e "19: \e[93mEnable/Disable WARP on ShadowTLS\e[0m"
     echo -e "20: \e[93mUninstall ShadowTLS\e[0m"
     echo -------------------------------------------
-    echo -e "21: \e[93mGenerate WARP+ Key\e[0m"
-    echo -e "22: \e[93mInstall WARP\e[0m"
-    echo -e "23: \e[93mShow WARP Config\e[0m"
-    echo -e "24: \e[93mUninstall WARP\e[0m"
+    echo -e "21: \e[93mInstall Naive\e[0m"
+    echo -e "22: \e[93mModify Naive Config\e[0m"
+    echo -e "23: \e[93mShow Naive Config\e[0m"
+    echo -e "24: \e[93mEnable/Disable WARP on Naive\e[0m"
+    echo -e "25: \e[93mUninstall Naive\e[0m"
+    echo -------------------------------------------    
+    echo -e "26: \e[93mGenerate WARP+ Key\e[0m"
+    echo -e "27: \e[93mInstall WARP\e[0m"
+    echo -e "28: \e[93mShow WARP Config\e[0m"
+    echo -e "29: \e[93mUninstall WARP\e[0m"
     echo -------------------------------------------
     echo -e "0:  \e[95mExit\e[0m"
 
@@ -133,17 +139,37 @@ while true; do
         ;;
     21)
         clear    
-        warp_key_gen
+        install_naive
         ;;
     22)
         clear    
-        install_warp
+        modify_naive_config
         ;;
     23)
         clear    
-        show_warp_config
+        show_naive_config
         ;;
     24)
+        clear    
+        toggle_warp_naive
+        ;;
+    25)
+        clear    
+        uninstall_naive
+        ;;        
+    26)
+        clear    
+        warp_key_gen
+        ;;
+    27)
+        clear    
+        install_warp
+        ;;
+    28)
+        clear    
+        show_warp_config
+        ;;
+    29)
         clear    
         uninstall_warp
         ;;
