@@ -3,27 +3,24 @@
 source <(curl -sSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/Source.sh)
 
 while true; do
-    user_choice=$(
-        dialog --clear --title "Main Menu" --menu "Please select a protocol:" 16 60 5 \
-            "Server Optimizer" "Optimize the server" \
-            "Update Sing-Box Cores" "Update Sing-Box Cores" \
-            "" "" \
-            "Hysteria2" "Manage Hysteria2" \
-            "Tuic" "Manage Tuic" \
-            "Reality" "Manage Reality" \
-            "ShadowTLS" "Manage ShadowTLS" \
-            "Naive" "Manage Naive" \
-            "Warp" "Manage Warp" \
-            "Exit" "Exit the script" 3>&1 1>&2 2>&3
-    )
+    user_choice=$(dialog --clear --title "Main Menu" --menu "Please select a protocol:" 16 60 5 \
+        "Server Optimizer" "Optimize the server" \
+        "Update Sing-Box Cores" "Update Sing-Box Cores" \
+        "" "" \
+        "Hysteria2" "Manage Hysteria2" \
+        "Tuic" "Manage Tuic" \
+        "Reality" "Manage Reality" \
+        "ShadowTLS" "Manage ShadowTLS" \
+        "Warp" "Manage Warp" \
+        "Exit" "Exit the script" 3>&1 1>&2 2>&3)
 
     case $user_choice in
     "Server Optimizer")
-        clear
+        clear    
         optimize_server
         ;;
     "Update Sing-Box Cores")
-        clear
+        clear    
         update_sing-box_core
         ;;
     "Hysteria2")
@@ -78,7 +75,7 @@ while true; do
 
             case $user_choice in
             "Install Tuic")
-                clear
+                clear            
                 install_tuic
                 ;;
             "Modify Tuic Config")
@@ -176,46 +173,6 @@ while true; do
             "Uninstall ShadowTLS")
                 clear
                 uninstall_shadowtls
-                ;;
-            "Back")
-                break
-                ;;
-            *)
-                dialog --msgbox "Invalid choice. Please select a valid option." 10 30
-                ;;
-            esac
-        done
-        ;;
-    "Naive")
-        while true; do
-            user_choice=$(dialog --clear --title "Naive Menu" --menu "Please select an option:" 25 80 15 \
-                "Install Naive" "Install Naive" \
-                "Modify Naive Config" "Modify Naive Config" \
-                "Show Naive Config" "Show Naive Config" \
-                "Enable/Disable WARP on Naive" "Enable/Disable WARP on Naive" \
-                "Uninstall Naive" "Uninstall Naive" \
-                "Back" "Back to Main Menu" 3>&1 1>&2 2>&3)
-
-            case $user_choice in
-            "Install Naive")
-                clear
-                install_naive
-                ;;
-            "Modify Naive Config")
-                clear
-                modify_naive_config
-                ;;
-            "Show Naive Config")
-                clear
-                show_naive_config
-                ;;
-            "Enable/Disable WARP on Naive")
-                clear
-                toggle_warp_naive
-                ;;
-            "Uninstall Naive")
-                clear
-                uninstall_naive
                 ;;
             "Back")
                 break
