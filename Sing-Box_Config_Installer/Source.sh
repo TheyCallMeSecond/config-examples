@@ -946,6 +946,276 @@ uninstall_shadowtls() {
 
 }
 
+# Function to install Naive
+install_naive() {
+    # Stop the Naive service
+    sudo systemctl stop SN
+
+    # Remove Naive binary, configuration, and service file
+    sudo rm -f /usr/bin/SN
+    rm -rf /etc/naive
+    sudo rm -f /etc/systemd/system/SN.service
+
+    # Download sing-box binary
+    mkdir /root/singbox && cd /root/singbox || exit
+    LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+    LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
+    LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+    wget "$LINK"
+    tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+    cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SN"
+    cd && rm -rf singbox
+
+    # Create a directory for Naive configuration and download the config.json file
+    mkdir -p /etc/naive && curl -Lo /etc/hysteria2/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Naive.json
+
+    # Download the SN.service file
+    curl -Lo /etc/systemd/system/SN.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SN.service && systemctl daemon-reload
+
+    # Get certificate
+    mkdir /root/selfcert && cd /root/selfcert || exit
+
+    openssl genrsa -out ca.key 2048
+
+    openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=Google Root CA" -out ca.crt
+
+    openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=*.google.com" -out server.csr
+
+    openssl x509 -req -extfile <(printf "subjectAltName=DNS:google.com,DNS:www.google.com") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
+
+    mv server.crt /etc/naive/server.crt
+
+    mv server.key /etc/naive/server.key
+
+    cd || exit
+
+    rm -rf /root/selfcert
+
+    # Prompt the user to enter a port and replace "PORT" in the config.json file
+    read -p "Please enter a port: " user_port
+    sed -i "s/PORT/$user_port/" /etc/naive/config.json
+
+    # Generate a password and replace "PASSWORD" in the config.json file
+    password=$(openssl rand -hex 8)
+    sed -i "s/PASSWORD/$password/" /etc/naive/config.json
+
+    # Generate a name and replace "NAME" in the config.json file
+    name=$(openssl rand -hex 4)
+    sed -i "s/NAME/$name/" /etc/naive/config.json
+
+    # Use a public DNS service to determine the public IP address
+    public_ipv4=$(curl -s https://v4.ident.me)
+    public_ipv6=$(curl -s https://v6.ident.me)
+
+    # UFW optimization
+    if sudo ufw status | grep -q "Status: active"; then
+
+        # Disable UFW
+        sudo ufw disable
+
+        # Open config port
+        sudo ufw allow "$user_port"
+        sudo ufw allow "$user_port"/udp
+        sleep 0.5
+
+        # Enable & Reload
+        echo "y" | sudo ufw enable
+        sudo ufw reload
+
+        echo 'UFW is Optimized.'
+
+        sleep 0.5
+
+    else
+
+        echo "UFW in not active"
+
+    fi
+
+    # Enable and start the SH service
+    sudo systemctl enable --now SN
+
+    # Construct and display the resulting URL & QR
+    result_url=" 
+    ipv4 : naive+https://$name:$password@$public_ipv4:$user_port#Naive
+    ---------------------------------------------------------------
+    ipv6 : naive+https://$name:$password@[$public_ipv6]:$user_port#Naive"
+    echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/naive/config.txt # Red color for URL
+
+    cat /etc/naive/config.txt
+
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/naive/config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/naive/config.txt)
+
+    echo IPv4:
+    qrencode -t ANSIUTF8 <<<"$ipv4qr"
+
+    echo IPv6:
+    qrencode -t ANSIUTF8 <<<"$ipv6qr"
+
+    echo "Naive setup completed."
+
+    echo -e "\e[31mPress Enter to Exit\e[0m"
+    read
+    clear
+}
+
+# Function to modify Naive configuration
+modify_naive_config() {
+    naive_check="/etc/naive/config.json"
+
+    if [ -e "$naive_check" ]; then
+
+        # Stop the Naive service
+        sudo systemctl stop SN
+
+        # Remove the existing configuration
+        rm -rf /etc/naive
+
+        # Create a directory for naive configuration and download the config.json file
+        mkdir -p /etc/naive && curl -Lo /etc/naive/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Naive.json
+
+        # Get certificate
+        mkdir /root/selfcert && cd /root/selfcert || exit
+
+        openssl genrsa -out ca.key 2048
+
+        openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=Google Root CA" -out ca.crt
+
+        openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=*.google.com" -out server.csr
+
+        openssl x509 -req -extfile <(printf "subjectAltName=DNS:google.com,DNS:www.google.com") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
+
+        mv server.crt /etc/naive/server.crt
+
+        mv server.key /etc/naive/server.key
+
+        cd || exit
+
+        rm -rf /root/selfcert
+
+        # Prompt the user to enter a port and replace "PORT" in the config.json file
+        read -p "Please enter a port: " user_port
+        sed -i "s/PORT/$user_port/" /etc/naive/config.json
+
+        # Generate a password and replace "PASSWORD" in the config.json file
+        password=$(openssl rand -hex 8)
+        sed -i "s/PASSWORD/$password/" /etc/naive/config.json
+
+        # Generate a name and replace "NAME" in the config.json file
+        name=$(openssl rand -hex 4)
+        sed -i "s/NAME/$name/" /etc/naive/config.json
+
+        # Use a public DNS service to determine the public IP address
+        public_ipv4=$(curl -s https://v4.ident.me)
+        public_ipv6=$(curl -s https://v6.ident.me)
+
+        # UFW optimization
+        if sudo ufw status | grep -q "Status: active"; then
+
+            # Disable UFW
+            sudo ufw disable
+
+            # Open config port
+            sudo ufw allow "$user_port"
+            sudo ufw allow "$user_port"/udp
+            sleep 0.5
+
+            # Enable & Reload
+            echo "y" | sudo ufw enable
+            sudo ufw reload
+
+            echo 'UFW is Optimized.'
+
+            sleep 0.5
+
+        else
+
+            echo "UFW in not active"
+
+        fi
+
+        # Start the Naive service
+        sudo systemctl start SN
+
+        # Construct and display the resulting URL
+        result_url=" 
+        ipv4 : naive+https://$name:$password@$public_ipv4:$user_port#Naive
+        ---------------------------------------------------------------
+        ipv6 : naive+https://$name:$password@[$public_ipv6]:$user_port#Naive"
+        echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/naive/config.txt # Red color for URL
+
+        cat /etc/naive/config.txt
+
+        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/naive/config.txt)
+        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/naive/config.txt)
+
+        echo IPv4:
+        qrencode -t ANSIUTF8 <<<"$ipv4qr"
+
+        echo IPv6:
+        qrencode -t ANSIUTF8 <<<"$ipv6qr"
+
+        echo "Naive configuration modified."
+
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
+        clear
+
+    else
+
+        dialog --msgbox "Naive is not installed yet." 10 30
+        clear
+
+    fi
+
+}
+
+# Function to uninstall Naive
+uninstall_naive() {
+    # Stop the Naive service
+    sudo systemctl stop SN
+
+    # Remove Naive binary, configuration, and service file
+    sudo rm -f /usr/bin/SN
+    rm -rf /etc/naive
+    sudo rm -f /etc/systemd/system/SN.service
+
+    dialog --msgbox "Naive uninstalled." 10 30
+    clear
+
+}
+
+# Function to show Naive config
+show_naive_config() {
+    naive_check="/etc/naive/config.txt"
+
+    if [ -e "$naive_check" ]; then
+
+        cat /etc/naive/config.txt
+
+        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/naive/config.txt)
+        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/naive/config.txt)
+
+        echo IPv4:
+        qrencode -t ANSIUTF8 <<<"$ipv4qr"
+
+        echo IPv6:
+        qrencode -t ANSIUTF8 <<<"$ipv6qr"
+
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
+        clear
+
+    else
+
+        dialog --msgbox "Naive is not installed yet." 10 30
+        clear
+
+    fi
+
+}
+
 # Function to show hysteria config
 show_hysteria_config() {
     hysteria_check="/etc/hysteria2/config.txt"
@@ -1266,6 +1536,32 @@ uninstall_warp() {
         echo
     fi
 
+    file5="/etc/naive/config.json"
+
+    if [ -e "$file5" ]; then
+
+        if jq -e '.outbounds[0].type == "socks"' "$file5" &>/dev/null; then
+            # Set the new JSON object for outbounds (switch to direct)
+            new_json='{
+            "tag": "direct",
+            "type": "direct"
+        }'
+
+            jq '.outbounds = ['"$new_json"']' "$file5" >/tmp/tmp_config.json
+            mv /tmp/tmp_config.json "$file5"
+
+            systemctl restart SN
+
+            echo "WARP is disabled on Naive"
+        else
+
+            echo
+        fi
+
+    else
+        echo
+    fi
+
     dialog --msgbox "WARP uninstalled." 10 30
     clear
 
@@ -1410,6 +1706,34 @@ update_sing-box_core() {
     else
 
         echo "Hysteria2 is not installed yet."
+
+    fi
+
+    sn_core_check="/usr/bin/SN"
+
+    if [ -e "$sn_core_check" ]; then
+
+        systemctl stop SN
+
+        rm /usr/bin/SN
+
+        # Download sing-box binary
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SN"
+        cd && rm -rf singbox
+
+        systemctl start SN
+
+        echo "Naive sing-box core has been updated"
+
+    else
+
+        echo "Naive is not installed yet."
 
     fi
 
@@ -1641,6 +1965,63 @@ toggle_warp_hysteria() {
 
     else
         dialog --msgbox "Hysteria2 is not installed yet." 10 30
+        clear
+    fi
+
+}
+
+# Function to disable warp on Naive
+toggle_warp_naive() {
+    file="/etc/naive/config.json"
+    warp="/etc/sbw/proxy.json"
+
+    if [ -e "$file" ]; then
+
+        if [ -e "$warp" ]; then
+
+            systemctl stop SN
+
+            if jq -e '.outbounds[0].type == "socks"' "$file" &>/dev/null; then
+                # Set the new JSON object for outbounds (switch to direct)
+                new_json='{
+            "tag": "direct",
+            "type": "direct"
+        }'
+
+                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
+                mv /tmp/tmp_config.json "$file"
+
+                systemctl start SN
+
+                dialog --msgbox "WARP is disabled now" 10 30
+                clear
+            else
+                # Set the new JSON object for outbounds (switch to socks)
+                new_json='{
+            "type": "socks",
+            "tag": "socks-out",
+            "server": "127.0.0.1",
+            "server_port": 2000,
+            "version": "5"
+        }'
+
+                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
+                mv /tmp/tmp_config.json "$file"
+
+                systemctl start SN
+
+                dialog --msgbox "WARP is enabled now" 10 30
+                clear
+            fi
+
+        else
+            dialog --msgbox "WARP is not installed yet" 10 30
+            clear
+
+        fi
+
+    else
+        dialog --msgbox "Naive is not installed yet." 10 30
         clear
     fi
 
