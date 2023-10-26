@@ -967,7 +967,7 @@ install_naive() {
     cd && rm -rf singbox
 
     # Create a directory for Naive configuration and download the config.json file
-    mkdir -p /etc/naive && curl -Lo /etc/hysteria2/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Naive.json
+    mkdir -p /etc/naive && curl -Lo /etc/naive/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Naive.json
 
     # Download the SN.service file
     curl -Lo /etc/systemd/system/SN.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SN.service && systemctl daemon-reload
