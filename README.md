@@ -1,6 +1,13 @@
-<p align="center">
+<div align="center">
 نصب و کانفیگ اتوماتیک WARP, ShadowTLS, Reality, TUIC, Hysteria2
-</p>
+
+
+
+![GitHub Repo stars](https://img.shields.io/github/stars/TheyCallMeSecond/config-examples?style=for-the-badge&color=cba6f7) ![GitHub last commit](https://img.shields.io/github/last-commit/TheyCallMeSecond/config-examples?style=for-the-badge&color=b4befe) ![GitHub repo size](https://img.shields.io/github/repo-size/TheyCallMeSecond/config-examples?style=for-the-badge&color=cba6f7)
+
+
+<br/>
+</div>
 
 ------------
 
