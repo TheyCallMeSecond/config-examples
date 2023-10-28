@@ -476,13 +476,13 @@ uninstall_tuic() {
 }
 
 install_reality() {
-    # Stop the sing-box service
-    sudo systemctl stop sing-box
+    # Stop the RS service
+    sudo systemctl stop RS
 
-    # Remove sing-box binary, configuration, and service file
-    sudo rm -f /usr/bin/sing-box
-    rm -rf /etc/sing-box
-    sudo rm -f /etc/systemd/system/sing-box.service
+    # Remove RS binary, configuration, and service file
+    sudo rm -f /usr/bin/RS
+    rm -rf /etc/reality
+    sudo rm -f /etc/systemd/system/RS.service
 
     # Download sing-box binary
     mkdir /root/singbox && cd /root/singbox || exit
@@ -491,26 +491,26 @@ install_reality() {
     LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
     wget "$LINK"
     tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-    cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/sing-box"
+    cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/RS"
     cd && rm -rf singbox
 
-    # Create a directory for sing-box configuration and download the Reality-gRPC.json file
-    mkdir -p /etc/sing-box && curl -Lo /etc/sing-box/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC.json
+    # Create a directory for RS configuration and download the Reality-gRPC.json file
+    mkdir -p /etc/reality && curl -Lo /etc/reality/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC.json
 
-    # Download the sing-box.service file
-    curl -Lo /etc/systemd/system/sing-box.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/sing-box.service && systemctl daemon-reload
+    # Download the RS.service file
+    curl -Lo /etc/systemd/system/RS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/RS.service && systemctl daemon-reload
 
     # Prompt the user to enter a port and replace "PORT" in the config.json file
     read -p "Please enter a port: " user_port
-    sed -i "s/PORT/$user_port/" /etc/sing-box/config.json
+    sed -i "s/PORT/$user_port/" /etc/reality/config.json
 
     # Prompt the user to enter a sni and replace "SNI" in the config.json file
     read -p "Please enter sni: " user_sni
-    sed -i "s/SNI/$user_sni/" /etc/sing-box/config.json
+    sed -i "s/SNI/$user_sni/" /etc/reality/config.json
 
     # Generate uuid and replace "UUID" in the config.json file
     uuid=$(cat /proc/sys/kernel/random/uuid)
-    sed -i "s/UUID/$uuid/" /etc/sing-box/config.json
+    sed -i "s/UUID/$uuid/" /etc/reality/config.json
 
     # Generate reality key-pair
     output=$(sing-box generate reality-keypair)
@@ -518,15 +518,15 @@ install_reality() {
     private_key=$(echo "$output" | grep -oP 'PrivateKey: \K\S+')
     public_key=$(echo "$output" | grep -oP 'PublicKey: \K\S+')
 
-    sed -i "s/PRIVATE-KEY/$private_key/" /etc/sing-box/config.json
+    sed -i "s/PRIVATE-KEY/$private_key/" /etc/reality/config.json
 
     # Generate short id
     short_id=$(openssl rand -hex 8)
-    sed -i "s/SHORT-ID/$short_id/" /etc/sing-box/config.json
+    sed -i "s/SHORT-ID/$short_id/" /etc/reality/config.json
 
     # Generate service name
     service_name=$(openssl rand -hex 4)
-    sed -i "s/SERVICE-NAME/$service_name/" /etc/sing-box/config.json
+    sed -i "s/SERVICE-NAME/$service_name/" /etc/reality/config.json
 
     # Use a public DNS service to determine the public IP address
     public_ipv4=$(curl -s https://v4.ident.me)
@@ -557,19 +557,19 @@ install_reality() {
     fi
 
     # Enable and start the sing-box service
-    sudo systemctl enable --now sing-box
+    sudo systemctl enable --now RS
 
     # Construct and display the resulting URL
     result_url=" 
     ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
     ---------------------------------------------------------------
     ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality"
-    echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/sing-box/config.txt # Red color for URL
+    echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/reality/config.txt # Red color for URL
 
-    cat /etc/sing-box/config.txt
+    cat /etc/reality/config.txt
 
-    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/sing-box/config.txt)
-    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/sing-box/config.txt)
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/reality/config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/reality/config.txt)
 
     echo IPv4:
     qrencode -t ANSIUTF8 <<<"$ipv4qr"
@@ -585,30 +585,30 @@ install_reality() {
 
 # Function to modify reality configuration
 modify_reality_config() {
-    reality_check="/etc/sing-box/config.json"
+    reality_check="/etc/reality/config.json"
 
     if [ -e "$reality_check" ]; then
 
-        # Stop the sing-box service
-        sudo systemctl stop sing-box
+        # Stop the RS service
+        sudo systemctl stop RS
 
         # Remove the existing configuration
-        rm -rf /etc/sing-box
+        rm -rf /etc/reality
 
-        # Create a directory for sing-box configuration and download the config.json file
-        mkdir -p /etc/sing-box && curl -Lo /etc/sing-box/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC.json
+        # Create a directory for RS configuration and download the config.json file
+        mkdir -p /etc/reality && curl -Lo /etc/reality/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC.json
 
         # Prompt the user to enter a port and replace "PORT" in the config.json file
         read -p "Please enter a port: " user_port
-        sed -i "s/PORT/$user_port/" /etc/sing-box/config.json
+        sed -i "s/PORT/$user_port/" /etc/reality/config.json
 
         # Prompt the user to enter a sni and replace "SNI" in the config.json file
         read -p "Please enter sni: " user_sni
-        sed -i "s/SNI/$user_sni/" /etc/sing-box/config.json
+        sed -i "s/SNI/$user_sni/" /etc/reality/config.json
 
         # Generate uuid and replace "UUID" in the config.json file
         uuid=$(cat /proc/sys/kernel/random/uuid)
-        sed -i "s/UUID/$uuid/" /etc/sing-box/config.json
+        sed -i "s/UUID/$uuid/" /etc/reality/config.json
 
         # Generate reality key-pair
         output=$(sing-box generate reality-keypair)
@@ -616,15 +616,15 @@ modify_reality_config() {
         private_key=$(echo "$output" | grep -oP 'PrivateKey: \K\S+')
         public_key=$(echo "$output" | grep -oP 'PublicKey: \K\S+')
 
-        sed -i "s/PRIVATE-KEY/$private_key/" /etc/sing-box/config.json
+        sed -i "s/PRIVATE-KEY/$private_key/" /etc/reality/config.json
 
         # Generate short id
         short_id=$(openssl rand -hex 8)
-        sed -i "s/SHORT-ID/$short_id/" /etc/sing-box/config.json
+        sed -i "s/SHORT-ID/$short_id/" /etc/reality/config.json
 
         # Generate service name
         service_name=$(openssl rand -hex 4)
-        sed -i "s/SERVICE-NAME/$service_name/" /etc/sing-box/config.json
+        sed -i "s/SERVICE-NAME/$service_name/" /etc/reality/config.json
 
         # Use a public DNS service to determine the public IP address
         public_ipv4=$(curl -s https://v4.ident.me)
@@ -655,19 +655,19 @@ modify_reality_config() {
         fi
 
         # Start the sing-box service
-        sudo systemctl start sing-box
+        sudo systemctl start RS
 
         # Construct and display the resulting URL
         result_url=" 
         ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
         ---------------------------------------------------------------
         ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality"
-        echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/sing-box/config.txt # Red color for URL
+        echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/reality/config.txt # Red color for URL
 
-        cat /etc/sing-box/config.txt
+        cat /etc/reality/config.txt
 
-        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/sing-box/config.txt)
-        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/sing-box/config.txt)
+        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/reality/config.txt)
+        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/reality/config.txt)
 
         echo IPv4:
         qrencode -t ANSIUTF8 <<<"$ipv4qr"
@@ -692,13 +692,13 @@ modify_reality_config() {
 
 # Function to uninstall reality
 uninstall_reality() {
-    # Stop the sing-box service
-    sudo systemctl stop sing-box
+    # Stop the RS service
+    sudo systemctl stop RS
 
-    # Remove sing-box binary, configuration, and service file
-    sudo rm -f /usr/bin/sing-box
-    rm -rf /etc/sing-box
-    sudo rm -f /etc/systemd/system/sing-box.service
+    # Remove RS binary, configuration, and service file
+    sudo rm -f /usr/bin/RS
+    rm -rf /etc/reality
+    sudo rm -f /etc/systemd/system/RS.service
 
     dialog --msgbox "Reality uninstalled." 10 30
     clear
@@ -1008,14 +1008,14 @@ show_tuic_config() {
 
 # Function to show reality config
 show_reality_config() {
-    reality_check="/etc/sing-box/config.txt"
+    reality_check="/etc/reality/config.txt"
 
     if [ -e "$reality_check" ]; then
 
-        cat /etc/sing-box/config.txt
+        cat /etc/reality/config.txt
 
-        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/sing-box/config.txt)
-        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/sing-box/config.txt)
+        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/reality/config.txt)
+        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/reality/config.txt)
 
         echo IPv4:
         qrencode -t ANSIUTF8 <<<"$ipv4qr"
@@ -1162,7 +1162,7 @@ uninstall_warp() {
     rm -rf /etc/sbw
     sudo rm -f /etc/systemd/system/SBW.service
 
-    file1="/etc/sing-box/config.json"
+    file1="/etc/reality/config.json"
 
     if [ -e "$file1" ]; then
 
@@ -1176,7 +1176,7 @@ uninstall_warp() {
             jq '.outbounds = ['"$new_json"']' "$file1" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file1"
 
-            systemctl restart sing-box
+            systemctl restart RS
 
             echo "WARP is disabled on Reality"
         else
@@ -1273,13 +1273,13 @@ uninstall_warp() {
 
 # Function to update sing-box core
 update_sing-box_core() {
-    rlt_core_check="/usr/bin/sing-box"
+    rlt_core_check="/usr/bin/RS"
 
     if [ -e "$rlt_core_check" ]; then
 
-        systemctl stop sing-box
+        systemctl stop RS
 
-        rm /usr/bin/sing-box
+        rm /usr/bin/RS
 
         # Download sing-box binary
         mkdir /root/singbox && cd /root/singbox || exit
@@ -1288,10 +1288,10 @@ update_sing-box_core() {
         LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
         wget "$LINK"
         tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/sing-box"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/RS"
         cd && rm -rf singbox
 
-        systemctl start sing-box
+        systemctl start RS
 
         echo "Reality sing-box core has been updated"
 
@@ -1420,14 +1420,14 @@ update_sing-box_core() {
 
 # Function to disable warp on reality
 toggle_warp_reality() {
-    file="/etc/sing-box/config.json"
+    file="/etc/reality/config.json"
     warp="/etc/sbw/proxy.json"
 
     if [ -e "$file" ]; then
 
         if [ -e "$warp" ]; then
 
-            systemctl stop sing-box
+            systemctl stop RS
 
             if jq -e '.outbounds[0].type == "socks"' "$file" &>/dev/null; then
                 # Set the new JSON object for outbounds (switch to direct)
@@ -1439,7 +1439,7 @@ toggle_warp_reality() {
                 jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
                 mv /tmp/tmp_config.json "$file"
 
-                systemctl start sing-box
+                systemctl start RS
 
                 dialog --msgbox "WARP is disabled now" 10 30
                 clear
@@ -1456,7 +1456,7 @@ toggle_warp_reality() {
                 jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
                 mv /tmp/tmp_config.json "$file"
 
-                systemctl start sing-box
+                systemctl start RS
 
                 dialog --msgboxho "WARP is enabled now" 10 30
                 clear
