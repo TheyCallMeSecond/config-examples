@@ -52,7 +52,7 @@ check_and_display_process_status() {
   CUSTOM_NAME="$2"
   if pgrep -o -x "$PROCESS_NAME" >/dev/null; then
     PID=$(pgrep -o -x "$PROCESS_NAME")
-    PORT=$(ss -ltnp | grep "$PID" | awk '{print $4}' | cut -d ':' -f2)
+    PORT=$(ss -ltnup | grep "$PID" | awk '{print $4}' | cut -d ':' -f2)
     if [ -n "$PORT" ]; then
       echo "$CUSTOM_NAME: open (PID: $PID, Port: $PORT)"
     else
