@@ -175,7 +175,7 @@ while true; do
 
   1)
     sudo apt update
-    sudo apt install dialog qrencode jq openssl python3 python3-pip -y
+    sudo apt install qrencode jq openssl python3 python3-pip -y
     pip install httpx requests --break-system-packages
 
     clear
@@ -183,7 +183,7 @@ while true; do
     ;;
   2)
     sudo apt update
-    sudo apt install dialog qrencode jq openssl python3 python3-pip -y
+    sudo apt install qrencode jq openssl python3 python3-pip -y
     pip install httpx requests --break-system-packages
 
     clear
