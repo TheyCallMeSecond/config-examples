@@ -47,7 +47,7 @@ check_system_info() {
   prev_total=0
 
   for value in "${cpu_info[@]}"; do
-    prev_total=$((prev_total + value))
+      prev_total=$((prev_total + value))
   done
 
   sleep 1
@@ -57,7 +57,7 @@ check_system_info() {
   total=0
 
   for value in "${cpu_info[@]}"; do
-    total=$((total + value))
+      total=$((total + value))
   done
 
   delta_idle=$((idle - prev_idle))
