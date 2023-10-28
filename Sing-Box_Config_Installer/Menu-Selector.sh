@@ -34,9 +34,10 @@ check_system_info() {
 
   mem_info=$(grep MemTotal /proc/meminfo)
   total_memory=$(echo $mem_info | awk '{print $2}')
-  mem_info=$(grep MemFree /proc/meminfo)
-  free_memory=$(echo $mem_info | awk '{print $2}')
-  ram_usage_percentage=$(awk "BEGIN {printf \"%.2f\", (1 - $free_memory / $total_memory) * 100}")
+  mem_info=$(grep MemAvailable /proc/meminfo)
+  used_memory=$(echo $mem_info | awk '{print $2}')
+  ram_usage_percentage=$(awk "BEGIN {printf \"%.2f\", ($used_memory / $total_memory) * 100}")
+
 
 
   storage_info=$(df / | awk 'NR==2{print $3,$2}')
