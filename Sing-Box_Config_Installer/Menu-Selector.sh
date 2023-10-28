@@ -105,7 +105,7 @@ while true; do
   check_system_ip
 
   # List of processes to check, along with their custom names
-  processes=("SH:Hysteria2" "TS:TUIC" "sing-box:Reality" "ST:ShadowTLS" "SBW:WARP")
+  processes=("SH:Hysteria2" "TS:TUIC" "RS:Reality" "ST:ShadowTLS" "SBW:WARP")
 
   # Display the collected system information
   echo "#######################################################"
