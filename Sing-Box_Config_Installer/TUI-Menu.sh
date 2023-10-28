@@ -3,7 +3,7 @@
 source <(curl -sSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/Source.sh)
 
 while true; do
-    user_choice=$(dialog --clear --title "Main Menu" --menu "Please select a protocol:" 16 60 5 \
+    user_choice=$(whiptail --clear --title "Main Menu" --menu "Please select a protocol:" 25 80 15 \
         "Server Optimizer" "Optimize the server" \
         "Update Sing-Box Cores" "Update Sing-Box Cores" \
         "" "" \
@@ -16,16 +16,16 @@ while true; do
 
     case $user_choice in
     "Server Optimizer")
-        clear    
+        clear
         optimize_server
         ;;
     "Update Sing-Box Cores")
-        clear    
+        clear
         update_sing-box_core
         ;;
     "Hysteria2")
         while true; do
-            user_choice=$(dialog --clear --title "Hysteria2 Menu" --menu "Please select an option:" 25 80 15 \
+            user_choice=$(whiptail --clear --title "Hysteria2 Menu" --menu "Please select an option:" 25 80 15 \
                 "Install Hysteria2" "Install Hysteria2" \
                 "Modify Hysteria2 Config" "Modify Hysteria2 Config" \
                 "Show Hysteria2 Config" "Show Hysteria2 Config" \
@@ -58,14 +58,14 @@ while true; do
                 break
                 ;;
             *)
-                dialog --msgbox "Invalid choice. Please select a valid option." 10 30
+                whiptail --msgbox "Invalid choice. Please select a valid option." 10 30
                 ;;
             esac
         done
         ;;
     "Tuic")
         while true; do
-            user_choice=$(dialog --clear --title "Tuic Menu" --menu "Please select an option:" 25 80 15 \
+            user_choice=$(whiptail --clear --title "Tuic Menu" --menu "Please select an option:" 25 80 15 \
                 "Install Tuic" "Install Tuic" \
                 "Modify Tuic Config" "Modify Tuic Config" \
                 "Show Tuic Config" "Show Tuic Config" \
@@ -75,7 +75,7 @@ while true; do
 
             case $user_choice in
             "Install Tuic")
-                clear            
+                clear
                 install_tuic
                 ;;
             "Modify Tuic Config")
@@ -98,14 +98,14 @@ while true; do
                 break
                 ;;
             *)
-                dialog --msgbox "Invalid choice. Please select a valid option." 10 30
+                whiptail --msgbox "Invalid choice. Please select a valid option." 10 30
                 ;;
             esac
         done
         ;;
     "Reality")
         while true; do
-            user_choice=$(dialog --clear --title "Reality Menu" --menu "Please select an option:" 25 80 15 \
+            user_choice=$(whiptail --clear --title "Reality Menu" --menu "Please select an option:" 25 80 15 \
                 "Install Reality" "Install Reality" \
                 "Modify Reality Config" "Modify Reality Config" \
                 "Show Reality Config" "Show Reality Config" \
@@ -138,14 +138,14 @@ while true; do
                 break
                 ;;
             *)
-                dialog --msgbox "Invalid choice. Please select a valid option." 10 30
+                whiptail --msgbox "Invalid choice. Please select a valid option." 10 30
                 ;;
             esac
         done
         ;;
     "ShadowTLS")
         while true; do
-            user_choice=$(dialog --clear --title "ShadowTLS Menu" --menu "Please select an option:" 25 80 15 \
+            user_choice=$(whiptail --clear --title "ShadowTLS Menu" --menu "Please select an option:" 25 80 15 \
                 "Install ShadowTLS" "Install ShadowTLS" \
                 "Modify ShadowTLS Config" "Modify ShadowTLS Config" \
                 "Show ShadowTLS Config" "Show ShadowTLS Config" \
@@ -178,7 +178,7 @@ while true; do
                 break
                 ;;
             *)
-                dialog --msgbox "Invalid choice. Please select a valid option." 10 30
+                whiptail --msgbox "Invalid choice. Please select a valid option." 10 30
                 ;;
             esac
         done
@@ -186,7 +186,7 @@ while true; do
     "Warp")
         while true; do
             user_choice=$(
-                dialog --clear --title "Warp Menu" --menu "Please select an option:" 25 80 15 \
+                whiptail --clear --title "Warp Menu" --menu "Please select an option:" 25 80 15 \
                     "Generate WARP+ Key" "Generate WARP+ Key" \
                     "Install Warp" "Install Warp" \
                     "Show Warp Config" "Show Warp Config" \
@@ -215,7 +215,7 @@ while true; do
                 break
                 ;;
             *)
-                dialog --msgbox "Invalid choice. Please select a valid option." 10 30
+                whiptail --msgbox "Invalid choice. Please select a valid option." 10 30
                 ;;
             esac
         done
@@ -226,7 +226,7 @@ while true; do
         exit 0
         ;;
     *)
-        dialog --msgbox "Invalid choice. Please select a valid option." 10 30
+        whiptail --msgbox "Invalid choice. Please select a valid option." 10 30
         ;;
     esac
 done
