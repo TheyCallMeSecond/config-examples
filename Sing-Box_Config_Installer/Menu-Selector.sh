@@ -32,10 +32,12 @@ check_system_info() {
   KERNEL=$(uname -r)
   ARCHITECTURE=$(uname -m)
 
-  memory_info=$(free -m | grep Mem)
-  total_memory=$(echo $memory_info | awk '{print $2}')
-  free_memory=$(echo $memory_info | awk '{print $4}')
-  ram_usage_percentage=$(awk "BEGIN {printf \"%.2f\", $free_memory / $total_memory * 100}")
+  mem_info=$(grep MemTotal /proc/meminfo)
+  total_memory=$(echo $mem_info | awk '{print $2}')
+  mem_info=$(grep MemFree /proc/meminfo)
+  free_memory=$(echo $mem_info | awk '{print $2}')
+  ram_usage_percentage=$(awk "BEGIN {printf \"%.2f\", (1 - $free_memory / $total_memory) * 100}")
+
 
   storage_info=$(df / | awk 'NR==2{print $3,$2}')
   used_storage=$(echo $storage_info | awk '{print $1}')
