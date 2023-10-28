@@ -47,7 +47,7 @@ check_system_info() {
   prev_total=0
 
   for value in "${cpu_info[@]}"; do
-      prev_total=$((prev_total + value))
+    prev_total=$((prev_total + value))
   done
 
   sleep 1
@@ -57,7 +57,7 @@ check_system_info() {
   total=0
 
   for value in "${cpu_info[@]}"; do
-      total=$((total + value))
+    total=$((total + value))
   done
 
   delta_idle=$((idle - prev_idle))
@@ -122,17 +122,6 @@ while true; do
 
   echo
 
-  echo "
-▒█▀▀▀█ █▀▀ █░░ █▀▀ █▀▀ ▀▀█▀▀ 　 █▀▄▀█ █▀▀ █▀▀▄ █░░█ 　 ▄ 
-░▀▀▀▄▄ █▀▀ █░░ █▀▀ █░░ ░░█░░ 　 █░▀░█ █▀▀ █░░█ █░░█ 　 ░ 
-▒█▄▄▄█ ▀▀▀ ▀▀▀ ▀▀▀ ▀▀▀ ░░▀░░ 　 ▀░░░▀ ▀▀▀ ▀░░▀ ░▀▀▀ 　 ▀"
-
-  echo
-
-  echo
-
-  echo
-
   # Call the functions to collect system information
   check_system_info
   check_system_ip
@@ -143,9 +132,9 @@ while true; do
   # Display the collected system information
   echo "#######################################################"
   echo "Operating System: $SYS"
-  echo "Kernel: $KERNEL"                
+  echo "Kernel: $KERNEL"
   echo "Architecture: $ARCHITECTURE"
-  echo "Virtualization: $VIRT"            
+  echo "Virtualization: $VIRT"
   echo "======================================================="
   echo "RAM Usage: $ram_usage_percentage%"
   echo "CPU Usage: $cpu_usage_percentage%"
@@ -160,6 +149,18 @@ while true; do
     check_and_display_process_status "$process_name" "$custom_name"
   done
   echo "#######################################################"
+
+  echo
+
+  echo "
+▒█▀▀▀█ █▀▀ █░░ █▀▀ █▀▀ ▀▀█▀▀ 　 █▀▄▀█ █▀▀ █▀▀▄ █░░█ 　 ▄ 
+░▀▀▀▄▄ █▀▀ █░░ █▀▀ █░░ ░░█░░ 　 █░▀░█ █▀▀ █░░█ █░░█ 　 ░ 
+▒█▄▄▄█ ▀▀▀ ▀▀▀ ▀▀▀ ▀▀▀ ░░▀░░ 　 ▀░░░▀ ▀▀▀ ▀░░▀ ░▀▀▀ 　 ▀"
+
+  echo
+
+  echo
+
   echo
   echo -e "1:  \e[93mTUI Menu\e[0m"
   echo -e "2:  \e[93mLegacy Menu\e[0m"
