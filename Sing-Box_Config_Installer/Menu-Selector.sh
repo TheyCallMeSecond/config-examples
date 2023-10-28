@@ -48,9 +48,8 @@ check_system_ip() {
 }
 
 check_and_display_process_status() {
-  PROCESS_NAME="$1"
-  CUSTOM_NAME="$2"
-  if pgrep -o -x "$PROCESS_NAME" >/dev/null; then
+    PROCESS_NAME="$1"
+    CUSTOM_NAME="$2"
     PID=$(pgrep -o -x "$PROCESS_NAME")
     if [ -n "$PID" ]; then
         TCP_PORT=$(lsof -i -n -P -a -c "$PROCESS_NAME" -s TCP -t)
@@ -64,9 +63,9 @@ check_and_display_process_status() {
         else
             echo "$CUSTOM_NAME: open (PID: $PID, TCP Port: N/A, UDP Port: N/A)"
         fi
-  else
-    echo "$CUSTOM_NAME: closed"
-  fi
+    else
+        echo "$CUSTOM_NAME: closed"
+    fi
 }
 
 legacy() {
