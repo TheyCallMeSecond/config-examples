@@ -25,7 +25,7 @@ while true; do
         ;;
     "Hysteria2")
         while true; do
-            user_choice=$(whiptail --clear --title "Hysteria2 Menu" --menu "Please select an option:" 25 60 15 \
+            user_choice=$(whiptail --clear --title "Hysteria2 Menu" --menu "Please select an option:" 25 70 15 \
                 "Install Hysteria2" "Install Hysteria2" \
                 "Modify Hysteria2 Config" "Modify Hysteria2 Config" \
                 "Show Hysteria2 Config" "Show Hysteria2 Config" \
@@ -105,7 +105,7 @@ while true; do
         ;;
     "Reality")
         while true; do
-            user_choice=$(whiptail --clear --title "Reality Menu" --menu "Please select an option:" 25 60 15 \
+            user_choice=$(whiptail --clear --title "Reality Menu" --menu "Please select an option:" 25 65 15 \
                 "Install Reality" "Install Reality" \
                 "Modify Reality Config" "Modify Reality Config" \
                 "Show Reality Config" "Show Reality Config" \
@@ -145,7 +145,7 @@ while true; do
         ;;
     "ShadowTLS")
         while true; do
-            user_choice=$(whiptail --clear --title "ShadowTLS Menu" --menu "Please select an option:" 25 60 15 \
+            user_choice=$(whiptail --clear --title "ShadowTLS Menu" --menu "Please select an option:" 25 70 15 \
                 "Install ShadowTLS" "Install ShadowTLS" \
                 "Modify ShadowTLS Config" "Modify ShadowTLS Config" \
                 "Show ShadowTLS Config" "Show ShadowTLS Config" \
