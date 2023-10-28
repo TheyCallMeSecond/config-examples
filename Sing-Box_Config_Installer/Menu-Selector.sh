@@ -37,6 +37,11 @@ check_system_info() {
   free_memory=$(echo $memory_info | awk '{print $4}')
   ram_usage_percentage=$(awk "BEGIN {printf \"%.2f\", $free_memory / $total_memory * 100}")
 
+  storage_info=$(df / | awk 'NR==2{print $3,$2}')
+  used_storage=$(echo $storage_info | awk '{print $1}')
+  total_storage=$(echo $storage_info | awk '{print $2}')
+  storage_usage_percentage=$(awk "BEGIN {printf \"%.2f\", $used_storage / $total_storage * 100}")
+
 }
 
 # Check IPv4 IPv6 information
@@ -120,6 +125,7 @@ while true; do
   echo "Architecture: $ARCHITECTURE"
   echo "Virtualization: $VIRT"
   echo "RAM Usage: $ram_usage_percentage%"
+  echo "Storage Usage: $storage_usage_percentage%"
   echo "IPv4: $WAN4"
   echo "IPv6: $WAN6"
   echo "Country/ISP: $COUNTRY4 $ISP4"
