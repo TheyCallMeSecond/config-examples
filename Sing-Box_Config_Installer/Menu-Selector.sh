@@ -53,8 +53,9 @@ check_and_display_process_status() {
   if pgrep -o -x "$PROCESS_NAME" >/dev/null; then
     PID=$(pgrep -o -x "$PROCESS_NAME")
     PORT=$(ss -ltnup | grep "$PID" | awk '{print $4}' | cut -d ':' -f2 | grep -m 1 -oP '\d+')
-    if [ -n "$PORT" ]; then
-      echo "$CUSTOM_NAME: open (PID: $PID, Port: $PORT)"
+    FILTERED_PORTS=$(echo "$PORTS" | grep -v '0')
+    if [ -n "$FILTERED_PORTS" ]; then
+      echo "$CUSTOM_NAME: open (PID: $PID, Port: $FILTERED_PORTS)"
     else
       echo "$CUSTOM_NAME: open (PID: $PID, Port: N/A)"
     fi
