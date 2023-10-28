@@ -52,16 +52,12 @@ check_and_display_process_status() {
     CUSTOM_NAME="$2"
     PID=$(pgrep -o -x "$PROCESS_NAME")
     if [ -n "$PID" ]; then
-        TCP_PORT=$(lsof -i -n -P -a -c "$PROCESS_NAME" -s TCP -t)
-        UDP_PORT=$(lsof -i -n -P -a -c "$PROCESS_NAME" -s UDP -t)
-        if [ -n "$TCP_PORT" ] && [ -n "$UDP_PORT" ]; then
-            echo "$CUSTOM_NAME: open (PID: $PID, TCP Port: $TCP_PORT, UDP Port: $UDP_PORT)"
-        elif [ -n "$TCP_PORT" ]; then
-            echo "$CUSTOM_NAME: open (PID: $PID, TCP Port: $TCP_PORT, UDP Port: N/A)"
-        elif [ -n "$UDP_PORT" ]; then
-            echo "$CUSTOM_NAME: open (PID: $PID, TCP Port: N/A, UDP Port: $UDP_PORT)"
+        # Use ss to get port information
+        PORT_INFO=$(ss -tulnep | awk -v pid="$PID" '$6 == pid {print $5}')
+        if [ -n "$PORT_INFO" ]; then
+            echo "$CUSTOM_NAME: open (PID: $PID, Port: $PORT_INFO)"
         else
-            echo "$CUSTOM_NAME: open (PID: $PID, TCP Port: N/A, UDP Port: N/A)"
+            echo "$CUSTOM_NAME: open (PID: $PID, Port: N/A)"
         fi
     else
         echo "$CUSTOM_NAME: closed"
