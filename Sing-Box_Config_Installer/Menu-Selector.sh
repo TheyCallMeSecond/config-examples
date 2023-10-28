@@ -42,7 +42,27 @@ check_system_info() {
   total_storage=$(echo $storage_info | awk '{print $2}')
   storage_usage_percentage=$(awk "BEGIN {printf \"%.2f\", $used_storage / $total_storage * 100}")
 
-  cpu_info=$(mpstat 1 1 | awk '/Average:/ {print 100-$NF}')
+  cpu_info=(`cat /proc/stat | grep '^cpu '`)
+  prev_idle=${cpu_info[4]}
+  prev_total=0
+  
+  for value in "${cpu_info[@]}"; do
+    prev_total=$((prev_total+value))
+  done
+
+  sleep 1
+
+  cpu_info=(`cat /proc/stat | grep '^cpu '`)
+  idle=${cpu_info[4]}
+  total=0
+
+  for value in "${cpu_info[@]}"; do
+    total=$((total+value))
+  done
+
+  delta_idle=$((idle-prev_idle))
+  delta_total=$((total-prev_total))
+  cpu_usage_percentage=$((100*(delta_total-delta_idle)/delta_total))
 
 }
 
@@ -127,7 +147,7 @@ while true; do
   echo "Architecture: $ARCHITECTURE"
   echo "Virtualization: $VIRT"
   echo "RAM Usage: $ram_usage_percentage%"
-  echo "CPU Usage: $cpu_info%"
+  echo "CPU Usage: $cpu_usage_percentage%"
   echo "Storage Usage: $storage_usage_percentage%"
   echo "IPv4: $WAN4"
   echo "IPv6: $WAN6"
