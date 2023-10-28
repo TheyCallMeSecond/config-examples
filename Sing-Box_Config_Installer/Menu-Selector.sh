@@ -123,12 +123,12 @@ while true; do
 
     # Display the collected system information
     echo "#######################################################"    
-    echo "${GREEN}Operating System:${RESET} $SYS"
-    echo "${GREEN}Kernel:${RESET} $KERNEL"
-    echo "${GREEN}Architecture:${RESET} $ARCHITECTURE"
-    echo "${GREEN}Virtualization:${RESET} $VIRT"
-    echo "${GREEN}IPv4:${RESET} $WAN4 $COUNTRY4"
-    echo "${GREEN}IPv6:${RESET} $WAN6 $COUNTRY6"
+    echo "Operating System: $SYS"
+    echo "Kernel: $KERNEL"
+    echo "Architecture: $ARCHITECTURE"
+    echo "Virtualization: $VIRT"
+    echo "IPv4: $WAN4 $COUNTRY4"
+    echo "IPv6: $WAN6 $COUNTRY6"
     echo "======================================================="
     for process_info in "${processes[@]}"; do
         IFS=":" read -r process_name custom_name <<<"$process_info"
