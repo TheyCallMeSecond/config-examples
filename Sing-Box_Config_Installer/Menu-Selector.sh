@@ -42,6 +42,8 @@ check_system_info() {
   total_storage=$(echo $storage_info | awk '{print $2}')
   storage_usage_percentage=$(awk "BEGIN {printf \"%.2f\", $used_storage / $total_storage * 100}")
 
+  cpu_info=$(mpstat 1 1 | awk '/Average:/ {print 100-$NF}')
+
 }
 
 # Check IPv4 IPv6 information
@@ -125,6 +127,7 @@ while true; do
   echo "Architecture: $ARCHITECTURE"
   echo "Virtualization: $VIRT"
   echo "RAM Usage: $ram_usage_percentage%"
+  echo "CPU Usage: $cpu_info%"
   echo "Storage Usage: $storage_usage_percentage%"
   echo "IPv4: $WAN4"
   echo "IPv6: $WAN6"
