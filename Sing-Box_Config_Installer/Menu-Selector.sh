@@ -52,12 +52,18 @@ check_and_display_process_status() {
   CUSTOM_NAME="$2"
   if pgrep -o -x "$PROCESS_NAME" >/dev/null; then
     PID=$(pgrep -o -x "$PROCESS_NAME")
-    PORTS=$(ss -tunlp | grep "$PID" | awk '{print $4}' | cut -d ':' -f2 | grep -v '0' | head -n 1)
-    if [ -n "$PORTS" ]; then
-      echo "$CUSTOM_NAME: open (PID: $PID, Port: $PORTS)"
-    else
-      echo "$CUSTOM_NAME: open (PID: $PID, Port: N/A)"
-    fi
+    if [ -n "$PID" ]; then
+        TCP_PORT=$(lsof -i -n -P -a -c "$PROCESS_NAME" -s TCP -t)
+        UDP_PORT=$(lsof -i -n -P -a -c "$PROCESS_NAME" -s UDP -t)
+        if [ -n "$TCP_PORT" ] && [ -n "$UDP_PORT" ]; then
+            echo "$CUSTOM_NAME: open (PID: $PID, TCP Port: $TCP_PORT, UDP Port: $UDP_PORT)"
+        elif [ -n "$TCP_PORT" ]; then
+            echo "$CUSTOM_NAME: open (PID: $PID, TCP Port: $TCP_PORT, UDP Port: N/A)"
+        elif [ -n "$UDP_PORT" ]; then
+            echo "$CUSTOM_NAME: open (PID: $PID, TCP Port: N/A, UDP Port: $UDP_PORT)"
+        else
+            echo "$CUSTOM_NAME: open (PID: $PID, TCP Port: N/A, UDP Port: N/A)"
+        fi
   else
     echo "$CUSTOM_NAME: closed"
   fi
