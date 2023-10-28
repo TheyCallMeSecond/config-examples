@@ -52,9 +52,9 @@ check_and_display_process_status() {
   CUSTOM_NAME="$2"
   PID=$(pgrep -o -x "$PROCESS_NAME")
   if [ -n "$PID" ]; then
-    echo "$CUSTOM_NAME: open (PID: $PID)"
+    echo "$CUSTOM_NAME: \e[32mOpen\e[0m (PID: $PID)"
   else
-    echo "$CUSTOM_NAME: closed"
+    echo "$CUSTOM_NAME: \e[31mClosed\e[0m"
   fi
 }
 
