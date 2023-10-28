@@ -134,7 +134,6 @@ while true; do
         IFS=":" read -r process_name custom_name <<<"$process_info"
         check_and_display_process_status "$process_name" "$custom_name"
     done
-    echo "======================================================="
     echo "#######################################################" 
     echo
     echo -e "1:  \e[93mTUI Menu\e[0m"
