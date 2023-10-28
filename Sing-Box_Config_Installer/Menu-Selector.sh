@@ -31,6 +31,12 @@ check_system_info() {
 
   KERNEL=$(uname -r)
   ARCHITECTURE=$(uname -m)
+
+  memory_info=$(free -m | grep Mem)
+  total_memory=$(echo $memory_info | awk '{print $2}')
+  free_memory=$(echo $memory_info | awk '{print $4}')
+  ram_usage_percentage=$(awk "BEGIN {printf \"%.2f\", $free_memory / $total_memory * 100}")
+
 }
 
 # Check IPv4 IPv6 information
@@ -113,6 +119,7 @@ while true; do
   echo "Kernel: $KERNEL"
   echo "Architecture: $ARCHITECTURE"
   echo "Virtualization: $VIRT"
+  echo "RAM Usage: $ram_usage_percentage%"
   echo "IPv4: $WAN4"
   echo "IPv6: $WAN6"
   echo "Country/ISP: $COUNTRY4 $ISP4"
