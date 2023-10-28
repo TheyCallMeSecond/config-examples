@@ -48,20 +48,14 @@ check_system_ip() {
 }
 
 check_and_display_process_status() {
-    PROCESS_NAME="$1"
-    CUSTOM_NAME="$2"
-    PID=$(pgrep -o -x "$PROCESS_NAME")
-    if [ -n "$PID" ]; then
-        # Use ss to get port information
-        PORT_INFO=$(ss -tulnep | awk -v pid="$PID" '$6 == pid {print $5}')
-        if [ -n "$PORT_INFO" ]; then
-            echo "$CUSTOM_NAME: open (PID: $PID, Port: $PORT_INFO)"
-        else
-            echo "$CUSTOM_NAME: open (PID: $PID, Port: N/A)"
-        fi
-    else
-        echo "$CUSTOM_NAME: closed"
-    fi
+  PROCESS_NAME="$1"
+  CUSTOM_NAME="$2"
+  PID=$(pgrep -o -x "$PROCESS_NAME")
+  if [ -n "$PID" ]; then
+    echo "$CUSTOM_NAME: open (PID: $PID)"
+  else
+    echo "$CUSTOM_NAME: closed"
+  fi
 }
 
 legacy() {
