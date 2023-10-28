@@ -216,7 +216,7 @@ modify_hysteria_config() {
 
     else
 
-        dialog --msgbox "Hysteria2 is not installed yet." 10 30
+        whiptail --msgbox "Hysteria2 is not installed yet." 10 30
         clear
 
     fi
@@ -233,7 +233,7 @@ uninstall_hysteria() {
     rm -rf /etc/hysteria2
     sudo rm -f /etc/systemd/system/SH.service
 
-    dialog --msgbox "Hysteria2 uninstalled." 10 30
+    whiptail --msgbox "Hysteria2 uninstalled." 10 30
     clear
 
 }
@@ -453,7 +453,7 @@ modify_tuic_config() {
 
     else
 
-        dialog --msgbox "TUIC is not installed yet." 10 30
+        whiptail --msgbox "TUIC is not installed yet." 10 30
         clear
 
     fi
@@ -470,7 +470,7 @@ uninstall_tuic() {
     rm -rf /etc/tuic
     sudo rm -f /etc/systemd/system/TS.service
 
-    dialog --msgbox "TUIC uninstalled." 10 30
+    whiptail --msgbox "TUIC uninstalled." 10 30
     clear
 
 }
@@ -683,7 +683,7 @@ modify_reality_config() {
 
     else
 
-        dialog --msgbox "Reality is not installed yet." 10 30
+        whiptail --msgbox "Reality is not installed yet." 10 30
         clear
 
     fi
@@ -700,7 +700,7 @@ uninstall_reality() {
     rm -rf /etc/reality
     sudo rm -f /etc/systemd/system/RS.service
 
-    dialog --msgbox "Reality uninstalled." 10 30
+    whiptail --msgbox "Reality uninstalled." 10 30
     clear
 
 }
@@ -924,7 +924,7 @@ modify_shadowtls_config() {
 
     else
 
-        dialog --msgbox "ShadowTLS is not installed yet." 10 30
+        whiptail --msgbox "ShadowTLS is not installed yet." 10 30
         clear
 
     fi
@@ -941,7 +941,7 @@ uninstall_shadowtls() {
     rm -rf /etc/shadowtls
     sudo rm -f /etc/systemd/system/ST.service
 
-    dialog --msgbox "ShadowTLS uninstalled." 10 30
+    whiptail --msgbox "ShadowTLS uninstalled." 10 30
     clear
 
 }
@@ -969,7 +969,7 @@ show_hysteria_config() {
 
     else
 
-        dialog --msgbox "Hysteria2 is not installed yet." 10 30
+        whiptail --msgbox "Hysteria2 is not installed yet." 10 30
         clear
 
     fi
@@ -999,7 +999,7 @@ show_tuic_config() {
 
     else
 
-        dialog --msgbox "TUIC is not installed yet." 10 30
+        whiptail --msgbox "TUIC is not installed yet." 10 30
         clear
 
     fi
@@ -1029,7 +1029,7 @@ show_reality_config() {
 
     else
 
-        dialog --msgbox "Reality is not installed yet." 10 30
+        whiptail --msgbox "Reality is not installed yet." 10 30
         clear
 
     fi
@@ -1064,7 +1064,7 @@ show_shadowtls_config() {
 
     else
 
-        dialog --msgbox "ShadowTLS is not installed yet." 10 30
+        whiptail --msgbox "ShadowTLS is not installed yet." 10 30
         clear
 
     fi
@@ -1085,7 +1085,7 @@ show_warp_config() {
 
     else
 
-        dialog --msgbox "WARP is not installed yet." 10 30
+        whiptail --msgbox "WARP is not installed yet." 10 30
         clear
 
     fi
@@ -1110,7 +1110,7 @@ install_warp() {
 
     if [ -e "$warp_check" ]; then
 
-        dialog --msgbox "WARP is running." 10 30
+        whiptail --msgbox "WARP is running." 10 30
         clear
 
     else
@@ -1145,7 +1145,7 @@ install_warp() {
         # Start WARP+ sing-box proxy
         systemctl enable --now SBW
 
-        dialog --msgbox "WARP installed successfuly" 10 30
+        whiptail --msgbox "WARP installed successfuly" 10 30
         clear
 
     fi
@@ -1266,7 +1266,7 @@ uninstall_warp() {
         echo
     fi
 
-    dialog --msgbox "WARP uninstalled." 10 30
+    whiptail --msgbox "WARP uninstalled." 10 30
     clear
 
 }
@@ -1413,7 +1413,7 @@ update_sing-box_core() {
 
     fi
 
-    dialog --msgbox "Sing-Box Cores Has Been Updated" 10 30
+    whiptail --msgbox "Sing-Box Cores Has Been Updated" 10 30
     clear
 
 }
@@ -1441,7 +1441,7 @@ toggle_warp_reality() {
 
                 systemctl start RS
 
-                dialog --msgbox "WARP is disabled now" 10 30
+                whiptail --msgbox "WARP is disabled now" 10 30
                 clear
             else
                 # Set the new JSON object for outbounds (switch to socks)
@@ -1458,18 +1458,18 @@ toggle_warp_reality() {
 
                 systemctl start RS
 
-                dialog --msgboxho "WARP is enabled now" 10 30
+                whiptail --msgboxho "WARP is enabled now" 10 30
                 clear
             fi
 
         else
-            dialog --msgbox "WARP is not installed yet" 10 30
+            whiptail --msgbox "WARP is not installed yet" 10 30
             clear
 
         fi
 
     else
-        dialog --msgbox "Reality is not installed yet." 10 30
+        whiptail --msgbox "Reality is not installed yet." 10 30
         clear
     fi
 
@@ -1498,7 +1498,7 @@ toggle_warp_shadowtls() {
 
                 systemctl start ST
 
-                dialog --msgbox "WARP is disabled now" 10 30
+                whiptail --msgbox "WARP is disabled now" 10 30
                 clear
             else
                 # Set the new JSON object for outbounds (switch to socks)
@@ -1515,18 +1515,18 @@ toggle_warp_shadowtls() {
 
                 systemctl start ST
 
-                dialog --msgbox "WARP is enabled now" 10 30
+                whiptail --msgbox "WARP is enabled now" 10 30
                 clear
             fi
 
         else
-            dialog --msgbox "WARP is not installed yet" 10 30
+            whiptail --msgbox "WARP is not installed yet" 10 30
             clear
 
         fi
 
     else
-        dialog --msgbox "ShadowTLS is not installed yet." 10 30
+        whiptail --msgbox "ShadowTLS is not installed yet." 10 30
         clear
     fi
 
@@ -1555,7 +1555,7 @@ toggle_warp_tuic() {
 
                 systemctl start TS
 
-                dialog --msgbox "WARP is disabled now" 10 30
+                whiptail --msgbox "WARP is disabled now" 10 30
                 clear
             else
                 # Set the new JSON object for outbounds (switch to socks)
@@ -1572,18 +1572,18 @@ toggle_warp_tuic() {
 
                 systemctl start TS
 
-                dialog --msgbox "WARP is enabled now" 10 30
+                whiptail --msgbox "WARP is enabled now" 10 30
                 clear
             fi
 
         else
-            dialog --msgbox "WARP is not installed yet" 10 30
+            whiptail --msgbox "WARP is not installed yet" 10 30
             clear
 
         fi
 
     else
-        dialog --msgbox "TUIC is not installed yet." 10 30
+        whiptail --msgbox "TUIC is not installed yet." 10 30
         clear
     fi
 
@@ -1612,7 +1612,7 @@ toggle_warp_hysteria() {
 
                 systemctl start SH
 
-                dialog --msgbox "WARP is disabled now" 10 30
+                whiptail --msgbox "WARP is disabled now" 10 30
                 clear
             else
                 # Set the new JSON object for outbounds (switch to socks)
@@ -1629,18 +1629,18 @@ toggle_warp_hysteria() {
 
                 systemctl start SH
 
-                dialog --msgbox "WARP is enabled now" 10 30
+                whiptail --msgbox "WARP is enabled now" 10 30
                 clear
             fi
 
         else
-            dialog --msgbox "WARP is not installed yet" 10 30
+            whiptail --msgbox "WARP is not installed yet" 10 30
             clear
 
         fi
 
     else
-        dialog --msgbox "Hysteria2 is not installed yet." 10 30
+        whiptail --msgbox "Hysteria2 is not installed yet." 10 30
         clear
     fi
 
