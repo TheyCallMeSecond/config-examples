@@ -513,7 +513,7 @@ install_reality() {
     sed -i "s/UUID/$uuid/" /etc/reality/config.json
 
     # Generate reality key-pair
-    output=$(sing-box generate reality-keypair)
+    output=$(RS generate reality-keypair)
 
     private_key=$(echo "$output" | grep -oP 'PrivateKey: \K\S+')
     public_key=$(echo "$output" | grep -oP 'PublicKey: \K\S+')
@@ -611,7 +611,7 @@ modify_reality_config() {
         sed -i "s/UUID/$uuid/" /etc/reality/config.json
 
         # Generate reality key-pair
-        output=$(sing-box generate reality-keypair)
+        output=$(RS generate reality-keypair)
 
         private_key=$(echo "$output" | grep -oP 'PrivateKey: \K\S+')
         public_key=$(echo "$output" | grep -oP 'PublicKey: \K\S+')
