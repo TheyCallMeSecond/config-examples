@@ -3,7 +3,7 @@
 
 
 
-![GitHub Repo stars](https://img.shields.io/github/stars/TheyCallMeSecond/config-examples?style=for-the-badge&color=cba6f7) ![GitHub last commit](https://img.shields.io/github/last-commit/TheyCallMeSecond/config-examples?style=for-the-badge&color=b4befe) ![GitHub repo size](https://img.shields.io/github/repo-size/TheyCallMeSecond/config-examples?style=for-the-badge&color=cba6f7)
+![GitHub Repo stars](https://img.shields.io/github/stars/TheyCallMeSecond/config-examples?style=for-the-badge&color=cba6f7) ![GitHub last commit](https://img.shields.io/github/last-commit/TheyCallMeSecond/config-examples?style=for-the-badge&color=b4befe) ![GitHub repo size](https://img.shields.io/github/forks/TheyCallMeSecond/config-examples?style=for-the-badge&color=cba6f7)
 
 
 <br/>
