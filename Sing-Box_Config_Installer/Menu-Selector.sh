@@ -1,7 +1,6 @@
 #!/bin/bash
 
 check_system_info() {
-  # Determine virtualization
   if [ $(type -p systemd-detect-virt) ]; then
     VIRT=$(systemd-detect-virt)
   elif [ $(type -p hostnamectl) ]; then
@@ -25,7 +24,6 @@ check_system_info() {
   for int in "${!REGEX[@]}"; do [[ $(tr 'A-Z' 'a-z' <<<"$SYS") =~ ${REGEX[int]} ]] && SYSTEM="${RELEASE[int]}" && break; done
   [ -z "$SYSTEM" ] && error " $(text 5) "
 
-  # First exclude specific systems included in EXCLUDE. Other systems need to be compared with major releases.
   for ex in "${EXCLUDE[@]}"; do [[ ! $(tr 'A-Z' 'a-z' <<<"$SYS") =~ $ex ]]; done &&
     [[ "$(echo "$SYS" | sed "s/[^0-9.]//g" | cut -d. -f1)" -lt "${MAJOR[int]}" ]] && error " $(text_eval 6) "
 
@@ -57,7 +55,6 @@ get_cpu_usage() {
   delta_total=$((total - prev_total))
   cpu_usage_percentage=$(awk "BEGIN {printf \"%.2f\", 100 * (1 - $delta_idle / $delta_total)}")
 
-  echo "CPU Usage: $cpu_usage_percentage%"
 }
 
 get_ram_usage() {
@@ -66,7 +63,6 @@ get_ram_usage() {
   used_memory=$(echo $memory_info | awk '{print $3}')
   memory_usage=$(awk "BEGIN {printf \"%.2f\", $used_memory / $total_memory * 100}")
 
-  echo "Memory Usage: $memory_usage%"
 }
 
 get_storage_usage() {
@@ -75,7 +71,6 @@ get_storage_usage() {
   total_storage=$(echo $storage_info | awk '{print $2}')
   storage_usage=$(awk "BEGIN {printf \"%.2f\", $used_storage / $total_storage * 100}")
 
-  echo "Storage Usage: $storage_usage%"
 }
 
 check_system_ip() {
@@ -118,11 +113,12 @@ tui() {
 
 }
 
-# Call the functions to collect system information
+get_cpu_usage
+get_ram_usage
+get_storage_usage
 check_system_info
 check_system_ip
 
-# List of processes to check, along with their custom names
 processes=("SH:Hysteria2" "TS:TUIC" "RS:Reality" "ST:ShadowTLS" "SBW:WARP")
 
 while true; do
@@ -140,16 +136,15 @@ while true; do
 
   echo
 
-  # Display the collected system information
   echo "#######################################################"
   echo "Operating System: $SYS"
   echo "Kernel: $KERNEL"
   echo "Architecture: $ARCHITECTURE"
   echo "Virtualization: $VIRT"
   echo "======================================================="
-  get_cpu_usage
-  get_ram_usage
-  get_storage_usage
+  echo "CPU Usage: $cpu_usage_percentage%"
+  echo "Memory Usage: $memory_usage%"
+  echo "Storage Usage: $storage_usage%"
   echo "======================================================="
   echo "IPv4: $WAN4"
   echo "IPv6: $WAN6"
@@ -204,6 +199,5 @@ while true; do
   *)
     echo "Invalid choice. Please select a valid option."
     ;;
-
   esac
 done
