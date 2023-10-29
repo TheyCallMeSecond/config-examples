@@ -58,11 +58,10 @@ get_cpu_usage() {
 }
 
 get_ram_usage() {
-  mem_info=$(grep MemTotal /proc/meminfo)
-  total_memory=$(echo $mem_info | awk '{print $2}')
-  mem_info=$(grep MemAvailable /proc/meminfo)
-  used_memory=$(echo $mem_info | awk '{print $2}')
-  memory_usage=$(awk "BEGIN {printf \"%.2f\", ($used_memory / $total_memory) * 100}")
+  memory_info=$(free | grep Mem)
+  total_memory=$(echo $memory_info | awk '{print $2}')
+  used_memory=$(echo $memory_info | awk '{print $3}')
+  memory_usage=$(awk "BEGIN {printf \"%.2f\", $used_memory / $total_memory * 100}")
 
 }
 
