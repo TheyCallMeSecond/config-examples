@@ -286,6 +286,10 @@ install_tuic() {
 
     rm -rf /root/selfcert
 
+    # Generate a name and replace "NAME" in the server.json file
+    name=$(openssl rand -hex 4)
+    sed -i "s/NAME/$name/" /etc/tuic/server.json
+
     # Generate a password and replace "PASSWORD" in the server.json file
     password=$(openssl rand -hex 8)
     sed -i "s/PASSWORD/$password/" /etc/tuic/server.json
@@ -387,6 +391,10 @@ modify_tuic_config() {
         cd || exit
 
         rm -rf /root/selfcert
+
+        # Generate a name and replace "NAME" in the server.json file
+        name=$(openssl rand -hex 4)
+        sed -i "s/NAME/$name/" /etc/tuic/server.json
 
         # Generate a password and replace "PASSWORD" in the server.json file
         password=$(openssl rand -hex 8)
@@ -508,6 +516,10 @@ install_reality() {
     read -p "Please enter sni: " user_sni
     sed -i "s/SNI/$user_sni/" /etc/reality/config.json
 
+    # Generate a name and replace "NAME" in the config.json file
+    name=$(openssl rand -hex 4)
+    sed -i "s/NAME/$name/" /etc/reality/config.json
+
     # Generate uuid and replace "UUID" in the config.json file
     uuid=$(cat /proc/sys/kernel/random/uuid)
     sed -i "s/UUID/$uuid/" /etc/reality/config.json
@@ -605,6 +617,10 @@ modify_reality_config() {
         # Prompt the user to enter a sni and replace "SNI" in the config.json file
         read -p "Please enter sni: " user_sni
         sed -i "s/SNI/$user_sni/" /etc/reality/config.json
+
+        # Generate a name and replace "NAME" in the config.json file
+        name=$(openssl rand -hex 4)
+        sed -i "s/NAME/$name/" /etc/reality/config.json
 
         # Generate uuid and replace "UUID" in the config.json file
         uuid=$(cat /proc/sys/kernel/random/uuid)
