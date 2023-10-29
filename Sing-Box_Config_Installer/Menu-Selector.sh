@@ -139,8 +139,8 @@ while true; do
   echo "Architecture: $ARCHITECTURE"
   echo "Virtualization: $VIRT"
   echo "======================================================="
-  echo "RAM Usage: $ram_usage_percentage%"
-  echo "CPU Usage: $cpu_usage_percentage%"
+  echo "CPU Usage: $cpu_usage_percentage%"  
+  echo "Memory Usage: $ram_usage_percentage%"
   echo "Storage Usage: $storage_usage_percentage%"
   echo "======================================================="
   echo "IPv4: $WAN4"
@@ -163,8 +163,7 @@ while true; do
   echo
 
   echo
-
-  echo
+  
   echo -e "1:  \e[93mTUI Menu\e[0m"
   echo -e "2:  \e[93mLegacy Menu\e[0m"
   echo -e "0:  \e[95mExit\e[0m"
