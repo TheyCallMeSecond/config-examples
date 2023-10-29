@@ -28,7 +28,7 @@
       },
       "users": [
         {
-          "flow": "",
+          "name": "NAME",
           "uuid": "UUID"
         }
       ]
