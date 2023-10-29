@@ -20,7 +20,7 @@
       },
       "users": [
         {
-          "name": "theTCS",
+          "name": "NAME",
           "password": "PASSWORD",
           "uuid": "UUID"
         }
