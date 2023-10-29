@@ -32,19 +32,9 @@ check_system_info() {
   KERNEL=$(uname -r)
   ARCHITECTURE=$(uname -m)
 
-  mem_info=$(grep MemTotal /proc/meminfo)
-  total_memory=$(echo $mem_info | awk '{print $2}')
-  mem_info=$(grep MemAvailable /proc/meminfo)
-  used_memory=$(echo $mem_info | awk '{print $2}')
-  ram_usage_percentage=$(awk "BEGIN {printf \"%.2f\", ($used_memory / $total_memory) * 100}")
+}
 
-
-
-  storage_info=$(df / | awk 'NR==2{print $3,$2}')
-  used_storage=$(echo $storage_info | awk '{print $1}')
-  total_storage=$(echo $storage_info | awk '{print $2}')
-  storage_usage_percentage=$(awk "BEGIN {printf \"%.2f\", $used_storage / $total_storage * 100}")
-
+get_cpu_usage() {
   cpu_info=($(grep 'cpu ' /proc/stat))
   prev_idle="${cpu_info[4]}"
   prev_total=0
@@ -65,11 +55,29 @@ check_system_info() {
 
   delta_idle=$((idle - prev_idle))
   delta_total=$((total - prev_total))
-  cpu_usage_percentage=$((100 * (delta_total - delta_idle) / delta_total))
+  cpu_usage_percentage=$(awk "BEGIN {printf \"%.2f\", 100 * (1 - $delta_idle / $delta_total)}")
 
+  echo "CPU Usage: $cpu_usage_percentage%"
 }
 
-# Check IPv4 IPv6 information
+get_ram_usage() {
+  memory_info=$(free | grep Mem)
+  total_memory=$(echo $memory_info | awk '{print $2}')
+  used_memory=$(echo $memory_info | awk '{print $3}')
+  memory_usage=$(awk "BEGIN {printf \"%.2f\", $used_memory / $total_memory * 100}")
+
+  echo "Memory Usage: $memory_usage%"
+}
+
+get_storage_usage() {
+  storage_info=$(df / | awk 'NR==2{print $3,$2}')
+  used_storage=$(echo $storage_info | awk '{print $1}')
+  total_storage=$(echo $storage_info | awk '{print $2}')
+  storage_usage=$(awk "BEGIN {printf \"%.2f\", $used_storage / $total_storage * 100}")
+
+  echo "Storage Usage: $storage_usage%"
+}
+
 check_system_ip() {
   IP4=$(wget -4 -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 http://ip-api.com/json/) &&
     WAN4=$(expr "$IP4" : '.*query\":[ ]*\"\([^"]*\).*') &&
@@ -110,6 +118,13 @@ tui() {
 
 }
 
+# Call the functions to collect system information
+check_system_info
+check_system_ip
+
+# List of processes to check, along with their custom names
+processes=("SH:Hysteria2" "TS:TUIC" "RS:Reality" "ST:ShadowTLS" "SBW:WARP")
+
 while true; do
   echo "
 ╭━━━╮╱╱╱╱╱╱╱╱╱╭━━╮╱╱╱╱╱╱╱╭━━━╮╱╱╱╱╱╭━╮╱╱╱╱╭━━╮╱╱╱╱╱╭╮╱╱╱╭╮╭╮
@@ -125,13 +140,6 @@ while true; do
 
   echo
 
-  # Call the functions to collect system information
-  check_system_info
-  check_system_ip
-
-  # List of processes to check, along with their custom names
-  processes=("SH:Hysteria2" "TS:TUIC" "RS:Reality" "ST:ShadowTLS" "SBW:WARP")
-
   # Display the collected system information
   echo "#######################################################"
   echo "Operating System: $SYS"
@@ -139,9 +147,9 @@ while true; do
   echo "Architecture: $ARCHITECTURE"
   echo "Virtualization: $VIRT"
   echo "======================================================="
-  echo "CPU Usage: $cpu_usage_percentage%"  
-  echo "Memory Usage: $ram_usage_percentage%"
-  echo "Storage Usage: $storage_usage_percentage%"
+  get_cpu_usage
+  get_ram_usage
+  get_storage_usage
   echo "======================================================="
   echo "IPv4: $WAN4"
   echo "IPv6: $WAN6"
@@ -163,7 +171,7 @@ while true; do
   echo
 
   echo
-  
+
   echo -e "1:  \e[93mTUI Menu\e[0m"
   echo -e "2:  \e[93mLegacy Menu\e[0m"
   echo -e "0:  \e[95mExit\e[0m"
