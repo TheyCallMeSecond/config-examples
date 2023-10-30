@@ -67,7 +67,7 @@ while true; do
   1)
     sudo apt update
     sudo apt install whiptail qrencode jq openssl python3 python3-pip -y
-    pip install httpx requests --break-system-packages
+    pip install httpx requests 
 
     clear
     tui
@@ -75,7 +75,7 @@ while true; do
   2)
     sudo apt update
     sudo apt install whiptail qrencode jq openssl python3 python3-pip -y
-    pip install httpx requests --break-system-packages
+    pip install httpx requests 
 
     clear
     legacy
