@@ -575,7 +575,7 @@ install_reality() {
 
     # Generate service name
     service_name=$(openssl rand -hex 4)
-    sed -i "s/SERVICE-NAME/$service_name/" /etc/reality/config.json
+    sed -i "s/PATH/$service_name/" /etc/reality/config.json
 
     # Use a public DNS service to determine the public IP address
     public_ipv4=$(curl -s https://v4.ident.me)
@@ -683,7 +683,7 @@ modify_reality_config() {
 
         # Generate service name
         service_name=$(openssl rand -hex 4)
-        sed -i "s/SERVICE-NAME/$service_name/" /etc/reality/config.json
+        sed -i "s/PATH/$service_name/" /etc/reality/config.json
 
         # Use a public DNS service to determine the public IP address
         public_ipv4=$(curl -s https://v4.ident.me)
