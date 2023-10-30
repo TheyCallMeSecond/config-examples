@@ -1,28 +1,6 @@
 #!/bin/bash
 
-legacy() {
-
-    bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/Legacy-Menu.sh)"
-
-    exit 0
-
-}
-
-tui() {
-
-    bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/TUI-Menu.sh)"
-
-    exit 0
-
-}
-
-optimize_server() {
-
-    bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/server-optimizer.sh)"
-    clear
-
-}
-
+# Function to install Hysteria
 install_hysteria() {
     # Stop the Hysteria2 service
     sudo systemctl stop SH
@@ -68,15 +46,16 @@ install_hysteria() {
     rm -rf /root/selfcert
 
     # Prompt the user to enter a port and replace "PORT" in the server.json file
-    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+    read -p "Please enter a port: " user_port
     sed -i "s/PORT/$user_port/" /etc/hysteria2/server.json
 
     # Generate a password and replace "PASSWORD" in the server.json file
     password=$(openssl rand -hex 8)
     sed -i "s/PASSWORD/$password/" /etc/hysteria2/server.json
 
-    # replace "NAME" in the server.json file
-    sed -i "s/NAME/Hysteria2/" /etc/hysteria2/server.json
+    # Generate a name and replace "NAME" in the server.json file
+    name=$(openssl rand -hex 4)
+    sed -i "s/NAME/$name/" /etc/hysteria2/server.json
 
     # Use a public DNS service to determine the public IP address
     public_ipv4=$(curl -s https://v4.ident.me)
@@ -114,18 +93,12 @@ install_hysteria() {
     ipv4 : hy2://$password@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
     ---------------------------------------------------------------
     ipv6 : hy2://$password@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2"
-    echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/hysteria2/user-config.txt # Red color for URL
+    echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/hysteria2/config.txt # Red color for URL
 
-    result_url2=" 
-    ipv4 : hy2://PASSWORD@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
-        ---------------------------------------------------------------
-    ipv6 : hy2://PASSWORD@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2"
-    echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/hysteria2/config.txt # Red color for URL
+    cat /etc/hysteria2/config.txt
 
-    cat /etc/hysteria2/user-config.txt
-
-    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/hysteria2/user-config.txt)
-    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/hysteria2/user-config.txt)
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/hysteria2/config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/hysteria2/config.txt)
 
     echo IPv4:
     qrencode -t ANSIUTF8 <<<"$ipv4qr"
@@ -140,6 +113,7 @@ install_hysteria() {
     clear
 }
 
+# Function to modify Hysteria configuration
 modify_hysteria_config() {
     hysteria_check="/etc/hysteria2/server.json"
 
@@ -174,15 +148,16 @@ modify_hysteria_config() {
         rm -rf /root/selfcert
 
         # Prompt the user to enter a port and replace "PORT" in the server.json file
-        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+        read -p "Please enter a port: " user_port
         sed -i "s/PORT/$user_port/" /etc/hysteria2/server.json
 
         # Generate a password and replace "PASSWORD" in the server.json file
         password=$(openssl rand -hex 8)
         sed -i "s/PASSWORD/$password/" /etc/hysteria2/server.json
 
-        # replace "NAME" in the server.json file
-        sed -i "s/NAME/Hysteria2/" /etc/hysteria2/server.json
+        # Generate a name and replace "NAME" in the server.json file
+        name=$(openssl rand -hex 4)
+        sed -i "s/NAME/$name/" /etc/hysteria2/server.json
 
         # Use a public DNS service to determine the public IP address
         public_ipv4=$(curl -s https://v4.ident.me)
@@ -220,18 +195,12 @@ modify_hysteria_config() {
         ipv4 : hy2://$password@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
         ---------------------------------------------------------------
         ipv6 : hy2://$password@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2"
-        echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/hysteria2/user-config.txt # Red color for URL
+        echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/hysteria2/config.txt # Red color for URL
 
-        result_url2=" 
-        ipv4 : hy2://PASSWORD@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
-        ---------------------------------------------------------------
-        ipv6 : hy2://PASSWORD@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2"
-        echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/hysteria2/config.txt # Red color for URL
+        cat /etc/hysteria2/config.txt
 
-        cat /etc/hysteria2/user-config.txt
-
-        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/hysteria2/user-config.txt)
-        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/hysteria2/user-config.txt)
+        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/hysteria2/config.txt)
+        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/hysteria2/config.txt)
 
         echo IPv4:
         qrencode -t ANSIUTF8 <<<"$ipv4qr"
@@ -254,6 +223,7 @@ modify_hysteria_config() {
 
 }
 
+# Function to uninstall Hysteria
 uninstall_hysteria() {
     # Stop the Hysteria2 service
     sudo systemctl stop SH
@@ -294,7 +264,7 @@ install_tuic() {
     curl -Lo /etc/systemd/system/TS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/TS.service && systemctl daemon-reload
 
     # Prompt the user to enter a port and replace "PORT" in the server.json file
-    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+    read -p "Please enter a port: " user_port
     sed -i "s/PORT/$user_port/" /etc/tuic/server.json
 
     # Get certificate
@@ -316,8 +286,9 @@ install_tuic() {
 
     rm -rf /root/selfcert
 
-    # replace "NAME" in the server.json file
-    sed -i "s/NAME/Tuic/" /etc/tuic/server.json
+    # Generate a name and replace "NAME" in the server.json file
+    name=$(openssl rand -hex 4)
+    sed -i "s/NAME/$name/" /etc/tuic/server.json
 
     # Generate a password and replace "PASSWORD" in the server.json file
     password=$(openssl rand -hex 8)
@@ -363,18 +334,12 @@ install_tuic() {
     ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
     ---------------------------------------------------------------
     ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
-    echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/tuic/user-config.txt # Red color for URL
+    echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/tuic/config.txt # Red color for URL
 
-    result_url2=" 
-    ipv4 : tuic://UUID:PASSWORD@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
-    ---------------------------------------------------------------
-    ipv6 : tuic://UUID:PASSWORD@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
-    echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/tuic/config.txt # Red color for URL
+    cat /etc/tuic/config.txt
 
-    cat /etc/tuic/user-config.txt
-
-    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/tuic/user-config.txt)
-    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/tuic/user-config.txt)
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/tuic/config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/tuic/config.txt)
 
     echo IPv4:
     qrencode -t ANSIUTF8 <<<"$ipv4qr"
@@ -389,6 +354,7 @@ install_tuic() {
     clear
 }
 
+# Function to modify tuic configuration
 modify_tuic_config() {
     tuic_check="/etc/tuic/server.json"
 
@@ -404,7 +370,7 @@ modify_tuic_config() {
         mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Tuic.json
 
         # Prompt the user to enter a port and replace "PORT" in the server.json file
-        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+        read -p "Please enter a port: " user_port
         sed -i "s/PORT/$user_port/" /etc/tuic/server.json
 
         # Get certificate
@@ -426,8 +392,9 @@ modify_tuic_config() {
 
         rm -rf /root/selfcert
 
-        # replace "NAME" in the server.json file
-        sed -i "s/NAME/Tuic/" /etc/tuic/server.json
+        # Generate a name and replace "NAME" in the server.json file
+        name=$(openssl rand -hex 4)
+        sed -i "s/NAME/$name/" /etc/tuic/server.json
 
         # Generate a password and replace "PASSWORD" in the server.json file
         password=$(openssl rand -hex 8)
@@ -473,18 +440,12 @@ modify_tuic_config() {
         ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
         ---------------------------------------------------------------
         ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
-        echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/tuic/user-config.txt # Red color for URL
+        echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/tuic/config.txt # Red color for URL
 
-        result_url2=" 
-        ipv4 : tuic://UUID:PASSWORD@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
-        ---------------------------------------------------------------
-        ipv6 : tuic://UUID:PASSWORD@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
-        echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/tuic/config.txt # Red color for URL
+        cat /etc/tuic/config.txt
 
-        cat /etc/tuic/user-config.txt
-
-        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/tuic/user-config.txt)
-        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/tuic/user-config.txt)
+        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/tuic/config.txt)
+        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/tuic/config.txt)
 
         echo IPv4:
         qrencode -t ANSIUTF8 <<<"$ipv4qr"
@@ -507,6 +468,7 @@ modify_tuic_config() {
 
 }
 
+# Function to uninstall tuic
 uninstall_tuic() {
     # Stop the tuic service
     sudo systemctl stop TS
@@ -547,15 +509,16 @@ install_reality() {
     curl -Lo /etc/systemd/system/RS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/RS.service && systemctl daemon-reload
 
     # Prompt the user to enter a port and replace "PORT" in the config.json file
-    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+    read -p "Please enter a port: " user_port
     sed -i "s/PORT/$user_port/" /etc/reality/config.json
 
     # Prompt the user to enter a sni and replace "SNI" in the config.json file
-    user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
+    read -p "Please enter sni: " user_sni
     sed -i "s/SNI/$user_sni/" /etc/reality/config.json
 
-    # replace "NAME" in the config.json file
-    sed -i "s/NAME/Reality/" /etc/reality/config.json
+    # Generate a name and replace "NAME" in the config.json file
+    name=$(openssl rand -hex 4)
+    sed -i "s/NAME/$name/" /etc/reality/config.json
 
     # Generate uuid and replace "UUID" in the config.json file
     uuid=$(cat /proc/sys/kernel/random/uuid)
@@ -613,26 +576,18 @@ install_reality() {
     ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
     ---------------------------------------------------------------
     ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality"
-    echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/reality/user-config.txt # Red color for URL
+    echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/reality/config.txt # Red color for URL
 
-    # Construct and display the resulting URL
-    result_url2=" 
-    ipv4 : vless://UUID@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
-    ---------------------------------------------------------------
-    ipv6 : vless://UUID@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality"
-    echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/reality/config.txt # Red color for URL
+    cat /etc/reality/config.txt
 
-    cat /etc/reality/user-config.txt
-
-    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/reality/user-config.txt)
-    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/reality/user-config.txt)
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/reality/config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/reality/config.txt)
 
     echo IPv4:
     qrencode -t ANSIUTF8 <<<"$ipv4qr"
 
     echo IPv6:
     qrencode -t ANSIUTF8 <<<"$ipv6qr"
-
     echo "Reality setup completed."
 
     echo -e "\e[31mPress Enter to Exit\e[0m"
@@ -640,6 +595,7 @@ install_reality() {
     clear
 }
 
+# Function to modify reality configuration
 modify_reality_config() {
     reality_check="/etc/reality/config.json"
 
@@ -655,15 +611,16 @@ modify_reality_config() {
         mkdir -p /etc/reality && curl -Lo /etc/reality/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC.json
 
         # Prompt the user to enter a port and replace "PORT" in the config.json file
-        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+        read -p "Please enter a port: " user_port
         sed -i "s/PORT/$user_port/" /etc/reality/config.json
 
         # Prompt the user to enter a sni and replace "SNI" in the config.json file
-        user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
+        read -p "Please enter sni: " user_sni
         sed -i "s/SNI/$user_sni/" /etc/reality/config.json
 
-        # replace "NAME" in the config.json file
-        sed -i "s/NAME/Reality/" /etc/reality/config.json
+        # Generate a name and replace "NAME" in the config.json file
+        name=$(openssl rand -hex 4)
+        sed -i "s/NAME/$name/" /etc/reality/config.json
 
         # Generate uuid and replace "UUID" in the config.json file
         uuid=$(cat /proc/sys/kernel/random/uuid)
@@ -721,19 +678,12 @@ modify_reality_config() {
         ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
         ---------------------------------------------------------------
         ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality"
-        echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/reality/user-config.txt # Red color for URL
+        echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/reality/config.txt # Red color for URL
 
-        # Construct and display the resulting URL
-        result_url2=" 
-        ipv4 : vless://UUID@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
-        ---------------------------------------------------------------
-        ipv6 : vless://UUID@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality"
-        echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/reality/config.txt # Red color for URL
+        cat /etc/reality/config.txt
 
-        cat /etc/reality/user-config.txt
-
-        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/reality/user-config.txt)
-        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/reality/user-config.txt)
+        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/reality/config.txt)
+        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/reality/config.txt)
 
         echo IPv4:
         qrencode -t ANSIUTF8 <<<"$ipv4qr"
@@ -756,6 +706,7 @@ modify_reality_config() {
 
 }
 
+# Function to uninstall reality
 uninstall_reality() {
     # Stop the RS service
     sudo systemctl stop RS
@@ -793,8 +744,6 @@ install_shadowtls() {
     mkdir -p /etc/shadowtls && curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS.json
 
     # Download client config files
-    curl -Lo /etc/shadowtls/user-nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
-    curl -Lo /etc/shadowtls/user-nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
     curl -Lo /etc/shadowtls/nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
     curl -Lo /etc/shadowtls/nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
 
@@ -802,44 +751,37 @@ install_shadowtls() {
     curl -Lo /etc/systemd/system/ST.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/ST.service && systemctl daemon-reload
 
     # Prompt the user to enter a port and replace "PORT" in the config files
-    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+    read -p "Please enter a port: " user_port
     sed -i "s/PORT/$user_port/" /etc/shadowtls/config.json
     sed -i "s/PORT/$user_port/" /etc/shadowtls/nekorayconfig.txt
     sed -i "s/PORT/$user_port/" /etc/shadowtls/nekoboxconfig.txt
-    sed -i "s/PORT/$user_port/" /etc/shadowtls/user-nekorayconfig.txt
-    sed -i "s/PORT/$user_port/" /etc/shadowtls/user-nekoboxconfig.txt
 
     # Prompt the user to enter a sni and replace "SNI" in the config files
-    user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
+    read -p "Please enter sni: " user_sni
     sed -i "s/SNI/$user_sni/" /etc/shadowtls/config.json
     sed -i "s/SNI/$user_sni/" /etc/shadowtls/nekorayconfig.txt
     sed -i "s/SNI/$user_sni/" /etc/shadowtls/nekoboxconfig.txt
-    sed -i "s/SNI/$user_sni/" /etc/shadowtls/user-nekorayconfig.txt
-    sed -i "s/SNI/$user_sni/" /etc/shadowtls/user-nekoboxconfig.txt
 
-    # replace  name
-    sed -i "s/NAME/ShadowTLS/" /etc/shadowtls/config.json
+    # Generate  name
+    name=$(openssl rand -hex 4)
+    sed -i "s/NAME/$name/" /etc/shadowtls/config.json
 
     # Generate shadowtls password and replace "STPASS" in the config files
     stpass=$(openssl rand -hex 16)
     sed -i "s/STPASS/$stpass/" /etc/shadowtls/config.json
-    sed -i "s/STPASS/$stpass/" /etc/shadowtls/user-nekorayconfig.txt
-    sed -i "s/STPASS/$stpass/" /etc/shadowtls/user-nekoboxconfig.txt
+    sed -i "s/STPASS/$stpass/" /etc/shadowtls/nekorayconfig.txt
+    sed -i "s/STPASS/$stpass/" /etc/shadowtls/nekoboxconfig.txt
 
     # Generate shadowsocks password and replace "SSPASS" in the config files
     sspass=$(openssl rand -hex 16)
     sed -i "s/SSPASS/$sspass/" /etc/shadowtls/config.json
     sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekorayconfig.txt
     sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekoboxconfig.txt
-    sed -i "s/SSPASS/$sspass/" /etc/shadowtls/user-nekorayconfig.txt
-    sed -i "s/SSPASS/$sspass/" /etc/shadowtls/user-nekoboxconfig.txt
 
     # Use a public DNS service to determine the public IP address and replace with IP in config.txt file
     public_ipv4=$(curl -s https://v4.ident.me)
     sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekorayconfig.txt
     sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekoboxconfig.txt
-    sed -i "s/IP/$public_ipv4/" /etc/shadowtls/user-nekorayconfig.txt
-    sed -i "s/IP/$public_ipv4/" /etc/shadowtls/user-nekoboxconfig.txt
 
     # UFW optimization
     if sudo ufw status | grep -q "Status: active"; then
@@ -874,7 +816,7 @@ install_shadowtls() {
 
     echo
 
-    cat /etc/shadowtls/user-nekorayconfig.txt
+    cat /etc/shadowtls/nekorayconfig.txt
 
     echo
 
@@ -882,7 +824,7 @@ install_shadowtls() {
 
     echo
 
-    cat /etc/shadowtls/user-nekoboxconfig.txt
+    cat /etc/shadowtls/nekoboxconfig.txt
 
     echo
 
@@ -893,6 +835,7 @@ install_shadowtls() {
     clear
 }
 
+# Function to modify shadowtls configuration
 modify_shadowtls_config() {
     shadowtls_check="/etc/shadowtls/config.json"
 
@@ -908,50 +851,41 @@ modify_shadowtls_config() {
         mkdir -p /etc/shadowtls && curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS.json
 
         # Download client config files
-        curl -Lo /etc/shadowtls/user-nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
-        curl -Lo /etc/shadowtls/user-nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
         curl -Lo /etc/shadowtls/nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
         curl -Lo /etc/shadowtls/nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
 
         # Prompt the user to enter a port and replace "PORT" in the config files
-        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+        read -p "Please enter a port: " user_port
         sed -i "s/PORT/$user_port/" /etc/shadowtls/config.json
         sed -i "s/PORT/$user_port/" /etc/shadowtls/nekorayconfig.txt
         sed -i "s/PORT/$user_port/" /etc/shadowtls/nekoboxconfig.txt
-        sed -i "s/PORT/$user_port/" /etc/shadowtls/user-nekorayconfig.txt
-        sed -i "s/PORT/$user_port/" /etc/shadowtls/user-nekoboxconfig.txt
 
         # Prompt the user to enter a sni and replace "SNI" in the config files
-        user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
+        read -p "Please enter sni: " user_sni
         sed -i "s/SNI/$user_sni/" /etc/shadowtls/config.json
         sed -i "s/SNI/$user_sni/" /etc/shadowtls/nekorayconfig.txt
         sed -i "s/SNI/$user_sni/" /etc/shadowtls/nekoboxconfig.txt
-        sed -i "s/SNI/$user_sni/" /etc/shadowtls/user-nekorayconfig.txt
-        sed -i "s/SNI/$user_sni/" /etc/shadowtls/user-nekoboxconfig.txt
 
-        # replace  name
-        sed -i "s/NAME/ShadowTLS/" /etc/shadowtls/config.json
+        # Generate  name
+        name=$(openssl rand -hex 4)
+        sed -i "s/NAME/$name/" /etc/shadowtls/config.json
 
         # Generate shadowtls password and replace "STPASS" in the config files
         stpass=$(openssl rand -hex 16)
         sed -i "s/STPASS/$stpass/" /etc/shadowtls/config.json
-        sed -i "s/STPASS/$stpass/" /etc/shadowtls/user-nekorayconfig.txt
-        sed -i "s/STPASS/$stpass/" /etc/shadowtls/user-nekoboxconfig.txt
+        sed -i "s/STPASS/$stpass/" /etc/shadowtls/nekorayconfig.txt
+        sed -i "s/STPASS/$stpass/" /etc/shadowtls/nekoboxconfig.txt
 
         # Generate shadowsocks password and replace "SSPASS" in the config files
         sspass=$(openssl rand -hex 16)
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/config.json
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekorayconfig.txt
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekoboxconfig.txt
-        sed -i "s/SSPASS/$sspass/" /etc/shadowtls/user-nekorayconfig.txt
-        sed -i "s/SSPASS/$sspass/" /etc/shadowtls/user-nekoboxconfig.txt
 
         # Use a public DNS service to determine the public IP address and replace with IP in config.txt file
         public_ipv4=$(curl -s https://v4.ident.me)
         sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekorayconfig.txt
         sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekoboxconfig.txt
-        sed -i "s/IP/$public_ipv4/" /etc/shadowtls/user-nekorayconfig.txt
-        sed -i "s/IP/$public_ipv4/" /etc/shadowtls/user-nekoboxconfig.txt
 
         # UFW optimization
         if sudo ufw status | grep -q "Status: active"; then
@@ -986,7 +920,7 @@ modify_shadowtls_config() {
 
         echo
 
-        cat /etc/shadowtls/user-nekorayconfig.txt
+        cat /etc/shadowtls/nekorayconfig.txt
 
         echo
 
@@ -994,7 +928,7 @@ modify_shadowtls_config() {
 
         echo
 
-        cat /etc/shadowtls/user-nekoboxconfig.txt
+        cat /etc/shadowtls/nekoboxconfig.txt
 
         echo
 
@@ -1013,6 +947,7 @@ modify_shadowtls_config() {
 
 }
 
+# Function to uninstall shadowtls
 uninstall_shadowtls() {
     # Stop the ST service
     sudo systemctl stop ST
@@ -1027,31 +962,22 @@ uninstall_shadowtls() {
 
 }
 
+# Function to show hysteria config
 show_hysteria_config() {
     hysteria_check="/etc/hysteria2/config.txt"
 
     if [ -e "$hysteria_check" ]; then
 
-        config_file="/etc/hysteria2/server.json"
-        users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
-        user_choice=$(whiptail --menu "Select user:" 25 50 10 $users 2>&1 >/dev/tty)
+        cat /etc/hysteria2/config.txt
 
-        if [ -n "$user_choice" ]; then
-            user_password=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].password' "$config_file")
+        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/hysteria2/config.txt)
+        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/hysteria2/config.txt)
 
-            sed "s/PASSWORD/$user_password/g" /etc/hysteria2/config.txt >/etc/hysteria2/user-config.txt
+        echo IPv4:
+        qrencode -t ANSIUTF8 <<<"$ipv4qr"
 
-            cat /etc/hysteria2/user-config.txt
-
-            ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/hysteria2/user-config.txt)
-            ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/hysteria2/user-config.txt)
-
-            echo IPv4:
-            qrencode -t ANSIUTF8 <<<"$ipv4qr"
-
-            echo IPv6:
-            qrencode -t ANSIUTF8 <<<"$ipv6qr"
-        fi
+        echo IPv6:
+        qrencode -t ANSIUTF8 <<<"$ipv6qr"
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
@@ -1066,33 +992,22 @@ show_hysteria_config() {
 
 }
 
+# Function to show tuic config
 show_tuic_config() {
     tuic_check="/etc/tuic/config.txt"
 
     if [ -e "$tuic_check" ]; then
 
-        config_file="/etc/tuic/server.json"
-        users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
-        user_choice=$(whiptail --menu "Select user:" 25 50 10 $users 2>&1 >/dev/tty)
+        cat /etc/tuic/config.txt
 
-        if [ -n "$user_choice" ]; then
-            user_password=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].password' "$config_file")
-            user_uuid=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].uuid' "$config_file")
+        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/tuic/config.txt)
+        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/tuic/config.txt)
 
-            sed "s/PASSWORD/$user_password/g" /etc/tuic/config.txt >/etc/tuic/user-config.txt
-            sed "s/UUID/$user_uuid/g" /etc/tuic/config.txt >/etc/tuic/user-config.txt
+        echo IPv4:
+        qrencode -t ANSIUTF8 <<<"$ipv4qr"
 
-            cat /etc/tuic/user-config.txt
-
-            ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/tuic/user-config.txt)
-            ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/tuic/user-config.txt)
-
-            echo IPv4:
-            qrencode -t ANSIUTF8 <<<"$ipv4qr"
-
-            echo IPv6:
-            qrencode -t ANSIUTF8 <<<"$ipv6qr"
-        fi
+        echo IPv6:
+        qrencode -t ANSIUTF8 <<<"$ipv6qr"
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
@@ -1107,31 +1022,22 @@ show_tuic_config() {
 
 }
 
+# Function to show reality config
 show_reality_config() {
     reality_check="/etc/reality/config.txt"
 
     if [ -e "$reality_check" ]; then
 
-        config_file="/etc/reality/config.json"
-        users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
-        user_choice=$(whiptail --menu "Select user:" 25 50 10 $users 2>&1 >/dev/tty)
+        cat /etc/reality/config.txt
 
-        if [ -n "$user_choice" ]; then
-            user_uuid=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].uuid' "$config_file")
+        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/reality/config.txt)
+        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/reality/config.txt)
 
-            sed "s/UUID/$user_uuid/g" /etc/reality/config.txt >/etc/reality/user-config.txt
+        echo IPv4:
+        qrencode -t ANSIUTF8 <<<"$ipv4qr"
 
-            cat /etc/reality/user-config.txt
-
-            ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/reality/user-config.txt)
-            ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/reality/user-config.txt)
-
-            echo IPv4:
-            qrencode -t ANSIUTF8 <<<"$ipv4qr"
-
-            echo IPv6:
-            qrencode -t ANSIUTF8 <<<"$ipv6qr"
-        fi
+        echo IPv6:
+        qrencode -t ANSIUTF8 <<<"$ipv6qr"
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
@@ -1146,38 +1052,27 @@ show_reality_config() {
 
 }
 
+# Function to show shadowtls config
 show_shadowtls_config() {
     shadowtls_check="/etc/shadowtls/nekorayconfig.txt"
 
     if [ -e "$shadowtls_check" ]; then
 
-        config_file="/etc/shadowTLS/config.json"
-        users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
-        user_choice=$(whiptail --menu "Select user:" 25 50 10 $users 2>&1 >/dev/tty)
+        echo "ShadowTLS config for Nekoray : "
 
-        if [ -n "$user_choice" ]; then
-            user_password=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].password' "$config_file")
+        echo
 
-            sed "s/STPASS/$user_password/g" /etc/shadowtls/nekorayconfig.txt >/etc/shadowtls/user-nekorayconfig.txt
-            sed "s/STPASS/$user_password/g" /etc/shadowtls/nekoboxconfig.txt >/etc/shadowtls/user-nekoboxconfig.txt
+        cat /etc/shadowtls/nekorayconfig.txt
 
-            echo "ShadowTLS config for Nekoray : "
+        echo
 
-            echo
+        echo "ShadowTLS config for Nekobox : "
 
-            cat /etc/shadowtls/user-nekorayconfig.txt
+        echo
 
-            echo
+        cat /etc/shadowtls/nekoboxconfig.txt
 
-            echo "ShadowTLS config for Nekobox : "
-
-            echo
-
-            cat /etc/shadowtls/user-nekoboxconfig.txt
-
-            echo
-
-        fi
+        echo
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
@@ -1192,6 +1087,7 @@ show_shadowtls_config() {
 
 }
 
+# Function to show warp config
 show_warp_config() {
     warp_conf_check="/etc/sbw/proxy.json"
 
@@ -1212,6 +1108,7 @@ show_warp_config() {
 
 }
 
+# Generate WARP+ Key
 warp_key_gen() {
 
     curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/key-generator.py -o key-generator.py
@@ -1222,7 +1119,9 @@ warp_key_gen() {
     clear
 }
 
+# Function to install warp
 install_warp() {
+    # WARP+ installation
     warp_check="/etc/systemd/system/SBW.service"
 
     if [ -e "$warp_check" ]; then
@@ -1269,6 +1168,7 @@ install_warp() {
 
 }
 
+# Function to uninstall warp
 uninstall_warp() {
     # Stop the SBW service
     sudo systemctl stop SBW
@@ -1387,6 +1287,7 @@ uninstall_warp() {
 
 }
 
+# Function to update sing-box core
 update_sing-box_core() {
     rlt_core_check="/usr/bin/RS"
 
@@ -1533,6 +1434,7 @@ update_sing-box_core() {
 
 }
 
+# Function to disable warp on reality
 toggle_warp_reality() {
     file="/etc/reality/config.json"
     warp="/etc/sbw/proxy.json"
@@ -1589,6 +1491,7 @@ toggle_warp_reality() {
 
 }
 
+# Function to disable warp on shadowtls
 toggle_warp_shadowtls() {
     file="/etc/shadowtls/config.json"
     warp="/etc/sbw/proxy.json"
@@ -1645,6 +1548,7 @@ toggle_warp_shadowtls() {
 
 }
 
+# Function to disable warp on tuic
 toggle_warp_tuic() {
     file="/etc/tuic/server.json"
     warp="/etc/sbw/proxy.json"
@@ -1701,6 +1605,7 @@ toggle_warp_tuic() {
 
 }
 
+# Function to disable warp on hysteria2
 toggle_warp_hysteria() {
     file="/etc/hysteria2/server.json"
     warp="/etc/sbw/proxy.json"
@@ -1757,6 +1662,14 @@ toggle_warp_hysteria() {
 
 }
 
+# Function to optimize server
+optimize_server() {
+
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/server-optimizer.sh)"
+    clear
+
+}
+
 check_system_info() {
     if [ $(type -p systemd-detect-virt) ]; then
         VIRT=$(systemd-detect-virt)
@@ -1810,7 +1723,7 @@ get_cpu_usage() {
 
     delta_idle=$((idle - prev_idle))
     delta_total=$((total - prev_total))
-    cpu_usage=$(awk "BEGIN {printf \"%.2f\", 100 * (1 - $delta_idle / $delta_total)}")
+    cpu_usage_percentage=$(awk "BEGIN {printf \"%.2f\", 100 * (1 - $delta_idle / $delta_total)}")
 
 }
 
@@ -1833,11 +1746,14 @@ get_storage_usage() {
 check_system_ip() {
     IP4=$(wget -4 -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 http://ip-api.com/json/) &&
         WAN4=$(expr "$IP4" : '.*query\":[ ]*\"\([^"]*\).*') &&
-        COUNTRY=$(expr "$IP4" : '.*country\":[ ]*\"\([^"]*\).*') &&
-        ISP=$(expr "$IP4" : '.*isp\":[ ]*\"\([^"]*\).*')
+        COUNTRY4=$(expr "$IP4" : '.*country\":[ ]*\"\([^"]*\).*') &&
+        ISP4=$(expr "$IP4" : '.*isp\":[ ]*\"\([^"]*\).*') &&
+        [[ "$L" = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
 
     IP6=$(wget -6 -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://api.ip.sb/geoip) &&
-        WAN6=$(expr "$IP6" : '.*ip\":[ ]*\"\([^"]*\).*')
+        WAN6=$(expr "$IP6" : '.*ip\":[ ]*\"\([^"]*\).*') &&
+        [[ "$L" = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
+
 }
 
 check_and_display_process_status() {
@@ -1851,235 +1767,18 @@ check_and_display_process_status() {
     fi
 }
 
-add_hysteria_user() {
-    config_file="/etc/hysteria2/server.json"
+legacy() {
 
-    if [ -e "$config_file" ]; then
-        name_regex="^[A-Za-z0-9]+$"
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/Legacy-Menu.sh)"
 
-        name=$(whiptail --inputbox "Enter the user's name:" 10 30 2>&1 >/dev/tty)
+    exit 0
 
-        if [[ "$name" =~ $name_regex ]]; then
-            password=$(whiptail --inputbox "Enter the user's password:" 10 30 2>&1 >/dev/tty)
-            user_exists=$(jq --arg name "$name" '.inbounds[0].users | map(select(.name == $name)) | length' "$config_file")
-
-            if [ "$user_exists" -eq 0 ]; then
-                jq --arg name "$name" --arg password "$password" '.inbounds[0].users += [{"name": $name, "password": $password}]' "$config_file" >tmp_config.json
-                mv tmp_config.json "$config_file"
-
-                sudo systemctl restart SH
-
-                whiptail --msgbox "User added successfully!" 10 30
-                clear
-            else
-                whiptail --msgbox "User already exists!" 10 30
-                clear
-            fi
-        else
-            whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
-            clear
-        fi
-    else
-        whiptail --msgbox "Hysteria2 is not installed yet." 10 30
-        clear
-    fi
 }
 
-remove_hysteria_user() {
-    config_file="/etc/hysteria2/server.json"
+tui() {
 
-    if [ -e "$config_file" ]; then
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/TUI-Menu.sh)"
 
-        users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
-        user_choice=$(whiptail --menu "Select a user to remove:" 25 50 10 $users 2>&1 >/dev/tty)
+    exit 0
 
-        if [ -n "$user_choice" ]; then
-            user_index=$(echo "$user_choice" | awk '{print $1}')
-            jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
-            mv tmp_config.json "$config_file"
-
-            sudo systemctl restart SH
-
-            whiptail --msgbox "User removed successfully!" 10 30
-            clear
-        fi
-    else
-        whiptail --msgbox "Hysteria2 is not installed yet." 10 30
-        clear
-    fi
-}
-
-add_tuic_user() {
-    config_file="/etc/tuic/server.json"
-
-    if [ -e "$config_file" ]; then
-        name_regex="^[A-Za-z0-9]+$"
-
-        name=$(whiptail --inputbox "Enter the user's name:" 10 30 2>&1 >/dev/tty)
-
-        if [[ "$name" =~ $name_regex ]]; then
-            password=$(whiptail --inputbox "Enter the user's password:" 10 30 2>&1 >/dev/tty)
-            uuid=$(cat /proc/sys/kernel/random/uuid)
-            user_exists=$(jq --arg name "$name" '.inbounds[0].users | map(select(.name == $name)) | length' "$config_file")
-
-            if [ "$user_exists" -eq 0 ]; then
-                jq --arg name "$name" --arg password "$password" --arg uuid "$uuid" '.inbounds[0].users += [{"name": $name, "password": $password, "uuid": $uuid}]' "$config_file" >tmp_config.json
-                mv tmp_config.json "$config_file"
-
-                sudo systemctl restart TS
-
-                whiptail --msgbox "User added successfully!" 10 30
-                clear
-            else
-                whiptail --msgbox "User already exists!" 10 30
-                clear
-            fi
-        else
-            whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
-            clear
-        fi
-    else
-        whiptail --msgbox "TUIC is not installed yet." 10 30
-        clear
-    fi
-}
-
-remove_tuic_user() {
-    config_file="/etc/tuic/server.json"
-
-    if [ -e "$config_file" ]; then
-
-        users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
-        user_choice=$(whiptail --menu "Select a user to remove:" 25 50 10 $users 2>&1 >/dev/tty)
-
-        if [ -n "$user_choice" ]; then
-            user_index=$(echo "$user_choice" | awk '{print $1}')
-            jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
-            mv tmp_config.json "$config_file"
-
-            sudo systemctl restart TS
-
-            whiptail --msgbox "User removed successfully!" 10 30
-            clear
-        fi
-    else
-        whiptail --msgbox "TUIC is not installed yet." 10 30
-        clear
-    fi
-}
-
-add_reality_user() {
-    config_file="/etc/reality/config.json"
-
-    if [ -e "$config_file" ]; then
-        name_regex="^[A-Za-z0-9]+$"
-
-        name=$(whiptail --inputbox "Enter the user's name:" 10 30 2>&1 >/dev/tty)
-
-        if [[ "$name" =~ $name_regex ]]; then
-            uuid=$(cat /proc/sys/kernel/random/uuid)
-            user_exists=$(jq --arg name "$name" '.inbounds[0].users | map(select(.name == $name)) | length' "$config_file")
-
-            if [ "$user_exists" -eq 0 ]; then
-                jq --arg name "$name" --arg uuid "$uuid" '.inbounds[0].users += [{"name": $name, "uuid": $uuid}]' "$config_file" >tmp_config.json
-                mv tmp_config.json "$config_file"
-
-                sudo systemctl restart RS
-
-                whiptail --msgbox "User added successfully!" 10 30
-                clear
-            else
-                whiptail --msgbox "User already exists!" 10 30
-                clear
-            fi
-        else
-            whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
-            clear
-        fi
-    else
-        whiptail --msgbox "Reality is not installed yet." 10 30
-        clear
-    fi
-}
-
-remove_reality_user() {
-    config_file="/etc/reality/config.json"
-
-    if [ -e "$config_file" ]; then
-
-        users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
-        user_choice=$(whiptail --menu "Select a user to remove:" 25 50 10 $users 2>&1 >/dev/tty)
-
-        if [ -n "$user_choice" ]; then
-            user_index=$(echo "$user_choice" | awk '{print $1}')
-            jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
-            mv tmp_config.json "$config_file"
-
-            sudo systemctl restart RS
-
-            whiptail --msgbox "User removed successfully!" 10 30
-            clear
-        fi
-    else
-        whiptail --msgbox "Reality is not installed yet." 10 30
-        clear
-    fi
-}
-
-add_shadowtls_user() {
-    config_file="/etc/shadowtls/config.json"
-
-    if [ -e "$config_file" ]; then
-        name_regex="^[A-Za-z0-9]+$"
-
-        name=$(whiptail --inputbox "Enter the user's name:" 10 30 2>&1 >/dev/tty)
-
-        if [[ "$name" =~ $name_regex ]]; then
-            password=$(whiptail --inputbox "Enter the user's password:" 10 30 2>&1 >/dev/tty)
-            user_exists=$(jq --arg name "$name" '.inbounds[0].users | map(select(.name == $name)) | length' "$config_file")
-
-            if [ "$user_exists" -eq 0 ]; then
-                jq --arg name "$name" --arg password "$password" '.inbounds[0].users += [{"name": $name, "password": $password}]' "$config_file" >tmp_config.json
-                mv tmp_config.json "$config_file"
-
-                sudo systemctl restart ST
-
-                whiptail --msgbox "User added successfully!" 10 30
-                clear
-            else
-                whiptail --msgbox "User already exists!" 10 30
-                clear
-            fi
-        else
-            whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
-            clear
-        fi
-    else
-        whiptail --msgbox "ShadowTLS is not installed yet." 10 30
-        clear
-    fi
-}
-
-remove_shadowtls_user() {
-    config_file="/etc/shadowtls/config.json"
-
-    if [ -e "$config_file" ]; then
-
-        users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
-        user_choice=$(whiptail --menu "Select a user to remove:" 25 50 10 $users 2>&1 >/dev/tty)
-
-        if [ -n "$user_choice" ]; then
-            user_index=$(echo "$user_choice" | awk '{print $1}')
-            jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
-            mv tmp_config.json "$config_file"
-
-            sudo systemctl restart ST
-
-            whiptail --msgbox "User removed successfully!" 10 30
-            clear
-        fi
-    else
-        whiptail --msgbox "ShadowTLS is not installed yet." 10 30
-        clear
-    fi
 }
