@@ -1108,7 +1108,7 @@ show_tuic_config() {
 }
 
 show_reality_config() {
-    reality_check="/etc/tuic/config.txt"
+    reality_check="/etc/reality/config.txt"
 
     if [ -e "$reality_check" ]; then
 
