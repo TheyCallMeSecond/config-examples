@@ -1474,7 +1474,7 @@ toggle_warp_reality() {
 
                 systemctl start RS
 
-                whiptail --msgboxho "WARP is enabled now" 10 30
+                whiptail --msgbox "WARP is enabled now" 10 30
                 clear
             fi
 
