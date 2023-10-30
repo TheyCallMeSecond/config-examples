@@ -3,58 +3,71 @@
 source <(curl -sSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/Source.sh)
 
 while true; do
-    user_choice=$(whiptail --clear --title "Main Menu" --menu "Please select a protocol:" 25 60 15 \
-        "Server Optimizer" "Optimize the server" \
-        "Update Sing-Box Cores" "Update Sing-Box Cores" \
+    user_choice=$(whiptail --clear --title "Main Menu" --menu "Please select a protocol:" 25 50 15 \
+        "Optimize" "     Optimize Server" \
+        "Update" "     Update Sing-Box Cores" \
         "" "" \
-        "Hysteria2" "Manage Hysteria2" \
-        "Tuic" "Manage Tuic" \
-        "Reality" "Manage Reality" \
-        "ShadowTLS" "Manage ShadowTLS" \
-        "Warp" "Manage Warp" \
-        "Exit" "Exit the script" 3>&1 1>&2 2>&3)
+        "Hysteria2" "     Manage Hysteria2" \
+        "Tuic" "     Manage Tuic" \
+        "Reality" "     Manage Reality" \
+        "ShadowTLS" "     Manage ShadowTLS" \
+        "Warp" "     Manage Warp" \
+        "Exit" "     Exit the script" 3>&1 1>&2 2>&3)
 
     case $user_choice in
-    "Server Optimizer")
+    "Optimize")
         clear
         optimize_server
         ;;
-    "Update Sing-Box Cores")
+    "Update")
         clear
         update_sing-box_core
         ;;
     "Hysteria2")
         while true; do
-            user_choice=$(whiptail --clear --title "Hysteria2 Menu" --menu "Please select an option:" 25 70 15 \
-                "Install Hysteria2" "Install Hysteria2" \
-                "Modify Hysteria2 Config" "Modify Hysteria2 Config" \
-                "Show Hysteria2 Config" "Show Hysteria2 Config" \
-                "Enable/Disable WARP on Hysteria2" "Enable/Disable WARP on Hysteria2" \
-                "Uninstall Hysteria2" "Uninstall Hysteria2" \
-                "Back" "Back to Main Menu" 3>&1 1>&2 2>&3)
+            user_choice=$(
+                whiptail --clear --title "Hysteria2 Menu" --menu "Please select an option:" 25 50 15 \
+                    "1" "Install Hysteria2" \
+                    "2" "Modify Hysteria2 Config" \
+                    "3" "Add a new user" \
+                    "4" "Remove an existing user" \
+                    "5" "Show Hysteria2 Config" \
+                    "6" "Enable/Disable WARP on Hysteria2" \
+                    "7" "Uninstall Hysteria2" \
+                    "0" "Back to Main Menu" 3>&1 1>&2 2>&3
+            )
 
             case $user_choice in
-            "Install Hysteria2")
+            "1")
                 clear
                 install_hysteria
                 ;;
-            "Modify Hysteria2 Config")
+            "2")
                 clear
                 modify_hysteria_config
                 ;;
-            "Show Hysteria2 Config")
+            "3")
+                clear
+                add_hysteria_user
+                ;;
+            "4")
+                clear
+                remove_hysteria_user
+                ;;
+            "5")
                 clear
                 show_hysteria_config
                 ;;
-            "Enable/Disable WARP on Hysteria2")
+            "6")
                 clear
                 toggle_warp_hysteria
                 ;;
-            "Uninstall Hysteria2")
+            "7")
                 clear
                 uninstall_hysteria
                 ;;
-            "Back")
+
+            "0")
                 break
                 ;;
             *)
@@ -65,36 +78,46 @@ while true; do
         ;;
     "Tuic")
         while true; do
-            user_choice=$(whiptail --clear --title "Tuic Menu" --menu "Please select an option:" 25 60 15 \
-                "Install Tuic" "Install Tuic" \
-                "Modify Tuic Config" "Modify Tuic Config" \
-                "Show Tuic Config" "Show Tuic Config" \
-                "Enable/Disable WARP on Tuic" "Enable/Disable WARP on Tuic" \
-                "Uninstall Tuic" "Uninstall Tuic" \
-                "Back" "Back to Main Menu" 3>&1 1>&2 2>&3)
+            user_choice=$(whiptail --clear --title "Tuic Menu" --menu "Please select an option:" 25 50 15 \
+                "1" "Install Tuic" \
+                "2" "Modify Tuic Config" \
+                "3" "Add a new user" \
+                "4" "Remove an existing user" \
+                "5" "Show Tuic Config" \
+                "6" "Enable/Disable WARP on Tuic" \
+                "7" "Uninstall Tuic" \
+                "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
 
             case $user_choice in
-            "Install Tuic")
+            "1")
                 clear
                 install_tuic
                 ;;
-            "Modify Tuic Config")
+            "2")
                 clear
                 modify_tuic_config
                 ;;
-            "Show Tuic Config")
+            "3")
+                clear
+                add_tuic_user
+                ;;
+            "4")
+                clear
+                remove_tuic_user
+                ;;
+            "5")
                 clear
                 show_tuic_config
                 ;;
-            "Enable/Disable WARP on Tuic")
+            "6")
                 clear
                 toggle_warp_tuic
                 ;;
-            "Uninstall Tuic")
+            "7")
                 clear
                 uninstall_tuic
                 ;;
-            "Back")
+            "0")
                 break
                 ;;
             *)
@@ -105,36 +128,46 @@ while true; do
         ;;
     "Reality")
         while true; do
-            user_choice=$(whiptail --clear --title "Reality Menu" --menu "Please select an option:" 25 65 15 \
-                "Install Reality" "Install Reality" \
-                "Modify Reality Config" "Modify Reality Config" \
-                "Show Reality Config" "Show Reality Config" \
-                "Enable/Disable WARP on Reality" "Enable/Disable WARP on Reality" \
-                "Uninstall Reality" "Uninstall Reality" \
-                "Back" "Back to Main Menu" 3>&1 1>&2 2>&3)
+            user_choice=$(whiptail --clear --title "Reality Menu" --menu "Please select an option:" 25 50 15 \
+                "1" "Install Reality" \
+                "2" "Modify Reality Config" \
+                "3" "Add a new user" \
+                "4" "Remove an existing user" \
+                "5" "Show Reality Config" \
+                "6" "Enable/Disable WARP on Reality" \
+                "7" "Uninstall Reality" \
+                "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
 
             case $user_choice in
-            "Install Reality")
+            "1")
                 clear
                 install_reality
                 ;;
-            "Modify Reality Config")
+            "2")
                 clear
                 modify_reality_config
                 ;;
-            "Show Reality Config")
+            "3")
+                clear
+                add_reality_user
+                ;;
+            "4")
+                clear
+                remove_reality_user
+                ;;
+            "5")
                 clear
                 show_reality_config
                 ;;
-            "Enable/Disable WARP on Reality")
+            "6")
                 clear
                 toggle_warp_reality
                 ;;
-            "Uninstall Reality")
+            "7")
                 clear
                 uninstall_reality
                 ;;
-            "Back")
+            "0")
                 break
                 ;;
             *)
@@ -145,36 +178,46 @@ while true; do
         ;;
     "ShadowTLS")
         while true; do
-            user_choice=$(whiptail --clear --title "ShadowTLS Menu" --menu "Please select an option:" 25 70 15 \
-                "Install ShadowTLS" "Install ShadowTLS" \
-                "Modify ShadowTLS Config" "Modify ShadowTLS Config" \
-                "Show ShadowTLS Config" "Show ShadowTLS Config" \
-                "Enable/Disable WARP on ShadowTLS" "Enable/Disable WARP on ShadowTLS" \
-                "Uninstall ShadowTLS" "Uninstall ShadowTLS" \
-                "Back" "Back to Main Menu" 3>&1 1>&2 2>&3)
+            user_choice=$(whiptail --clear --title "ShadowTLS Menu" --menu "Please select an option:" 25 50 15 \
+                "1" "Install ShadowTLS" \
+                "2" "Modify ShadowTLS Config" \
+                "3" "Add a new user" \
+                "4" "Remove an existing user" \
+                "5" "Show ShadowTLS Config" \
+                "6" "Enable/Disable WARP on ShadowTLS" \
+                "7" "Uninstall ShadowTLS" \
+                "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
 
             case $user_choice in
-            "Install ShadowTLS")
+            "1")
                 clear
                 install_shadowtls
                 ;;
-            "Modify ShadowTLS Config")
+            "2")
                 clear
                 modify_shadowtls_config
                 ;;
-            "Show ShadowTLS Config")
+            "3")
+                clear
+                add_shadowtls_user
+                ;;
+            "4")
+                clear
+                remove_shadowtls_user
+                ;;
+            "5")
                 clear
                 show_shadowtls_config
                 ;;
-            "Enable/Disable WARP on ShadowTLS")
+            "6")
                 clear
                 toggle_warp_shadowtls
                 ;;
-            "Uninstall ShadowTLS")
+            "7")
                 clear
                 uninstall_shadowtls
                 ;;
-            "Back")
+            "0")
                 break
                 ;;
             *)
@@ -186,32 +229,32 @@ while true; do
     "Warp")
         while true; do
             user_choice=$(
-                whiptail --clear --title "Warp Menu" --menu "Please select an option:" 25 60 15 \
-                    "Generate WARP+ Key" "Generate WARP+ Key" \
-                    "Install Warp" "Install Warp" \
-                    "Show Warp Config" "Show Warp Config" \
-                    "Uninstall Warp" "Uninstall Warp" \
-                    "Back" "Back to Main Menu" 3>&1 1>&2 2>&3
+                whiptail --clear --title "Warp Menu" --menu "Please select an option:" 25 50 15 \
+                    "1" "Generate WARP+ Key" \
+                    "2" "Install Warp" \
+                    "3" "Show Warp Config" \
+                    "4" "Uninstall Warp" \
+                    "0" "Back to Main Menu" 3>&1 1>&2 2>&3
             )
 
             case $user_choice in
-            "Generate WARP+ Key")
+            "1")
                 clear
                 warp_key_gen
                 ;;
-            "Install Warp")
+            "2")
                 clear
                 install_warp
                 ;;
-            "Show Warp Config")
+            "3")
                 clear
                 show_warp_config
                 ;;
-            "Uninstall Warp")
+            "4")
                 clear
                 uninstall_warp
                 ;;
-            "Back")
+            "0")
                 break
                 ;;
             *)
