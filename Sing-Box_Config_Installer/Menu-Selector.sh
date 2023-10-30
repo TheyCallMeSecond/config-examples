@@ -31,13 +31,13 @@ while true; do
   echo "Architecture: $ARCHITECTURE"
   echo "Virtualization: $VIRT"
   echo "======================================================="
-  echo "CPU Usage: $cpu_usage%"
+  echo "CPU Usage: $cpu_usage_percentage%"
   echo "Memory Usage: $memory_usage%"
   echo "Storage Usage: $storage_usage%"
   echo "======================================================="
   echo "IPv4: $WAN4"
   echo "IPv6: $WAN6"
-  echo "Country/ISP: $COUNTRY $ISP"
+  echo "Country/ISP: $COUNTRY4 $ISP4"
   echo "======================================================="
   for process_info in "${processes[@]}"; do
     IFS=":" read -r process_name custom_name <<<"$process_info"
@@ -67,7 +67,7 @@ while true; do
   1)
     sudo apt update
     sudo apt install whiptail qrencode jq openssl python3 python3-pip -y
-    pip install httpx requests 
+    pip install httpx requests --break-system-packages
 
     clear
     tui
@@ -75,7 +75,7 @@ while true; do
   2)
     sudo apt update
     sudo apt install whiptail qrencode jq openssl python3 python3-pip -y
-    pip install httpx requests 
+    pip install httpx requests --break-system-packages
 
     clear
     legacy
