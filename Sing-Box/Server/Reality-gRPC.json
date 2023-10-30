@@ -23,7 +23,7 @@
         "server_name": "SNI"
       },
       "transport": {
-        "service_name": "SERVICE-NAME",
+        "service_name": "PATH",
         "type": "grpc"
       },
       "users": [
