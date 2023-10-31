@@ -81,8 +81,8 @@ install_hysteria() {
     sed -i "s/NAME/Hysteria2/" /etc/hysteria2/server.json
 
     # Use a public DNS service to determine the public IP address
-    public_ipv4=$(curl -s https://v4.ident.me)
-    public_ipv6=$(curl -s https://v6.ident.me)
+    public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
+    public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
     # UFW optimization
     if sudo ufw status | grep -q "Status: active"; then
@@ -189,8 +189,8 @@ modify_hysteria_config() {
         sed -i "s/NAME/Hysteria2/" /etc/hysteria2/server.json
 
         # Use a public DNS service to determine the public IP address
-        public_ipv4=$(curl -s https://v4.ident.me)
-        public_ipv6=$(curl -s https://v6.ident.me)
+        public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
+        public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
         # UFW optimization
         if sudo ufw status | grep -q "Status: active"; then
@@ -334,8 +334,8 @@ install_tuic() {
     sed -i "s/UUID/$uuid/" /etc/tuic/server.json
 
     # Use a public DNS service to determine the public IP address
-    public_ipv4=$(curl -s https://v4.ident.me)
-    public_ipv6=$(curl -s https://v6.ident.me)
+    public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
+    public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
     # UFW optimization
     if sudo ufw status | grep -q "Status: active"; then
@@ -446,8 +446,8 @@ modify_tuic_config() {
         sed -i "s/UUID/$uuid/" /etc/tuic/server.json
 
         # Use a public DNS service to determine the public IP address
-        public_ipv4=$(curl -s https://v4.ident.me)
-        public_ipv6=$(curl -s https://v6.ident.me)
+        public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
+        public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
         # UFW optimization
         if sudo ufw status | grep -q "Status: active"; then
@@ -590,8 +590,8 @@ install_reality() {
     sed -i "s/PATH/$service_name/" /etc/reality/config.json
 
     # Use a public DNS service to determine the public IP address
-    public_ipv4=$(curl -s https://v4.ident.me)
-    public_ipv6=$(curl -s https://v6.ident.me)
+    public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
+    public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
     # UFW optimization
     if sudo ufw status | grep -q "Status: active"; then
@@ -702,8 +702,8 @@ modify_reality_config() {
         sed -i "s/PATH/$service_name/" /etc/reality/config.json
 
         # Use a public DNS service to determine the public IP address
-        public_ipv4=$(curl -s https://v4.ident.me)
-        public_ipv6=$(curl -s https://v6.ident.me)
+        public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
+        public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
         # UFW optimization
         if sudo ufw status | grep -q "Status: active"; then
@@ -855,7 +855,7 @@ install_shadowtls() {
     sed -i "s/SSPASS/$sspass/" /etc/shadowtls/user-nekoboxconfig.txt
 
     # Use a public DNS service to determine the public IP address and replace with IP in config.txt file
-    public_ipv4=$(curl -s https://v4.ident.me)
+    public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
     sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekorayconfig.txt
     sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekoboxconfig.txt
     sed -i "s/IP/$public_ipv4/" /etc/shadowtls/user-nekorayconfig.txt
@@ -971,7 +971,7 @@ modify_shadowtls_config() {
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/user-nekoboxconfig.txt
 
         # Use a public DNS service to determine the public IP address and replace with IP in config.txt file
-        public_ipv4=$(curl -s https://v4.ident.me)
+        public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
         sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekorayconfig.txt
         sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekoboxconfig.txt
         sed -i "s/IP/$public_ipv4/" /etc/shadowtls/user-nekorayconfig.txt
