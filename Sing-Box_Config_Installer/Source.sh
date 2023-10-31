@@ -1039,7 +1039,7 @@ show_hysteria_config() {
         if [ -n "$user_choice" ]; then
             user_password=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].password' "$config_file")
 
-            sed "s/PASSWORD/$user_password/g" /etc/hysteria2/config.txt >/etc/hysteria2/user-config.txt
+            sed "s/PASSWORD/$user_password/g" /etc/hysteria2/config.txt > /etc/hysteria2/user-config.txt
 
             cat /etc/hysteria2/user-config.txt
 
@@ -1118,7 +1118,7 @@ show_reality_config() {
         if [ -n "$user_choice" ]; then
             user_uuid=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].uuid' "$config_file")
 
-            sed "s/UUID/$user_uuid/g" /etc/reality/config.txt >/etc/reality/user-config.txt
+            sed "s/UUID/$user_uuid/g" /etc/reality/config.txt > /etc/reality/user-config.txt
 
             cat /etc/reality/user-config.txt
 
@@ -1157,8 +1157,8 @@ show_shadowtls_config() {
         if [ -n "$user_choice" ]; then
             user_password=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].password' "$config_file")
 
-            sed "s/STPASS/$user_password/g" /etc/shadowtls/nekorayconfig.txt >/etc/shadowtls/user-nekorayconfig.txt
-            sed "s/STPASS/$user_password/g" /etc/shadowtls/nekoboxconfig.txt >/etc/shadowtls/user-nekoboxconfig.txt
+            sed "s/STPASS/$user_password/g" /etc/shadowtls/nekorayconfig.txt > /etc/shadowtls/user-nekorayconfig.txt
+            sed "s/STPASS/$user_password/g" /etc/shadowtls/nekoboxconfig.txt > /etc/shadowtls/user-nekoboxconfig.txt
 
             echo "ShadowTLS config for Nekoray : "
 
