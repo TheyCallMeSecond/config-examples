@@ -24,6 +24,9 @@ optimize_server() {
 }
 
 install_hysteria() {
+    # Prompt the user to enter a port
+    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+
     # Stop the Hysteria2 service
     sudo systemctl stop SH
 
@@ -67,8 +70,7 @@ install_hysteria() {
 
     rm -rf /root/selfcert
 
-    # Prompt the user to enter a port and replace "PORT" in the server.json file
-    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+    # replace "PORT" in the server.json file
     sed -i "s/PORT/$user_port/" /etc/hysteria2/server.json
 
     # Generate a password and replace "PASSWORD" in the server.json file
@@ -145,6 +147,9 @@ modify_hysteria_config() {
 
     if [ -e "$hysteria_check" ]; then
 
+        # Prompt the user to enter a port
+        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+
         # Stop the Hysteria2 service
         sudo systemctl stop SH
 
@@ -173,8 +178,7 @@ modify_hysteria_config() {
 
         rm -rf /root/selfcert
 
-        # Prompt the user to enter a port and replace "PORT" in the server.json file
-        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+        # replace "PORT" in the server.json file
         sed -i "s/PORT/$user_port/" /etc/hysteria2/server.json
 
         # Generate a password and replace "PASSWORD" in the server.json file
@@ -269,6 +273,9 @@ uninstall_hysteria() {
 }
 
 install_tuic() {
+    # Prompt the user to enter a port
+    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+
     # Stop the tuic service
     sudo systemctl stop TS
 
@@ -293,8 +300,7 @@ install_tuic() {
     # Download the tuic.service file
     curl -Lo /etc/systemd/system/TS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/TS.service && systemctl daemon-reload
 
-    # Prompt the user to enter a port and replace "PORT" in the server.json file
-    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+    # replace "PORT" in the server.json file
     sed -i "s/PORT/$user_port/" /etc/tuic/server.json
 
     # Get certificate
@@ -394,6 +400,9 @@ modify_tuic_config() {
 
     if [ -e "$tuic_check" ]; then
 
+        # Prompt the user to enter a port
+        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+
         # Stop the tuic service
         sudo systemctl stop TS
 
@@ -403,8 +412,7 @@ modify_tuic_config() {
         # Create a directory for tuic configuration and download the server.json file
         mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Tuic.json
 
-        # Prompt the user to enter a port and replace "PORT" in the server.json file
-        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+        # replace "PORT" in the server.json file
         sed -i "s/PORT/$user_port/" /etc/tuic/server.json
 
         # Get certificate
@@ -522,6 +530,12 @@ uninstall_tuic() {
 }
 
 install_reality() {
+    # Prompt the user to enter a port
+    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+
+    # Prompt the user to enter a sni
+    user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
+
     # Stop the RS service
     sudo systemctl stop RS
 
@@ -546,12 +560,10 @@ install_reality() {
     # Download the RS.service file
     curl -Lo /etc/systemd/system/RS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/RS.service && systemctl daemon-reload
 
-    # Prompt the user to enter a port and replace "PORT" in the config.json file
-    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+    # replace "PORT" in the config.json file
     sed -i "s/PORT/$user_port/" /etc/reality/config.json
 
-    # Prompt the user to enter a sni and replace "SNI" in the config.json file
-    user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
+    # replace "SNI" in the config.json file
     sed -i "s/SNI/$user_sni/" /etc/reality/config.json
 
     # replace "NAME" in the config.json file
@@ -645,6 +657,12 @@ modify_reality_config() {
 
     if [ -e "$reality_check" ]; then
 
+        # Prompt the user to enter a port
+        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+
+        # Prompt the user to enter a sni
+        user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
+
         # Stop the RS service
         sudo systemctl stop RS
 
@@ -654,12 +672,10 @@ modify_reality_config() {
         # Create a directory for RS configuration and download the config.json file
         mkdir -p /etc/reality && curl -Lo /etc/reality/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC.json
 
-        # Prompt the user to enter a port and replace "PORT" in the config.json file
-        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+        # replace "PORT" in the config.json file
         sed -i "s/PORT/$user_port/" /etc/reality/config.json
 
-        # Prompt the user to enter a sni and replace "SNI" in the config.json file
-        user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
+        # replace "SNI" in the config.json file
         sed -i "s/SNI/$user_sni/" /etc/reality/config.json
 
         # replace "NAME" in the config.json file
@@ -771,6 +787,12 @@ uninstall_reality() {
 }
 
 install_shadowtls() {
+    # Prompt the user to enter a port
+    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+
+    # Prompt the user to enter a sni
+    user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
+
     # Stop the ST service
     sudo systemctl stop ST
 
@@ -801,16 +823,14 @@ install_shadowtls() {
     # Download the ST.service file
     curl -Lo /etc/systemd/system/ST.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/ST.service && systemctl daemon-reload
 
-    # Prompt the user to enter a port and replace "PORT" in the config files
-    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+    # replace "PORT" in the config files
     sed -i "s/PORT/$user_port/" /etc/shadowtls/config.json
     sed -i "s/PORT/$user_port/" /etc/shadowtls/nekorayconfig.txt
     sed -i "s/PORT/$user_port/" /etc/shadowtls/nekoboxconfig.txt
     sed -i "s/PORT/$user_port/" /etc/shadowtls/user-nekorayconfig.txt
     sed -i "s/PORT/$user_port/" /etc/shadowtls/user-nekoboxconfig.txt
 
-    # Prompt the user to enter a sni and replace "SNI" in the config files
-    user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
+    # replace "SNI" in the config files
     sed -i "s/SNI/$user_sni/" /etc/shadowtls/config.json
     sed -i "s/SNI/$user_sni/" /etc/shadowtls/nekorayconfig.txt
     sed -i "s/SNI/$user_sni/" /etc/shadowtls/nekoboxconfig.txt
@@ -898,6 +918,12 @@ modify_shadowtls_config() {
 
     if [ -e "$shadowtls_check" ]; then
 
+        # Prompt the user to enter a port
+        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+
+        # Prompt the user to enter a sni
+        user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
+
         # Stop the sing-box service
         sudo systemctl stop ST
 
@@ -913,16 +939,14 @@ modify_shadowtls_config() {
         curl -Lo /etc/shadowtls/nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
         curl -Lo /etc/shadowtls/nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
 
-        # Prompt the user to enter a port and replace "PORT" in the config files
-        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+        # replace "PORT" in the config files
         sed -i "s/PORT/$user_port/" /etc/shadowtls/config.json
         sed -i "s/PORT/$user_port/" /etc/shadowtls/nekorayconfig.txt
         sed -i "s/PORT/$user_port/" /etc/shadowtls/nekoboxconfig.txt
         sed -i "s/PORT/$user_port/" /etc/shadowtls/user-nekorayconfig.txt
         sed -i "s/PORT/$user_port/" /etc/shadowtls/user-nekoboxconfig.txt
 
-        # Prompt the user to enter a sni and replace "SNI" in the config files
-        user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
+        # replace "SNI" in the config files
         sed -i "s/SNI/$user_sni/" /etc/shadowtls/config.json
         sed -i "s/SNI/$user_sni/" /etc/shadowtls/nekorayconfig.txt
         sed -i "s/SNI/$user_sni/" /etc/shadowtls/nekoboxconfig.txt
@@ -1039,7 +1063,7 @@ show_hysteria_config() {
         if [ -n "$user_choice" ]; then
             user_password=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].password' "$config_file")
 
-            sed "s/PASSWORD/$user_password/g" /etc/hysteria2/config.txt > /etc/hysteria2/user-config.txt
+            sed "s/PASSWORD/$user_password/g" /etc/hysteria2/config.txt >/etc/hysteria2/user-config.txt
 
             cat /etc/hysteria2/user-config.txt
 
@@ -1079,7 +1103,7 @@ show_tuic_config() {
             user_password=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].password' "$config_file")
             user_uuid=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].uuid' "$config_file")
 
-            sed "s/PASSWORD/$user_password/g; s/UUID/$user_uuid/g" /etc/tuic/config.txt > /etc/tuic/user-config.txt
+            sed "s/PASSWORD/$user_password/g; s/UUID/$user_uuid/g" /etc/tuic/config.txt >/etc/tuic/user-config.txt
 
             cat /etc/tuic/user-config.txt
 
@@ -1118,7 +1142,7 @@ show_reality_config() {
         if [ -n "$user_choice" ]; then
             user_uuid=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].uuid' "$config_file")
 
-            sed "s/UUID/$user_uuid/g" /etc/reality/config.txt > /etc/reality/user-config.txt
+            sed "s/UUID/$user_uuid/g" /etc/reality/config.txt >/etc/reality/user-config.txt
 
             cat /etc/reality/user-config.txt
 
@@ -1157,8 +1181,8 @@ show_shadowtls_config() {
         if [ -n "$user_choice" ]; then
             user_password=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].password' "$config_file")
 
-            sed "s/STPASS/$user_password/g" /etc/shadowtls/nekorayconfig.txt > /etc/shadowtls/user-nekorayconfig.txt
-            sed "s/STPASS/$user_password/g" /etc/shadowtls/nekoboxconfig.txt > /etc/shadowtls/user-nekoboxconfig.txt
+            sed "s/STPASS/$user_password/g" /etc/shadowtls/nekorayconfig.txt >/etc/shadowtls/user-nekorayconfig.txt
+            sed "s/STPASS/$user_password/g" /etc/shadowtls/nekoboxconfig.txt >/etc/shadowtls/user-nekoboxconfig.txt
 
             echo "ShadowTLS config for Nekoray : "
 
@@ -2046,7 +2070,7 @@ add_shadowtls_user() {
             if [ "$user_exists" -eq 0 ]; then
 
                 password=$(whiptail --inputbox "Enter the user's password:" 10 30 2>&1 >/dev/tty)
-                
+
                 jq --arg name "$name" --arg password "$password" '.inbounds[0].users += [{"name": $name, "password": $password}]' "$config_file" >tmp_config.json
                 mv tmp_config.json "$config_file"
 
