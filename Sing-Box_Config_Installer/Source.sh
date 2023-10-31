@@ -1558,7 +1558,7 @@ update_sing-box_core() {
 
 toggle_warp_reality() {
     file="/etc/reality/config.json"
-    warp="/etc/sbw/proxy.json"
+    warp="/etc/systemd/system/SBW.service"
 
     if [ -e "$file" ]; then
 
@@ -1614,7 +1614,7 @@ toggle_warp_reality() {
 
 toggle_warp_shadowtls() {
     file="/etc/shadowtls/config.json"
-    warp="/etc/sbw/proxy.json"
+    warp="/etc/systemd/system/SBW.service"
 
     if [ -e "$file" ]; then
 
@@ -1670,7 +1670,7 @@ toggle_warp_shadowtls() {
 
 toggle_warp_tuic() {
     file="/etc/tuic/server.json"
-    warp="/etc/sbw/proxy.json"
+    warp="/etc/systemd/system/SBW.service"
 
     if [ -e "$file" ]; then
 
@@ -1726,7 +1726,7 @@ toggle_warp_tuic() {
 
 toggle_warp_hysteria() {
     file="/etc/hysteria2/server.json"
-    warp="/etc/sbw/proxy.json"
+    warp="/etc/systemd/system/SBW.service"
 
     if [ -e "$file" ]; then
 
