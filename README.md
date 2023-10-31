@@ -27,6 +27,12 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-
 ```
 [![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/29.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/29.png?raw=true "bash screen")
 
+[![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/30.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/30.png?raw=true "bash screen")
+
+[![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/31.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/31.png?raw=true "bash screen")
+
+[![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/32.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/32.png?raw=true "bash screen")
+
 ------------
 
 #### نکات :
@@ -45,6 +51,8 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-
 با پاک کردن وارپ به صورت اتوماتیک وارپ روی پروتکل هایی که فعال کرده بودین غیرفعال میشه
 
  قابلیت آپدیت هسته سینگ باکس استفاده شده برای اجرای پروتکل ها
+
+ مدیریت کاربران : قابلیت حذف و اضافه کردن کاربر برای همه ی پروتکل ها
 
 نمایش خروجی کانفیگ به صورت لینک و کیو‌آر کد برای آیپی ورژن 6 و 4 جداگونه (برای شدو تی ال اس دو مدل خروجی برای نکوری و نکوباکس داده میشه که باید داخل این دو نرم افزار کاستم کانفیگ بسازید و کانفیگ مرتبط رو داخلش کپی کنید)
 
