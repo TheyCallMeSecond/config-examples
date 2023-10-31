@@ -1079,8 +1079,7 @@ show_tuic_config() {
             user_password=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].password' "$config_file")
             user_uuid=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].uuid' "$config_file")
 
-            sed "s/PASSWORD/$user_password/g" /etc/tuic/config.txt >/etc/tuic/user-config.txt
-            sed "s/UUID/$user_uuid/g" /etc/tuic/config.txt >/etc/tuic/user-config.txt
+            sed "s/PASSWORD/$user_password/g; s/UUID/$user_uuid/g" /etc/tuic/config.txt > /etc/tuic/user-config.txt
 
             cat /etc/tuic/user-config.txt
 
