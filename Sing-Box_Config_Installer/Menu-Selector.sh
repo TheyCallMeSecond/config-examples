@@ -56,6 +56,9 @@ while true; do
 
   echo
 
+  echo -e "00: \e[91mInstall Required Packages\e[0m
+   (Select this for first use)"
+  echo ------------------------------
   echo -e "1:  \e[93mTUI Menu\e[0m"
   echo -e "2:  \e[93mLegacy Menu\e[0m"
   echo -e "0:  \e[95mExit\e[0m"
@@ -64,19 +67,15 @@ while true; do
 
   case $user_choice in
 
-  1)
-    sudo apt update
-    sudo apt install whiptail qrencode jq openssl python3 python3-pip -y
-    pip install httpx requests 
-
+  00)
+    clear
+    install_required_packages
+    ;;
+  1) 
     clear
     tui
     ;;
   2)
-    sudo apt update
-    sudo apt install whiptail qrencode jq openssl python3 python3-pip -y
-    pip install httpx requests 
-
     clear
     legacy
     ;;
