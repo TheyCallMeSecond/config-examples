@@ -23,6 +23,14 @@ optimize_server() {
 
 }
 
+install_required_packages() {
+    sudo apt update
+    sudo apt install wget whiptail qrencode jq openssl python3 python3-pip -y
+    pip install httpx requests
+    clear
+}
+
+
 install_hysteria() {
     # Prompt the user to enter a port
     user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
