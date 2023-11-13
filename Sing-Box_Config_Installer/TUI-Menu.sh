@@ -31,7 +31,7 @@ while true; do
                     "2" "Modify Hysteria2 Config" \
                     "3" "Add a new user" \
                     "4" "Remove an existing user" \
-                    "5" "Show Users Configs" \
+                    "5" "Show User Configs" \
                     "6" "Enable/Disable WARP on Hysteria2" \
                     "7" "Uninstall Hysteria2" \
                     "0" "Back to Main Menu" 3>&1 1>&2 2>&3
@@ -83,7 +83,7 @@ while true; do
                 "2" "Modify Tuic Config" \
                 "3" "Add a new user" \
                 "4" "Remove an existing user" \
-                "5" "Show Users Configs" \
+                "5" "Show User Configs" \
                 "6" "Enable/Disable WARP on Tuic" \
                 "7" "Uninstall Tuic" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
@@ -133,7 +133,7 @@ while true; do
                 "2" "Modify Reality Config" \
                 "3" "Add a new user" \
                 "4" "Remove an existing user" \
-                "5" "Show Users Configs" \
+                "5" "Show User Configs" \
                 "6" "Enable/Disable WARP on Reality" \
                 "7" "Uninstall Reality" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
@@ -183,7 +183,7 @@ while true; do
                 "2" "Modify ShadowTLS Config" \
                 "3" "Add a new user" \
                 "4" "Remove an existing user" \
-                "5" "Show Users Configs" \
+                "5" "Show User Configs" \
                 "6" "Enable/Disable WARP on ShadowTLS" \
                 "7" "Uninstall ShadowTLS" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
