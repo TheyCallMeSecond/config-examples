@@ -8,7 +8,7 @@ get_storage_usage
 check_system_info
 check_system_ip
 
-processes=("SH:Hysteria2" "TS:TUIC" "RS:Reality" "ST:ShadowTLS" "SBW:WARP")
+processes=("SH:Hysteria2:/etc/hysteria2/server.json" "TS:TUIC:/etc/tuic/server.json" "RS:Reality:/etc/reality/config.json" "ST:ShadowTLS:/etc/shadowtls/config.json")
 
 while true; do
   echo "
@@ -40,8 +40,8 @@ while true; do
   echo "Country/ISP: $COUNTRY $ISP"
   echo "======================================================="
   for process_info in "${processes[@]}"; do
-    IFS=":" read -r process_name custom_name <<<"$process_info"
-    check_and_display_process_status "$process_name" "$custom_name"
+    IFS=":" read -r process_name custom_name json_file <<<"$process_info"
+    check_and_display_process_status "$process_name" "$custom_name" "$json_file"
   done
   echo "#######################################################"
 
@@ -71,7 +71,7 @@ while true; do
     clear
     install_required_packages
     ;;
-  1) 
+  1)
     clear
     tui
     ;;
