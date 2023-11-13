@@ -3,7 +3,6 @@
 legacy() {
 
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/Legacy-Menu.sh)"
-
     exit 0
 
 }
@@ -11,25 +10,24 @@ legacy() {
 tui() {
 
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/TUI-Menu.sh)"
-
     exit 0
 
 }
 
 optimize_server() {
 
-    bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/server-optimizer.sh)"
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/linux-optimizer.sh)"
     clear
 
 }
 
 install_required_packages() {
-    sudo apt update
-    sudo apt install wget whiptail qrencode jq openssl python3 python3-pip -y
+    check_OS
+    $systemPackage update -y
+    $systemPackage install wget whiptail qrencode jq openssl python3 python3-pip -y
     pip install httpx requests
     clear
 }
-
 
 install_hysteria() {
     # Prompt the user to enter a port
@@ -118,6 +116,8 @@ install_hysteria() {
 
     # Enable and start the SH service
     sudo systemctl enable --now SH
+
+    auto_restart
 
     # Construct and display the resulting URL & QR
     result_url=" 
@@ -371,6 +371,8 @@ install_tuic() {
 
     # Enable and start the tuic service
     sudo systemctl enable --now TS
+
+    auto_restart
 
     # Construct and display the resulting URL
     result_url=" 
@@ -627,6 +629,8 @@ install_reality() {
 
     # Enable and start the sing-box service
     sudo systemctl enable --now RS
+
+    auto_restart
 
     # Construct and display the resulting URL
     result_url=" 
@@ -895,6 +899,8 @@ install_shadowtls() {
 
     # Enable and start the ST service
     sudo systemctl enable --now ST
+
+    auto_restart
 
     # Display the resulting config
 
@@ -1254,7 +1260,7 @@ warp_key_gen() {
 }
 
 install_warp() {
-    warp_check="/etc/systemd/system/SBW.service"
+    warp_check="/etc/sbw/proxy.json"
 
     if [ -e "$warp_check" ]; then
 
@@ -1263,20 +1269,6 @@ install_warp() {
 
     else
 
-        # Download sing-box core for WARP+ wireguard config
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SBW"
-        cd && rm -rf singbox
-
-        # Download SBW service file
-        curl -Lo /etc/systemd/system/SBW.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SBW.service && systemctl daemon-reload
-
-        # Generate WARP+ wireguard config file for sing-box
         mkdir /etc/sbw && cd /etc/sbw || exit
 
         wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/main.sh
@@ -1290,9 +1282,6 @@ install_warp() {
 
         cd || exit
 
-        # Start WARP+ sing-box proxy
-        systemctl enable --now SBW
-
         whiptail --msgbox "WARP installed successfuly" 10 30
         clear
 
@@ -1301,19 +1290,14 @@ install_warp() {
 }
 
 uninstall_warp() {
-    # Stop the SBW service
-    sudo systemctl stop SBW
 
-    # Remove sing-box binary, configuration, and service file
-    sudo rm -f /usr/bin/SBW
     rm -rf /etc/sbw
-    sudo rm -f /etc/systemd/system/SBW.service
 
     file1="/etc/reality/config.json"
 
     if [ -e "$file1" ]; then
 
-        if jq -e '.outbounds[0].type == "socks"' "$file1" &>/dev/null; then
+        if jq -e '.outbounds[0].type == "wireguard"' "$file1" &>/dev/null; then
             # Set the new JSON object for outbounds (switch to direct)
             new_json='{
             "tag": "direct",
@@ -1339,7 +1323,7 @@ uninstall_warp() {
 
     if [ -e "$file2" ]; then
 
-        if jq -e '.outbounds[0].type == "socks"' "$file2" &>/dev/null; then
+        if jq -e '.outbounds[0].type == "wireguard"' "$file2" &>/dev/null; then
             # Set the new JSON object for outbounds (switch to direct)
             new_json='{
             "tag": "direct",
@@ -1365,7 +1349,7 @@ uninstall_warp() {
 
     if [ -e "$file3" ]; then
 
-        if jq -e '.outbounds[0].type == "socks"' "$file3" &>/dev/null; then
+        if jq -e '.outbounds[0].type == "wireguard"' "$file3" &>/dev/null; then
             # Set the new JSON object for outbounds (switch to direct)
             new_json='{
             "tag": "direct",
@@ -1391,7 +1375,7 @@ uninstall_warp() {
 
     if [ -e "$file4" ]; then
 
-        if jq -e '.outbounds[0].type == "socks"' "$file4" &>/dev/null; then
+        if jq -e '.outbounds[0].type == "wireguard"' "$file4" &>/dev/null; then
             # Set the new JSON object for outbounds (switch to direct)
             new_json='{
             "tag": "direct",
@@ -1503,34 +1487,6 @@ update_sing-box_core() {
 
     fi
 
-    wg_core_check="/usr/bin/SBW"
-
-    if [ -e "$wg_core_check" ]; then
-
-        systemctl stop SBW
-
-        rm /usr/bin/SBW
-
-        # Download sing-box binary
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SBW"
-        cd && rm -rf singbox
-
-        systemctl start SBW
-
-        echo "WARP sing-box core has been updated"
-
-    else
-
-        echo "WARP is not installed yet."
-
-    fi
-
     sh_core_check="/usr/bin/SH"
 
     if [ -e "$sh_core_check" ]; then
@@ -1566,7 +1522,7 @@ update_sing-box_core() {
 
 toggle_warp_reality() {
     file="/etc/reality/config.json"
-    warp="/etc/systemd/system/SBW.service"
+    warp="/etc/sbw/proxy.json"
 
     if [ -e "$file" ]; then
 
@@ -1574,8 +1530,8 @@ toggle_warp_reality() {
 
             systemctl stop RS
 
-            if jq -e '.outbounds[0].type == "socks"' "$file" &>/dev/null; then
-                # Set the new JSON object for outbounds (switch to direct)
+            if jq -e '.outbounds[0].type == "wireguard"' "$file" &>/dev/null; then
+
                 new_json='{
             "tag": "direct",
             "type": "direct"
@@ -1589,17 +1545,11 @@ toggle_warp_reality() {
                 whiptail --msgbox "WARP is disabled now" 10 30
                 clear
             else
-                # Set the new JSON object for outbounds (switch to socks)
-                new_json='{
-            "type": "socks",
-            "tag": "socks-out",
-            "server": "127.0.0.1",
-            "server_port": 2000,
-            "version": "5"
-        }'
 
-                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
-                mv /tmp/tmp_config.json "$file"
+                outbounds_block=$(jq -c '.outbounds' "$warp")
+
+                jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
+                mv temp_config.json "$file"
 
                 systemctl start RS
 
@@ -1622,7 +1572,7 @@ toggle_warp_reality() {
 
 toggle_warp_shadowtls() {
     file="/etc/shadowtls/config.json"
-    warp="/etc/systemd/system/SBW.service"
+    warp="/etc/sbw/proxy.json"
 
     if [ -e "$file" ]; then
 
@@ -1630,8 +1580,8 @@ toggle_warp_shadowtls() {
 
             systemctl stop ST
 
-            if jq -e '.outbounds[0].type == "socks"' "$file" &>/dev/null; then
-                # Set the new JSON object for outbounds (switch to direct)
+            if jq -e '.outbounds[0].type == "wireguard"' "$file" &>/dev/null; then
+
                 new_json='{
             "tag": "direct",
             "type": "direct"
@@ -1645,17 +1595,11 @@ toggle_warp_shadowtls() {
                 whiptail --msgbox "WARP is disabled now" 10 30
                 clear
             else
-                # Set the new JSON object for outbounds (switch to socks)
-                new_json='{
-            "type": "socks",
-            "tag": "socks-out",
-            "server": "127.0.0.1",
-            "server_port": 2000,
-            "version": "5"
-        }'
 
-                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
-                mv /tmp/tmp_config.json "$file"
+                outbounds_block=$(jq -c '.outbounds' "$warp")
+
+                jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
+                mv temp_config.json "$file"
 
                 systemctl start ST
 
@@ -1678,7 +1622,7 @@ toggle_warp_shadowtls() {
 
 toggle_warp_tuic() {
     file="/etc/tuic/server.json"
-    warp="/etc/systemd/system/SBW.service"
+    warp="/etc/sbw/proxy.json"
 
     if [ -e "$file" ]; then
 
@@ -1686,8 +1630,8 @@ toggle_warp_tuic() {
 
             systemctl stop TS
 
-            if jq -e '.outbounds[0].type == "socks"' "$file" &>/dev/null; then
-                # Set the new JSON object for outbounds (switch to direct)
+            if jq -e '.outbounds[0].type == "wireguard"' "$file" &>/dev/null; then
+
                 new_json='{
             "tag": "direct",
             "type": "direct"
@@ -1701,17 +1645,11 @@ toggle_warp_tuic() {
                 whiptail --msgbox "WARP is disabled now" 10 30
                 clear
             else
-                # Set the new JSON object for outbounds (switch to socks)
-                new_json='{
-            "type": "socks",
-            "tag": "socks-out",
-            "server": "127.0.0.1",
-            "server_port": 2000,
-            "version": "5"
-        }'
 
-                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
-                mv /tmp/tmp_config.json "$file"
+                outbounds_block=$(jq -c '.outbounds' "$warp")
+
+                jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
+                mv temp_config.json "$file"
 
                 systemctl start TS
 
@@ -1734,7 +1672,7 @@ toggle_warp_tuic() {
 
 toggle_warp_hysteria() {
     file="/etc/hysteria2/server.json"
-    warp="/etc/systemd/system/SBW.service"
+    warp="/etc/sbw/proxy.json"
 
     if [ -e "$file" ]; then
 
@@ -1742,8 +1680,8 @@ toggle_warp_hysteria() {
 
             systemctl stop SH
 
-            if jq -e '.outbounds[0].type == "socks"' "$file" &>/dev/null; then
-                # Set the new JSON object for outbounds (switch to direct)
+            if jq -e '.outbounds[0].type == "wireguard"' "$file" &>/dev/null; then
+
                 new_json='{
             "tag": "direct",
             "type": "direct"
@@ -1757,17 +1695,11 @@ toggle_warp_hysteria() {
                 whiptail --msgbox "WARP is disabled now" 10 30
                 clear
             else
-                # Set the new JSON object for outbounds (switch to socks)
-                new_json='{
-            "type": "socks",
-            "tag": "socks-out",
-            "server": "127.0.0.1",
-            "server_port": 2000,
-            "version": "5"
-        }'
 
-                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
-                mv /tmp/tmp_config.json "$file"
+                outbounds_block=$(jq -c '.outbounds' "$warp")
+
+                jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
+                mv temp_config.json "$file"
 
                 systemctl start SH
 
@@ -1788,12 +1720,31 @@ toggle_warp_hysteria() {
 
 }
 
+check_OS() {
+    [[ $EUID -ne 0 ]] && echo "not root!" && exit 0
+    if [[ -f /etc/redhat-release ]]; then
+        systemPackage="yum"
+    elif cat /etc/issue | grep -q -E -i "debian"; then
+        systemPackage="apt"
+    elif cat /etc/issue | grep -q -E -i "ubuntu"; then
+        systemPackage="apt"
+    elif cat /etc/issue | grep -q -E -i "centos|red hat|redhat"; then
+        systemPackage="yum"
+    elif cat /proc/version | grep -q -E -i "debian"; then
+        systemPackage="apt"
+    elif cat /proc/version | grep -q -E -i "ubuntu"; then
+        systemPackage="apt"
+    elif cat /proc/version | grep -q -E -i "centos|red hat|redhat"; then
+        systemPackage="yum"
+    fi
+}
+
 check_system_info() {
-    if [ $(type -p systemd-detect-virt) ]; then
+    if [[ $(type -p systemd-detect-virt) ]]; then
         VIRT=$(systemd-detect-virt)
-    elif [ $(type -p hostnamectl) ]; then
+    elif [[ $(type -p hostnamectl) ]]; then
         VIRT=$(hostnamectl | awk '/Virtualization/{print $NF}')
-    elif [ $(type -p virt-what) ]; then
+    elif [[ $(type -p virt-what) ]]; then
         VIRT=$(virt-what)
     fi
 
@@ -1847,16 +1798,16 @@ get_cpu_usage() {
 
 get_ram_usage() {
     memory_info=$(free | grep Mem)
-    total_memory=$(echo $memory_info | awk '{print $2}')
-    used_memory=$(echo $memory_info | awk '{print $3}')
+    total_memory=$(echo "$memory_info" | awk '{print $2}')
+    used_memory=$(echo "$memory_info" | awk '{print $3}')
     memory_usage=$(awk "BEGIN {printf \"%.2f\", $used_memory / $total_memory * 100}")
 
 }
 
 get_storage_usage() {
     storage_info=$(df / | awk 'NR==2{print $3,$2}')
-    used_storage=$(echo $storage_info | awk '{print $1}')
-    total_storage=$(echo $storage_info | awk '{print $2}')
+    used_storage=$(echo "$storage_info" | awk '{print $1}')
+    total_storage=$(echo "$storage_info" | awk '{print $2}')
     storage_usage=$(awk "BEGIN {printf \"%.2f\", $used_storage / $total_storage * 100}")
 
 }
@@ -1874,11 +1825,23 @@ check_system_ip() {
 check_and_display_process_status() {
     PROCESS_NAME="$1"
     CUSTOM_NAME="$2"
+    JSON_FILE="$3"
     PID=$(pgrep -o -x "$PROCESS_NAME")
+
     if [ -n "$PID" ]; then
-        echo -e "$CUSTOM_NAME: \e[32mOpen\e[0m (PID: $PID)"
+        echo -n -e "$CUSTOM_NAME: \e[32m✔\e[0m"
     else
-        echo -e "$CUSTOM_NAME: \e[31mClosed\e[0m"
+        echo -n -e "$CUSTOM_NAME: \e[31m✘\e[0m"
+    fi
+
+    if [ -e "$JSON_FILE" ]; then
+        if jq -e '.outbounds[0].type == "wireguard"' "$JSON_FILE" &>/dev/null; then
+            echo -e " - warp: \e[32m✔\e[0m"
+        else
+            echo -e " - warp: \e[31m✘\e[0m"
+        fi
+    else
+        echo
     fi
 }
 
@@ -2122,4 +2085,33 @@ remove_shadowtls_user() {
         whiptail --msgbox "ShadowTLS is not installed yet." 10 30
         clear
     fi
+}
+
+auto_restart() {
+
+    mkdir /root/services
+
+    cat <<EOF >"/root/services/restart_services.sh"
+#!/bin/bash
+
+log_file="/root/services/restart_services.log"
+
+services=("RS" "SH" "TS" "ST")
+
+for service in "${services[@]}"; do
+    if systemctl list-units --full --all | grep -q "$service"; then
+        systemctl restart "$service" >> "$log_file" 2>&1
+    else
+        echo "$(date): Service $service not found" >> "$log_file"
+    fi
+done
+
+EOF
+    chmod +x "/root/services/restart_services.sh"
+
+    (
+        crontab -l 2>/dev/null
+        echo "0 */5 * * * /root/services/restart_services.sh"
+    ) | crontab -
+
 }
