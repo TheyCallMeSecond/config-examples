@@ -13,7 +13,7 @@ while true; do
     echo -e "2:  \e[93mModify Hysteria2 Config\e[0m"
     echo -e "3:  \e[93mAdd User\e[0m"
     echo -e "4:  \e[93mRemove User\e[0m"
-    echo -e "5:  \e[93mShow Users Configs\e[0m"
+    echo -e "5:  \e[93mShow User Configs\e[0m"
     echo -e "6:  \e[93mEnable/Disable WARP on Hysteria2\e[0m"
     echo -e "7:  \e[93mUninstall Hysteria2\e[0m"
     echo -------------------------------------------
@@ -21,7 +21,7 @@ while true; do
     echo -e "9:  \e[93mModify TUIC Config\e[0m"
     echo -e "10: \e[93mAdd User\e[0m"
     echo -e "11: \e[93mRemove User\e[0m"    
-    echo -e "12: \e[93mShow Users Configs\e[0m"
+    echo -e "12: \e[93mShow User Configs\e[0m"
     echo -e "13: \e[93mEnable/Disable WARP on TUIC\e[0m"
     echo -e "14: \e[93mUninstall TUIC\e[0m"
     echo -------------------------------------------
@@ -29,7 +29,7 @@ while true; do
     echo -e "16: \e[93mModify Reality Config\e[0m"
     echo -e "17: \e[93mAdd User\e[0m"
     echo -e "18: \e[93mRemove User\e[0m"    
-    echo -e "19: \e[93mShow Users Configs\e[0m"
+    echo -e "19: \e[93mShow User Configs\e[0m"
     echo -e "20: \e[93mEnable/Disable WARP on Reality\e[0m"
     echo -e "21: \e[93mUninstall Reality\e[0m"
     echo -------------------------------------------
@@ -37,7 +37,7 @@ while true; do
     echo -e "23: \e[93mModify ShadowTLS Config\e[0m"
     echo -e "24: \e[93mAdd User\e[0m"
     echo -e "25: \e[93mRemove User\e[0m"    
-    echo -e "26: \e[93mShow Users Configs\e[0m"
+    echo -e "26: \e[93mShow User Configs\e[0m"
     echo -e "27: \e[93mEnable/Disable WARP on ShadowTLS\e[0m"
     echo -e "28: \e[93mUninstall ShadowTLS\e[0m"
     echo -------------------------------------------
