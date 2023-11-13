@@ -30,124 +30,126 @@ install_required_packages() {
 }
 
 install_hysteria() {
-    # Prompt the user to enter a port
-    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+    hysteria_check="/etc/hysteria2/server.json"
 
-    # Stop the Hysteria2 service
-    sudo systemctl stop SH
+    if [ -e "$hysteria_check" ]; then
 
-    # Remove Hysteria binary, configuration, and service file
-    sudo rm -f /usr/bin/SH
-    rm -rf /etc/hysteria2
-    sudo rm -f /etc/systemd/system/SH.service
-
-    # Download sing-box binary
-    mkdir /root/singbox && cd /root/singbox || exit
-    LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-    LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-    LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-    wget "$LINK"
-    tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-    cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SH"
-    cd && rm -rf singbox
-
-    # Create a directory for Hysteria configuration and download the server.json file
-    mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Hysteria2.json
-
-    # Download the SH.service file
-    curl -Lo /etc/systemd/system/SH.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SH.service && systemctl daemon-reload
-
-    # Get certificate
-    mkdir /root/selfcert && cd /root/selfcert || exit
-
-    openssl genrsa -out ca.key 2048
-
-    openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=Google Root CA" -out ca.crt
-
-    openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=*.google.com" -out server.csr
-
-    openssl x509 -req -extfile <(printf "subjectAltName=DNS:google.com,DNS:www.google.com") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
-
-    mv server.crt /etc/hysteria2/server.crt
-
-    mv server.key /etc/hysteria2/server.key
-
-    cd || exit
-
-    rm -rf /root/selfcert
-
-    # replace "PORT" in the server.json file
-    sed -i "s/PORT/$user_port/" /etc/hysteria2/server.json
-
-    # Generate a password and replace "PASSWORD" in the server.json file
-    password=$(openssl rand -hex 8)
-    sed -i "s/PASSWORD/$password/" /etc/hysteria2/server.json
-
-    # replace "NAME" in the server.json file
-    sed -i "s/NAME/Hysteria2/" /etc/hysteria2/server.json
-
-    # Use a public DNS service to determine the public IP address
-    public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
-    public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
-
-    # UFW optimization
-    if sudo ufw status | grep -q "Status: active"; then
-
-        # Disable UFW
-        sudo ufw disable
-
-        # Open config port
-        sudo ufw allow "$user_port"/udp
-        sleep 0.5
-
-        # Enable & Reload
-        echo "y" | sudo ufw enable
-        sudo ufw reload
-
-        echo 'UFW is Optimized.'
-
-        sleep 0.5
+        whiptail --msgbox "Hysteria2 is Already installed " 10 30
+        clear
 
     else
 
-        echo "UFW in not active"
+        # Prompt the user to enter a port
+        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
 
-    fi
+        # Download sing-box binary
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SH"
+        cd && rm -rf singbox
 
-    # Enable and start the SH service
-    sudo systemctl enable --now SH
+        # Create a directory for Hysteria configuration and download the server.json file
+        mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Hysteria2.json
 
-    auto_restart
+        # Download the SH.service file
+        curl -Lo /etc/systemd/system/SH.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SH.service && systemctl daemon-reload
 
-    # Construct and display the resulting URL & QR
-    result_url=" 
-    ipv4 : hy2://$password@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
-    ---------------------------------------------------------------
-    ipv6 : hy2://$password@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2"
-    echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/hysteria2/user-config.txt # Red color for URL
+        # Get certificate
+        mkdir /root/selfcert && cd /root/selfcert || exit
 
-    result_url2=" 
-    ipv4 : hy2://PASSWORD@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
+        openssl genrsa -out ca.key 2048
+
+        openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=Google Root CA" -out ca.crt
+
+        openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=*.google.com" -out server.csr
+
+        openssl x509 -req -extfile <(printf "subjectAltName=DNS:google.com,DNS:www.google.com") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
+
+        mv server.crt /etc/hysteria2/server.crt
+
+        mv server.key /etc/hysteria2/server.key
+
+        cd || exit
+
+        rm -rf /root/selfcert
+
+        # replace "PORT" in the server.json file
+        sed -i "s/PORT/$user_port/" /etc/hysteria2/server.json
+
+        # Generate a password and replace "PASSWORD" in the server.json file
+        password=$(openssl rand -hex 8)
+        sed -i "s/PASSWORD/$password/" /etc/hysteria2/server.json
+
+        # replace "NAME" in the server.json file
+        sed -i "s/NAME/Hysteria2/" /etc/hysteria2/server.json
+
+        # Use a public DNS service to determine the public IP address
+        public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
+        public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
+
+        # UFW optimization
+        if sudo ufw status | grep -q "Status: active"; then
+
+            # Disable UFW
+            sudo ufw disable
+
+            # Open config port
+            sudo ufw allow "$user_port"/udp
+            sleep 0.5
+
+            # Enable & Reload
+            echo "y" | sudo ufw enable
+            sudo ufw reload
+
+            echo 'UFW is Optimized.'
+
+            sleep 0.5
+
+        else
+
+            echo "UFW in not active"
+
+        fi
+
+        # Enable and start the SH service
+        sudo systemctl enable --now SH
+
+        auto_restart
+
+        # Construct and display the resulting URL & QR
+        result_url=" 
+        ipv4 : hy2://$password@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
         ---------------------------------------------------------------
-    ipv6 : hy2://PASSWORD@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2"
-    echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/hysteria2/config.txt # Red color for URL
+        ipv6 : hy2://$password@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2"
+        echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/hysteria2/user-config.txt # Red color for URL
 
-    cat /etc/hysteria2/user-config.txt
+        result_url2=" 
+        ipv4 : hy2://PASSWORD@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
+        ---------------------------------------------------------------
+        ipv6 : hy2://PASSWORD@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2"
+        echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/hysteria2/config.txt # Red color for URL
 
-    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/hysteria2/user-config.txt)
-    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/hysteria2/user-config.txt)
+        cat /etc/hysteria2/user-config.txt
 
-    echo IPv4:
-    qrencode -t ANSIUTF8 <<<"$ipv4qr"
+        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/hysteria2/user-config.txt)
+        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/hysteria2/user-config.txt)
 
-    echo IPv6:
-    qrencode -t ANSIUTF8 <<<"$ipv6qr"
+        echo IPv4:
+        qrencode -t ANSIUTF8 <<<"$ipv4qr"
 
-    echo "Hysteria2 setup completed."
+        echo IPv6:
+        qrencode -t ANSIUTF8 <<<"$ipv6qr"
 
-    echo -e "\e[31mPress Enter to Exit\e[0m"
-    read
-    clear
+        echo "Hysteria2 setup completed."
+
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
+        clear
+    fi
 }
 
 modify_hysteria_config() {
@@ -281,128 +283,129 @@ uninstall_hysteria() {
 }
 
 install_tuic() {
-    # Prompt the user to enter a port
-    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+    tuic_check="/etc/tuic/server.json"
 
-    # Stop the tuic service
-    sudo systemctl stop TS
+    if [ -e "$tuic_check" ]; then
 
-    # Remove Hysteria binary, configuration, and service file
-    sudo rm -f /usr/bin/TS
-    rm -rf /etc/tuic
-    sudo rm -f /etc/systemd/system/TS.service
-
-    # Download sing-box binary
-    mkdir /root/singbox && cd /root/singbox || exit
-    LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-    LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-    LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-    wget "$LINK"
-    tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-    cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/TS"
-    cd && rm -rf singbox
-
-    # Create a directory for tuic configuration and download the server.json file
-    mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Tuic.json
-
-    # Download the tuic.service file
-    curl -Lo /etc/systemd/system/TS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/TS.service && systemctl daemon-reload
-
-    # replace "PORT" in the server.json file
-    sed -i "s/PORT/$user_port/" /etc/tuic/server.json
-
-    # Get certificate
-    mkdir /root/selfcert && cd /root/selfcert || exit
-
-    openssl genrsa -out ca.key 2048
-
-    openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=Apple, Inc./CN=Apple Root CA" -out ca.crt
-
-    openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=Apple, Inc./CN=*.apple.com" -out server.csr
-
-    openssl x509 -req -extfile <(printf "subjectAltName=DNS:apple.com,DNS:www.apple.com") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
-
-    mv server.crt /etc/tuic/server.crt
-
-    mv server.key /etc/tuic/server.key
-
-    cd || exit
-
-    rm -rf /root/selfcert
-
-    # replace "NAME" in the server.json file
-    sed -i "s/NAME/Tuic/" /etc/tuic/server.json
-
-    # Generate a password and replace "PASSWORD" in the server.json file
-    password=$(openssl rand -hex 8)
-    sed -i "s/PASSWORD/$password/" /etc/tuic/server.json
-
-    # Generate uuid and replace "UUID" in the server.json file
-    uuid=$(cat /proc/sys/kernel/random/uuid)
-    sed -i "s/UUID/$uuid/" /etc/tuic/server.json
-
-    # Use a public DNS service to determine the public IP address
-    public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
-    public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
-
-    # UFW optimization
-    if sudo ufw status | grep -q "Status: active"; then
-
-        # Disable UFW
-        sudo ufw disable
-
-        # Open config port
-        sudo ufw allow "$user_port"/udp
-        sleep 0.5
-
-        # Enable & Reload
-        echo "y" | sudo ufw enable
-        sudo ufw reload
-
-        echo 'UFW is Optimized.'
-
-        sleep 0.5
+        whiptail --msgbox "TUIC is Already installed " 10 30
+        clear
 
     else
+        # Prompt the user to enter a port
+        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
 
-        echo "UFW in not active"
+        # Download sing-box binary
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/TS"
+        cd && rm -rf singbox
 
+        # Create a directory for tuic configuration and download the server.json file
+        mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Tuic.json
+
+        # Download the tuic.service file
+        curl -Lo /etc/systemd/system/TS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/TS.service && systemctl daemon-reload
+
+        # replace "PORT" in the server.json file
+        sed -i "s/PORT/$user_port/" /etc/tuic/server.json
+
+        # Get certificate
+        mkdir /root/selfcert && cd /root/selfcert || exit
+
+        openssl genrsa -out ca.key 2048
+
+        openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=Apple, Inc./CN=Apple Root CA" -out ca.crt
+
+        openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=Apple, Inc./CN=*.apple.com" -out server.csr
+
+        openssl x509 -req -extfile <(printf "subjectAltName=DNS:apple.com,DNS:www.apple.com") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
+
+        mv server.crt /etc/tuic/server.crt
+
+        mv server.key /etc/tuic/server.key
+
+        cd || exit
+
+        rm -rf /root/selfcert
+
+        # replace "NAME" in the server.json file
+        sed -i "s/NAME/Tuic/" /etc/tuic/server.json
+
+        # Generate a password and replace "PASSWORD" in the server.json file
+        password=$(openssl rand -hex 8)
+        sed -i "s/PASSWORD/$password/" /etc/tuic/server.json
+
+        # Generate uuid and replace "UUID" in the server.json file
+        uuid=$(cat /proc/sys/kernel/random/uuid)
+        sed -i "s/UUID/$uuid/" /etc/tuic/server.json
+
+        # Use a public DNS service to determine the public IP address
+        public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
+        public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
+
+        # UFW optimization
+        if sudo ufw status | grep -q "Status: active"; then
+
+            # Disable UFW
+            sudo ufw disable
+
+            # Open config port
+            sudo ufw allow "$user_port"/udp
+            sleep 0.5
+
+            # Enable & Reload
+            echo "y" | sudo ufw enable
+            sudo ufw reload
+
+            echo 'UFW is Optimized.'
+
+            sleep 0.5
+
+        else
+
+            echo "UFW in not active"
+
+        fi
+
+        # Enable and start the tuic service
+        sudo systemctl enable --now TS
+
+        auto_restart
+
+        # Construct and display the resulting URL
+        result_url=" 
+        ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
+        ---------------------------------------------------------------
+        ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
+        echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/tuic/user-config.txt # Red color for URL
+
+        result_url2=" 
+        ipv4 : tuic://UUID:PASSWORD@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
+        ---------------------------------------------------------------
+        ipv6 : tuic://UUID:PASSWORD@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
+        echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/tuic/config.txt # Red color for URL
+
+        cat /etc/tuic/user-config.txt
+
+        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/tuic/user-config.txt)
+        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/tuic/user-config.txt)
+
+        echo IPv4:
+        qrencode -t ANSIUTF8 <<<"$ipv4qr"
+
+        echo IPv6:
+        qrencode -t ANSIUTF8 <<<"$ipv6qr"
+
+        echo "TUIC setup completed."
+
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
+        clear
     fi
-
-    # Enable and start the tuic service
-    sudo systemctl enable --now TS
-
-    auto_restart
-
-    # Construct and display the resulting URL
-    result_url=" 
-    ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
-    ---------------------------------------------------------------
-    ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
-    echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/tuic/user-config.txt # Red color for URL
-
-    result_url2=" 
-    ipv4 : tuic://UUID:PASSWORD@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
-    ---------------------------------------------------------------
-    ipv6 : tuic://UUID:PASSWORD@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
-    echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/tuic/config.txt # Red color for URL
-
-    cat /etc/tuic/user-config.txt
-
-    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/tuic/user-config.txt)
-    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/tuic/user-config.txt)
-
-    echo IPv4:
-    qrencode -t ANSIUTF8 <<<"$ipv4qr"
-
-    echo IPv6:
-    qrencode -t ANSIUTF8 <<<"$ipv6qr"
-
-    echo "TUIC setup completed."
-
-    echo -e "\e[31mPress Enter to Exit\e[0m"
-    read
-    clear
 }
 
 modify_tuic_config() {
@@ -540,128 +543,129 @@ uninstall_tuic() {
 }
 
 install_reality() {
-    # Prompt the user to enter a port
-    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+    reality_check="/etc/reality/config.json"
 
-    # Prompt the user to enter a sni
-    user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
+    if [ -e "$reality_check" ]; then
 
-    # Stop the RS service
-    sudo systemctl stop RS
-
-    # Remove RS binary, configuration, and service file
-    sudo rm -f /usr/bin/RS
-    rm -rf /etc/reality
-    sudo rm -f /etc/systemd/system/RS.service
-
-    # Download sing-box binary
-    mkdir /root/singbox && cd /root/singbox || exit
-    LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-    LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-    LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-    wget "$LINK"
-    tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-    cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/RS"
-    cd && rm -rf singbox
-
-    # Create a directory for RS configuration and download the Reality-gRPC.json file
-    mkdir -p /etc/reality && curl -Lo /etc/reality/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC.json
-
-    # Download the RS.service file
-    curl -Lo /etc/systemd/system/RS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/RS.service && systemctl daemon-reload
-
-    # replace "PORT" in the config.json file
-    sed -i "s/PORT/$user_port/" /etc/reality/config.json
-
-    # replace "SNI" in the config.json file
-    sed -i "s/SNI/$user_sni/" /etc/reality/config.json
-
-    # replace "NAME" in the config.json file
-    sed -i "s/NAME/Reality/" /etc/reality/config.json
-
-    # Generate uuid and replace "UUID" in the config.json file
-    uuid=$(cat /proc/sys/kernel/random/uuid)
-    sed -i "s/UUID/$uuid/" /etc/reality/config.json
-
-    # Generate reality key-pair
-    output=$(RS generate reality-keypair)
-
-    private_key=$(echo "$output" | grep -oP 'PrivateKey: \K\S+')
-    public_key=$(echo "$output" | grep -oP 'PublicKey: \K\S+')
-
-    sed -i "s/PRIVATE-KEY/$private_key/" /etc/reality/config.json
-
-    # Generate short id
-    short_id=$(openssl rand -hex 8)
-    sed -i "s/SHORT-ID/$short_id/" /etc/reality/config.json
-
-    # Generate service name
-    service_name=$(openssl rand -hex 4)
-    sed -i "s/PATH/$service_name/" /etc/reality/config.json
-
-    # Use a public DNS service to determine the public IP address
-    public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
-    public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
-
-    # UFW optimization
-    if sudo ufw status | grep -q "Status: active"; then
-
-        # Disable UFW
-        sudo ufw disable
-
-        # Open config port
-        sudo ufw allow "$user_port"
-        sleep 0.5
-
-        # Enable & Reload
-        echo "y" | sudo ufw enable
-        sudo ufw reload
-
-        echo 'UFW is Optimized.'
-
-        sleep 0.5
+        whiptail --msgbox "Reality is Already installed " 10 30
+        clear
 
     else
+        # Prompt the user to enter a port
+        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
 
-        echo "UFW in not active"
+        # Prompt the user to enter a sni
+        user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
 
+        # Download sing-box binary
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/RS"
+        cd && rm -rf singbox
+
+        # Create a directory for RS configuration and download the Reality-gRPC.json file
+        mkdir -p /etc/reality && curl -Lo /etc/reality/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC.json
+
+        # Download the RS.service file
+        curl -Lo /etc/systemd/system/RS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/RS.service && systemctl daemon-reload
+
+        # replace "PORT" in the config.json file
+        sed -i "s/PORT/$user_port/" /etc/reality/config.json
+
+        # replace "SNI" in the config.json file
+        sed -i "s/SNI/$user_sni/" /etc/reality/config.json
+
+        # replace "NAME" in the config.json file
+        sed -i "s/NAME/Reality/" /etc/reality/config.json
+
+        # Generate uuid and replace "UUID" in the config.json file
+        uuid=$(cat /proc/sys/kernel/random/uuid)
+        sed -i "s/UUID/$uuid/" /etc/reality/config.json
+
+        # Generate reality key-pair
+        output=$(RS generate reality-keypair)
+
+        private_key=$(echo "$output" | grep -oP 'PrivateKey: \K\S+')
+        public_key=$(echo "$output" | grep -oP 'PublicKey: \K\S+')
+
+        sed -i "s/PRIVATE-KEY/$private_key/" /etc/reality/config.json
+
+        # Generate short id
+        short_id=$(openssl rand -hex 8)
+        sed -i "s/SHORT-ID/$short_id/" /etc/reality/config.json
+
+        # Generate service name
+        service_name=$(openssl rand -hex 4)
+        sed -i "s/PATH/$service_name/" /etc/reality/config.json
+
+        # Use a public DNS service to determine the public IP address
+        public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
+        public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
+
+        # UFW optimization
+        if sudo ufw status | grep -q "Status: active"; then
+
+            # Disable UFW
+            sudo ufw disable
+
+            # Open config port
+            sudo ufw allow "$user_port"
+            sleep 0.5
+
+            # Enable & Reload
+            echo "y" | sudo ufw enable
+            sudo ufw reload
+
+            echo 'UFW is Optimized.'
+
+            sleep 0.5
+
+        else
+
+            echo "UFW in not active"
+
+        fi
+
+        # Enable and start the sing-box service
+        sudo systemctl enable --now RS
+
+        auto_restart
+
+        # Construct and display the resulting URL
+        result_url=" 
+        ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
+        ---------------------------------------------------------------
+        ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality"
+        echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/reality/user-config.txt # Red color for URL
+
+        # Construct and display the resulting URL
+        result_url2=" 
+        ipv4 : vless://UUID@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
+        ---------------------------------------------------------------
+        ipv6 : vless://UUID@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality"
+        echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/reality/config.txt # Red color for URL
+
+        cat /etc/reality/user-config.txt
+
+        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/reality/user-config.txt)
+        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/reality/user-config.txt)
+
+        echo IPv4:
+        qrencode -t ANSIUTF8 <<<"$ipv4qr"
+
+        echo IPv6:
+        qrencode -t ANSIUTF8 <<<"$ipv6qr"
+
+        echo "Reality setup completed."
+
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
+        clear
     fi
-
-    # Enable and start the sing-box service
-    sudo systemctl enable --now RS
-
-    auto_restart
-
-    # Construct and display the resulting URL
-    result_url=" 
-    ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
-    ---------------------------------------------------------------
-    ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality"
-    echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/reality/user-config.txt # Red color for URL
-
-    # Construct and display the resulting URL
-    result_url2=" 
-    ipv4 : vless://UUID@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
-    ---------------------------------------------------------------
-    ipv6 : vless://UUID@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality"
-    echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/reality/config.txt # Red color for URL
-
-    cat /etc/reality/user-config.txt
-
-    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/reality/user-config.txt)
-    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/reality/user-config.txt)
-
-    echo IPv4:
-    qrencode -t ANSIUTF8 <<<"$ipv4qr"
-
-    echo IPv6:
-    qrencode -t ANSIUTF8 <<<"$ipv6qr"
-
-    echo "Reality setup completed."
-
-    echo -e "\e[31mPress Enter to Exit\e[0m"
-    read
-    clear
 }
 
 modify_reality_config() {
@@ -799,132 +803,133 @@ uninstall_reality() {
 }
 
 install_shadowtls() {
-    # Prompt the user to enter a port
-    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+    shadowtls_check="/etc/shadowtls/config.json"
 
-    # Prompt the user to enter a sni
-    user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
+    if [ -e "$shadowtls_check" ]; then
 
-    # Stop the ST service
-    sudo systemctl stop ST
-
-    # Remove sing-box binary, configuration, and service file
-    sudo rm -f /usr/bin/ST
-    rm -rf /etc/shadowtls
-    sudo rm -f /etc/systemd/system/ST.service
-
-    # Download sing-box binary
-    mkdir /root/singbox && cd /root/singbox || exit
-    LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-    LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-    LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-    wget "$LINK"
-    tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-    cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/ST"
-    cd && rm -rf singbox
-
-    # Create a directory for shadowtls configuration and download the ShadowTLS.json file
-    mkdir -p /etc/shadowtls && curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS.json
-
-    # Download client config files
-    curl -Lo /etc/shadowtls/user-nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
-    curl -Lo /etc/shadowtls/user-nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
-    curl -Lo /etc/shadowtls/nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
-    curl -Lo /etc/shadowtls/nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
-
-    # Download the ST.service file
-    curl -Lo /etc/systemd/system/ST.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/ST.service && systemctl daemon-reload
-
-    # replace "PORT" in the config files
-    sed -i "s/PORT/$user_port/" /etc/shadowtls/config.json
-    sed -i "s/PORT/$user_port/" /etc/shadowtls/nekorayconfig.txt
-    sed -i "s/PORT/$user_port/" /etc/shadowtls/nekoboxconfig.txt
-    sed -i "s/PORT/$user_port/" /etc/shadowtls/user-nekorayconfig.txt
-    sed -i "s/PORT/$user_port/" /etc/shadowtls/user-nekoboxconfig.txt
-
-    # replace "SNI" in the config files
-    sed -i "s/SNI/$user_sni/" /etc/shadowtls/config.json
-    sed -i "s/SNI/$user_sni/" /etc/shadowtls/nekorayconfig.txt
-    sed -i "s/SNI/$user_sni/" /etc/shadowtls/nekoboxconfig.txt
-    sed -i "s/SNI/$user_sni/" /etc/shadowtls/user-nekorayconfig.txt
-    sed -i "s/SNI/$user_sni/" /etc/shadowtls/user-nekoboxconfig.txt
-
-    # replace  name
-    sed -i "s/NAME/ShadowTLS/" /etc/shadowtls/config.json
-
-    # Generate shadowtls password and replace "STPASS" in the config files
-    stpass=$(openssl rand -hex 16)
-    sed -i "s/STPASS/$stpass/" /etc/shadowtls/config.json
-    sed -i "s/STPASS/$stpass/" /etc/shadowtls/user-nekorayconfig.txt
-    sed -i "s/STPASS/$stpass/" /etc/shadowtls/user-nekoboxconfig.txt
-
-    # Generate shadowsocks password and replace "SSPASS" in the config files
-    sspass=$(openssl rand -hex 16)
-    sed -i "s/SSPASS/$sspass/" /etc/shadowtls/config.json
-    sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekorayconfig.txt
-    sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekoboxconfig.txt
-    sed -i "s/SSPASS/$sspass/" /etc/shadowtls/user-nekorayconfig.txt
-    sed -i "s/SSPASS/$sspass/" /etc/shadowtls/user-nekoboxconfig.txt
-
-    # Use a public DNS service to determine the public IP address and replace with IP in config.txt file
-    public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
-    sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekorayconfig.txt
-    sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekoboxconfig.txt
-    sed -i "s/IP/$public_ipv4/" /etc/shadowtls/user-nekorayconfig.txt
-    sed -i "s/IP/$public_ipv4/" /etc/shadowtls/user-nekoboxconfig.txt
-
-    # UFW optimization
-    if sudo ufw status | grep -q "Status: active"; then
-
-        # Disable UFW
-        sudo ufw disable
-
-        # Open config port
-        sudo ufw allow "$user_port"
-        sleep 0.5
-
-        # Enable & Reload
-        echo "y" | sudo ufw enable
-        sudo ufw reload
-
-        echo 'UFW is Optimized.'
-
-        sleep 0.5
+        whiptail --msgbox "ShadowTLS is Already installed " 10 30
+        clear
 
     else
+        # Prompt the user to enter a port
+        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
 
-        echo "UFW in not active"
+        # Prompt the user to enter a sni
+        user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
 
+        # Download sing-box binary
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/ST"
+        cd && rm -rf singbox
+
+        # Create a directory for shadowtls configuration and download the ShadowTLS.json file
+        mkdir -p /etc/shadowtls && curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS.json
+
+        # Download client config files
+        curl -Lo /etc/shadowtls/user-nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
+        curl -Lo /etc/shadowtls/user-nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
+        curl -Lo /etc/shadowtls/nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
+        curl -Lo /etc/shadowtls/nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
+
+        # Download the ST.service file
+        curl -Lo /etc/systemd/system/ST.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/ST.service && systemctl daemon-reload
+
+        # replace "PORT" in the config files
+        sed -i "s/PORT/$user_port/" /etc/shadowtls/config.json
+        sed -i "s/PORT/$user_port/" /etc/shadowtls/nekorayconfig.txt
+        sed -i "s/PORT/$user_port/" /etc/shadowtls/nekoboxconfig.txt
+        sed -i "s/PORT/$user_port/" /etc/shadowtls/user-nekorayconfig.txt
+        sed -i "s/PORT/$user_port/" /etc/shadowtls/user-nekoboxconfig.txt
+
+        # replace "SNI" in the config files
+        sed -i "s/SNI/$user_sni/" /etc/shadowtls/config.json
+        sed -i "s/SNI/$user_sni/" /etc/shadowtls/nekorayconfig.txt
+        sed -i "s/SNI/$user_sni/" /etc/shadowtls/nekoboxconfig.txt
+        sed -i "s/SNI/$user_sni/" /etc/shadowtls/user-nekorayconfig.txt
+        sed -i "s/SNI/$user_sni/" /etc/shadowtls/user-nekoboxconfig.txt
+
+        # replace  name
+        sed -i "s/NAME/ShadowTLS/" /etc/shadowtls/config.json
+
+        # Generate shadowtls password and replace "STPASS" in the config files
+        stpass=$(openssl rand -hex 16)
+        sed -i "s/STPASS/$stpass/" /etc/shadowtls/config.json
+        sed -i "s/STPASS/$stpass/" /etc/shadowtls/user-nekorayconfig.txt
+        sed -i "s/STPASS/$stpass/" /etc/shadowtls/user-nekoboxconfig.txt
+
+        # Generate shadowsocks password and replace "SSPASS" in the config files
+        sspass=$(openssl rand -hex 16)
+        sed -i "s/SSPASS/$sspass/" /etc/shadowtls/config.json
+        sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekorayconfig.txt
+        sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekoboxconfig.txt
+        sed -i "s/SSPASS/$sspass/" /etc/shadowtls/user-nekorayconfig.txt
+        sed -i "s/SSPASS/$sspass/" /etc/shadowtls/user-nekoboxconfig.txt
+
+        # Use a public DNS service to determine the public IP address and replace with IP in config.txt file
+        public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
+        sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekorayconfig.txt
+        sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekoboxconfig.txt
+        sed -i "s/IP/$public_ipv4/" /etc/shadowtls/user-nekorayconfig.txt
+        sed -i "s/IP/$public_ipv4/" /etc/shadowtls/user-nekoboxconfig.txt
+
+        # UFW optimization
+        if sudo ufw status | grep -q "Status: active"; then
+
+            # Disable UFW
+            sudo ufw disable
+
+            # Open config port
+            sudo ufw allow "$user_port"
+            sleep 0.5
+
+            # Enable & Reload
+            echo "y" | sudo ufw enable
+            sudo ufw reload
+
+            echo 'UFW is Optimized.'
+
+            sleep 0.5
+
+        else
+
+            echo "UFW in not active"
+
+        fi
+
+        # Enable and start the ST service
+        sudo systemctl enable --now ST
+
+        auto_restart
+
+        # Display the resulting config
+
+        echo "ShadowTLS config for Nekoray : "
+
+        echo
+
+        cat /etc/shadowtls/user-nekorayconfig.txt
+
+        echo
+
+        echo "ShadowTLS config for Nekobox : "
+
+        echo
+
+        cat /etc/shadowtls/user-nekoboxconfig.txt
+
+        echo
+
+        echo "ShadowTLS setup completed."
+
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
+        clear
     fi
-
-    # Enable and start the ST service
-    sudo systemctl enable --now ST
-
-    auto_restart
-
-    # Display the resulting config
-
-    echo "ShadowTLS config for Nekoray : "
-
-    echo
-
-    cat /etc/shadowtls/user-nekorayconfig.txt
-
-    echo
-
-    echo "ShadowTLS config for Nekobox : "
-
-    echo
-
-    cat /etc/shadowtls/user-nekoboxconfig.txt
-
-    echo
-
-    echo "ShadowTLS setup completed."
-
-    echo -e "\e[31mPress Enter to Exit\e[0m"
-    read
-    clear
 }
 
 modify_shadowtls_config() {
