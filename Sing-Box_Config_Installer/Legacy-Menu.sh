@@ -42,7 +42,7 @@ while true; do
     echo -e "28: \e[93mUninstall ShadowTLS\e[0m"
     echo -------------------------------------------
     echo -e "29: \e[93mGenerate WARP+ Key\e[0m"
-    echo -e "30: \e[93mInstall WARP\e[0m"
+    echo -e "30: \e[93mGenerate WARP+ Wireguard Config\e[0m"
     echo -e "31: \e[93mShow WARP Config\e[0m"
     echo -e "32: \e[93mUninstall WARP\e[0m"
     echo -------------------------------------------
