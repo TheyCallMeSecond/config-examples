@@ -118,7 +118,10 @@ install_hysteria() {
         # Enable and start the SH service
         sudo systemctl enable --now SH
 
-        auto_restart
+        (
+            crontab -l 2>/dev/null
+            echo "0 */5 * * * systemctl restart SH"
+        ) | crontab -
 
         # Construct and display the resulting URL & QR
         result_url=" 
@@ -276,6 +279,7 @@ uninstall_hysteria() {
     sudo rm -f /usr/bin/SH
     rm -rf /etc/hysteria2
     sudo rm -f /etc/systemd/system/SH.service
+    (crontab -l 2>/dev/null | grep -v "0 */5 * * * systemctl restart SH") | crontab -
 
     whiptail --msgbox "Hysteria2 uninstalled." 10 30
     clear
@@ -374,7 +378,10 @@ install_tuic() {
         # Enable and start the tuic service
         sudo systemctl enable --now TS
 
-        auto_restart
+        (
+            crontab -l 2>/dev/null
+            echo "0 */5 * * * systemctl restart TS"
+        ) | crontab -
 
         # Construct and display the resulting URL
         result_url=" 
@@ -536,6 +543,7 @@ uninstall_tuic() {
     sudo rm -f /usr/bin/TS
     rm -rf /etc/tuic
     sudo rm -f /etc/systemd/system/TS.service
+    (crontab -l 2>/dev/null | grep -v "0 */5 * * * systemctl restart TS") | crontab -
 
     whiptail --msgbox "TUIC uninstalled." 10 30
     clear
@@ -633,7 +641,10 @@ install_reality() {
         # Enable and start the sing-box service
         sudo systemctl enable --now RS
 
-        auto_restart
+        (
+            crontab -l 2>/dev/null
+            echo "0 */5 * * * systemctl restart RS"
+        ) | crontab -
 
         # Construct and display the resulting URL
         result_url=" 
@@ -796,6 +807,7 @@ uninstall_reality() {
     sudo rm -f /usr/bin/RS
     rm -rf /etc/reality
     sudo rm -f /etc/systemd/system/RS.service
+    (crontab -l 2>/dev/null | grep -v "0 */5 * * * systemctl restart RS") | crontab -
 
     whiptail --msgbox "Reality uninstalled." 10 30
     clear
@@ -904,7 +916,10 @@ install_shadowtls() {
         # Enable and start the ST service
         sudo systemctl enable --now ST
 
-        auto_restart
+        (
+            crontab -l 2>/dev/null
+            echo "0 */5 * * * systemctl restart ST"
+        ) | crontab -
 
         # Display the resulting config
 
@@ -1064,6 +1079,7 @@ uninstall_shadowtls() {
     sudo rm -f /usr/bin/ST
     rm -rf /etc/shadowtls
     sudo rm -f /etc/systemd/system/ST.service
+    (crontab -l 2>/dev/null | grep -v "0 */5 * * * systemctl restart ST") | crontab -
 
     whiptail --msgbox "ShadowTLS uninstalled." 10 30
     clear
@@ -2090,33 +2106,4 @@ remove_shadowtls_user() {
         whiptail --msgbox "ShadowTLS is not installed yet." 10 30
         clear
     fi
-}
-
-auto_restart() {
-
-    mkdir /root/services
-
-    cat <<EOF >"/root/services/restart_services.sh"
-#!/bin/bash
-
-log_file="/root/services/restart_services.log"
-
-services=("RS" "SH" "TS" "ST")
-
-for service in "${services[@]}"; do
-    if systemctl list-units --full --all | grep -q "$service"; then
-        systemctl restart "$service" >> "$log_file" 2>&1
-    else
-        echo "$(date): Service $service not found" >> "$log_file"
-    fi
-done
-
-EOF
-    chmod +x "/root/services/restart_services.sh"
-
-    (
-        crontab -l 2>/dev/null
-        echo "0 */5 * * * /root/services/restart_services.sh"
-    ) | crontab -
-
 }
