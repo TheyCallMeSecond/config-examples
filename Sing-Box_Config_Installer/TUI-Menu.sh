@@ -231,7 +231,7 @@ while true; do
             user_choice=$(
                 whiptail --clear --title "Warp Menu" --menu "Please select an option:" 25 50 15 \
                     "1" "Generate WARP+ Key" \
-                    "2" "Install Warp" \
+                    "2" "Generate WARP+ Wireguard Config" \
                     "3" "Show Warp Config" \
                     "4" "Uninstall Warp" \
                     "0" "Back to Main Menu" 3>&1 1>&2 2>&3
