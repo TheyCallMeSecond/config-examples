@@ -16,7 +16,7 @@ tui() {
 
 optimize_server() {
 
-    bash -c "$(curl -fsSL https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/linux-optimizer.sh)"
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/Linux-Optimizer/main/linux-optimizer.sh)"
     clear
 
 }
