@@ -23,7 +23,7 @@
 
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/Menu-Selector.sh)"
+bash <(curl -fsSL https://bit.ly/config-installer)
 ```
 [![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/29.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/29.png?raw=true "bash screen")
 
