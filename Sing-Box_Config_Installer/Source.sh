@@ -118,7 +118,10 @@ install_hysteria() {
         # Enable and start the SH service
         sudo systemctl enable --now SH
 
-        (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart SH") | crontab -
+        (
+            crontab -l 2>/dev/null
+            echo "0 */5 * * * systemctl restart SH"
+        ) | crontab -
 
         # Construct and display the resulting URL & QR
         result_url=" 
@@ -375,7 +378,10 @@ install_tuic() {
         # Enable and start the tuic service
         sudo systemctl enable --now TS
 
-        (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart TS") | crontab -
+        (
+            crontab -l 2>/dev/null
+            echo "0 */5 * * * systemctl restart TS"
+        ) | crontab -
 
         # Construct and display the resulting URL
         result_url=" 
@@ -635,7 +641,10 @@ install_reality() {
         # Enable and start the sing-box service
         sudo systemctl enable --now RS
 
-        (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart RS") | crontab -
+        (
+            crontab -l 2>/dev/null
+            echo "0 */5 * * * systemctl restart RS"
+        ) | crontab -
 
         # Construct and display the resulting URL
         result_url=" 
@@ -907,7 +916,10 @@ install_shadowtls() {
         # Enable and start the ST service
         sudo systemctl enable --now ST
 
-        (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart ST") | crontab -
+        (
+            crontab -l 2>/dev/null
+            echo "0 */5 * * * systemctl restart ST"
+        ) | crontab -
 
         # Display the resulting config
 
@@ -1269,32 +1281,22 @@ warp_key_gen() {
 }
 
 install_warp() {
-    warp_check="/etc/sbw/proxy.json"
+    rm -rf /etc/sbw
+    mkdir /etc/sbw && cd /etc/sbw || exit
 
-    if [ -e "$warp_check" ]; then
+    wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/main.sh
+    wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-api
+    wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-go
 
-        whiptail --msgbox "WARP is running." 10 30
-        clear
+    chmod +x main.sh
+    ./main.sh
 
-    else
+    rm -f warp-go warp-api main.sh warp.conf
 
-        mkdir /etc/sbw && cd /etc/sbw || exit
+    cd || exit
 
-        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/main.sh
-        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-api
-        wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/warp-go
-
-        chmod +x main.sh
-        ./main.sh
-
-        rm -f warp-go warp-api main.sh warp.conf
-
-        cd || exit
-
-        whiptail --msgbox "WARP installed successfuly" 10 30
-        clear
-
-    fi
+    whiptail --msgbox "WARP Wireguard Config Generated successfuly" 10 30
+    clear
 
 }
 
