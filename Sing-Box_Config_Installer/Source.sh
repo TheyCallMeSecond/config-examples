@@ -118,10 +118,7 @@ install_hysteria() {
         # Enable and start the SH service
         sudo systemctl enable --now SH
 
-        (
-            crontab -l 2>/dev/null
-            echo "0 */5 * * * systemctl restart SH"
-        ) | crontab -
+        (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart SH") | crontab -
 
         # Construct and display the resulting URL & QR
         result_url=" 
@@ -378,10 +375,7 @@ install_tuic() {
         # Enable and start the tuic service
         sudo systemctl enable --now TS
 
-        (
-            crontab -l 2>/dev/null
-            echo "0 */5 * * * systemctl restart TS"
-        ) | crontab -
+        (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart TS") | crontab -
 
         # Construct and display the resulting URL
         result_url=" 
@@ -641,10 +635,7 @@ install_reality() {
         # Enable and start the sing-box service
         sudo systemctl enable --now RS
 
-        (
-            crontab -l 2>/dev/null
-            echo "0 */5 * * * systemctl restart RS"
-        ) | crontab -
+        (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart RS") | crontab -
 
         # Construct and display the resulting URL
         result_url=" 
@@ -916,10 +907,7 @@ install_shadowtls() {
         # Enable and start the ST service
         sudo systemctl enable --now ST
 
-        (
-            crontab -l 2>/dev/null
-            echo "0 */5 * * * systemctl restart ST"
-        ) | crontab -
+        (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart ST") | crontab -
 
         # Display the resulting config
 
