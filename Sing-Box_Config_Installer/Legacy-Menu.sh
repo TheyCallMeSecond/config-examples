@@ -27,24 +27,25 @@ while true; do
     echo -------------------------------------------
     echo -e "15: \e[93mInstall Reality\e[0m"
     echo -e "16: \e[93mModify Reality Config\e[0m"
-    echo -e "17: \e[93mAdd User\e[0m"
-    echo -e "18: \e[93mRemove User\e[0m"    
-    echo -e "19: \e[93mShow User Configs\e[0m"
-    echo -e "20: \e[93mEnable/Disable WARP on Reality\e[0m"
-    echo -e "21: \e[93mUninstall Reality\e[0m"
+    echo -e "17: \e[93mRegenerate Reality Keys\e[0m"
+    echo -e "18: \e[93mAdd User\e[0m"
+    echo -e "19: \e[93mRemove User\e[0m"    
+    echo -e "20: \e[93mShow User Configs\e[0m"
+    echo -e "21: \e[93mEnable/Disable WARP on Reality\e[0m"
+    echo -e "22: \e[93mUninstall Reality\e[0m"
     echo -------------------------------------------
-    echo -e "22: \e[93mInstall ShadowTLS\e[0m"
-    echo -e "23: \e[93mModify ShadowTLS Config\e[0m"
-    echo -e "24: \e[93mAdd User\e[0m"
-    echo -e "25: \e[93mRemove User\e[0m"    
-    echo -e "26: \e[93mShow User Configs\e[0m"
-    echo -e "27: \e[93mEnable/Disable WARP on ShadowTLS\e[0m"
-    echo -e "28: \e[93mUninstall ShadowTLS\e[0m"
+    echo -e "23: \e[93mInstall ShadowTLS\e[0m"
+    echo -e "24: \e[93mModify ShadowTLS Config\e[0m"
+    echo -e "25: \e[93mAdd User\e[0m"
+    echo -e "26: \e[93mRemove User\e[0m"    
+    echo -e "27: \e[93mShow User Configs\e[0m"
+    echo -e "28: \e[93mEnable/Disable WARP on ShadowTLS\e[0m"
+    echo -e "29: \e[93mUninstall ShadowTLS\e[0m"
     echo -------------------------------------------
-    echo -e "29: \e[93mGenerate WARP+ Key\e[0m"
-    echo -e "30: \e[93mGenerate WARP+ Wireguard Config\e[0m"
-    echo -e "31: \e[93mShow WARP Config\e[0m"
-    echo -e "32: \e[93mUninstall WARP\e[0m"
+    echo -e "30: \e[93mGenerate WARP+ Key\e[0m"
+    echo -e "31: \e[93mGenerate WARP+ Wireguard Config\e[0m"
+    echo -e "32: \e[93mShow WARP Config\e[0m"
+    echo -e "33: \e[93mUninstall WARP\e[0m"
     echo -------------------------------------------
     echo -e "0:  \e[95mExit\e[0m"
 
@@ -125,65 +126,69 @@ while true; do
         ;;
     17)
         clear
+        regenerate_keys
+        ;;        
+    18)
+        clear
         add_reality_user
         ;;
-    18)
+    19)
         clear
         remove_reality_user
         ;;                
-    19)
+    20)
         clear
         show_reality_config
         ;;
-    20)
+    21)
         clear
         toggle_warp_reality
         ;;
-    21)
+    22)
         clear
         uninstall_reality
         ;;
-    22)
+    23)
         clear
         install_shadowtls
         ;;
-    23)
+    24)
         clear
         modify_shadowtls_config
         ;;
-    24)
+    25)
         clear
         add_shadowtls_user
         ;;
-    25)
+    26)
         clear
         remove_shadowtls_user
         ;;         
-    26)
+    27)
         clear
         show_shadowtls_config
         ;;
-    27)
+    28)
         clear
         toggle_warp_shadowtls
         ;;
-    28)
+    29)
         clear
         uninstall_shadowtls
         ;;
-    29)
+    30)
         clear
         warp_key_gen
         ;;
-    30)
+    31)
         clear
         install_warp
         ;;
-    31)
+    32)
         clear
         show_warp_config
         ;;
-    32)
+    33)
         clear
         uninstall_warp
         ;;
