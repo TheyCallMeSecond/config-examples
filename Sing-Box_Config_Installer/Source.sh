@@ -812,6 +812,8 @@ regenerate_keys() {
         sed -i "s/pbk=[^\&]*/pbk=$new_public_key/g" "$config_txt"
         sed -i "s/sid=[^\&]*/sid=$new_short_id/g" "$config_txt"
 
+        sudo systemctl restart RS
+
         whiptail --msgbox "Keys updated successfully!" 10 30
         clear
 
