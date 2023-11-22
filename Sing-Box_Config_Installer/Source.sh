@@ -790,6 +790,39 @@ modify_reality_config() {
 
 }
 
+regenerate_keys() {
+    reality_check="/etc/reality/config.json"
+
+    if [ -e "$reality_check" ]; then
+
+        # Generate keys using sing-box command
+        output=$(RS generate reality-keypair)
+        new_private_key=$(echo "$output" | grep -o 'PrivateKey: [^\n]*' | cut -d' ' -f2)
+        new_public_key=$(echo "$output" | grep -o 'PublicKey: [^\n]*' | cut -d' ' -f2)
+        new_short_id=$(RS generate rand 8 --hex)
+
+        # Path to the files
+        config_json="/etc/reality/config.json"
+        config_txt="/etc/reality/config.txt"
+
+        # Use jq to update the private key and short id
+        jq --arg new_key "$new_private_key" --arg new_id "$new_short_id" '.inbounds[0].tls.reality.private_key = $new_key | .inbounds[0].tls.reality.short_id[0] = $new_id' "$config_json" >temp.json && mv temp.json "$config_json"
+
+        # Use sed to update the public key and short id
+        sed -i "s/pbk=[^\&]*/pbk=$new_public_key/g" "$config_txt"
+        sed -i "s/sid=[^\&]*/sid=$new_short_id/g" "$config_txt"
+
+        whiptail --msgbox "Keys updated successfully!" 10 30
+        clear
+
+    else
+
+        whiptail --msgbox "Reality is not installed yet." 10 30
+        clear
+
+    fi
+}
+
 uninstall_reality() {
     # Stop the RS service
     sudo systemctl stop RS
