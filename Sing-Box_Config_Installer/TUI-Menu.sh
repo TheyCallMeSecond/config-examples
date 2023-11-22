@@ -131,11 +131,12 @@ while true; do
             user_choice=$(whiptail --clear --title "Reality Menu" --menu "Please select an option:" 25 50 15 \
                 "1" "Install Reality" \
                 "2" "Modify Reality Config" \
-                "3" "Add a new user" \
-                "4" "Remove an existing user" \
-                "5" "Show User Configs" \
-                "6" "Enable/Disable WARP on Reality" \
-                "7" "Uninstall Reality" \
+                "3" "Regenerate Reality Keys" \
+                "4" "Add a new user" \
+                "5" "Remove an existing user" \
+                "6" "Show User Configs" \
+                "7" "Enable/Disable WARP on Reality" \
+                "8" "Uninstall Reality" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
 
             case $user_choice in
@@ -149,21 +150,25 @@ while true; do
                 ;;
             "3")
                 clear
-                add_reality_user
+                regenerate_keys
                 ;;
             "4")
                 clear
-                remove_reality_user
+                add_reality_user
                 ;;
             "5")
                 clear
-                show_reality_config
+                remove_reality_user
                 ;;
             "6")
                 clear
-                toggle_warp_reality
+                show_reality_config
                 ;;
             "7")
+                clear
+                toggle_warp_reality
+                ;;
+            "8")
                 clear
                 uninstall_reality
                 ;;
