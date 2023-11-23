@@ -1122,7 +1122,7 @@ install_ws() {
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
 
         # Prompt the user to enter a domain
-        DOMAIN=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+        DOMAIN=$(whiptail --inputbox "Enter Domain:" 10 30 2>&1 >/dev/tty)
 
         # Download sing-box binary
         mkdir /root/singbox && cd /root/singbox || exit
@@ -1218,7 +1218,7 @@ modify_ws_config() {
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
 
         # Prompt the user to enter a domain
-        DOMAIN=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+        DOMAIN=$(whiptail --inputbox "Enter Domain:" 10 30 2>&1 >/dev/tty)
 
         # Stop the WS service
         sudo systemctl stop WS
@@ -1818,7 +1818,7 @@ update_sing-box_core() {
 
     fi
 
-    ws_core_check="/usr/bin/ST"
+    ws_core_check="/usr/bin/WS"
 
     if [ -e "$ws_core_check" ]; then
 
