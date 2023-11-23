@@ -33,7 +33,7 @@ while true; do
                     "3" "Add a new user" \
                     "4" "Remove an existing user" \
                     "5" "Show User Configs" \
-                    "6" "Enable/Disable WARP on Hysteria2" \
+                    "6" "Enable/Disable WARP" \
                     "7" "Uninstall Hysteria2" \
                     "0" "Back to Main Menu" 3>&1 1>&2 2>&3
             )
@@ -85,7 +85,7 @@ while true; do
                 "3" "Add a new user" \
                 "4" "Remove an existing user" \
                 "5" "Show User Configs" \
-                "6" "Enable/Disable WARP on Tuic" \
+                "6" "Enable/Disable WARP" \
                 "7" "Uninstall Tuic" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
 
@@ -136,7 +136,7 @@ while true; do
                 "4" "Add a new user" \
                 "5" "Remove an existing user" \
                 "6" "Show User Configs" \
-                "7" "Enable/Disable WARP on Reality" \
+                "7" "Enable/Disable WARP" \
                 "8" "Uninstall Reality" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
 
@@ -190,7 +190,7 @@ while true; do
                 "3" "Add a new user" \
                 "4" "Remove an existing user" \
                 "5" "Show User Configs" \
-                "6" "Enable/Disable WARP on ShadowTLS" \
+                "6" "Enable/Disable WARP" \
                 "7" "Uninstall ShadowTLS" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
 
@@ -240,7 +240,7 @@ while true; do
                 "3" "Add a new user" \
                 "4" "Remove an existing user" \
                 "5" "Show User Configs" \
-                "6" "Enable/Disable WARP on v" \
+                "6" "Enable/Disable WARP" \
                 "7" "Uninstall WebSocket" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
 
