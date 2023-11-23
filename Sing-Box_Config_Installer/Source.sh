@@ -797,8 +797,8 @@ regenerate_keys() {
 
         # Generate keys using sing-box command
         output=$(RS generate reality-keypair)
-        new_private_key=$(echo "$output" | grep -o 'PrivateKey: [^\n]*' | cut -d' ' -f2)
-        new_public_key=$(echo "$output" | grep -o 'PublicKey: [^\n]*' | cut -d' ' -f2)
+        new_private_key=$(echo "$output" | grep -oP 'PrivateKey: \K\S+')
+        new_public_key=$(echo "$output" | grep -oP 'PublicKey: \K\S+')
         new_short_id=$(RS generate rand 8 --hex)
 
         # Path to the files
