@@ -1144,7 +1144,7 @@ install_ws() {
         sed -i "s/PORT/$user_port/" /etc/ws/config.json
 
         # replace "DOMAIM" in the config.json file
-        sed -i "s/DOMAIN/$DOMAIM/" /etc/ws/config.json
+        sed -i "s/DOMAIN/$DOMAIN/" /etc/ws/config.json
 
         # replace "NAME" in the config.json file
         sed -i "s/NAME/WebSocket/" /etc/ws/config.json
@@ -1178,8 +1178,8 @@ install_ws() {
         fi
 
         get_ssl
-        mv /etc/letsencrypt/live/"$DOMAIN"/fullchain.pem /etc/ws/server.crt
-        mv /etc/letsencrypt/live/"$DOMAIN"/privkey.pem /etc/ws/server.key
+        cp /etc/letsencrypt/live/"$DOMAIN"/fullchain.pem /etc/ws/server.crt
+        cp /etc/letsencrypt/live/"$DOMAIN"/privkey.pem /etc/ws/server.key
 
         # Enable and start the sing-box service
         sudo systemctl enable --now WS
@@ -1196,6 +1196,7 @@ install_ws() {
         vless://UUID@$DOMAIN:$user_port?security=tls&sni=$DOMAIN&alpn=http/1.1&fp=firefox&type=ws&encryption=none#WebSocket"
         echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/ws/config.txt
 
+        cat /etc/ws/user-config.txt
         config=$(cat /etc/ws/user-config.txt)
 
         echo Config:
@@ -1233,7 +1234,7 @@ modify_ws_config() {
         sed -i "s/PORT/$user_port/" /etc/ws/config.json
 
         # replace "DOMAIM" in the config.json file
-        sed -i "s/DOMAIN/$DOMAIM/" /etc/ws/config.json
+        sed -i "s/DOMAIN/$DOMAIN/" /etc/ws/config.json
 
         # replace "NAME" in the config.json file
         sed -i "s/NAME/WebSocket/" /etc/ws/config.json
@@ -1267,8 +1268,8 @@ modify_ws_config() {
         fi
 
         get_ssl
-        mv /etc/letsencrypt/live/"$DOMAIN"/fullchain.pem /etc/ws/server.crt
-        mv /etc/letsencrypt/live/"$DOMAIN"/privkey.pem /etc/ws/server.key
+        cp /etc/letsencrypt/live/"$DOMAIN"/fullchain.pem /etc/ws/server.crt
+        cp /etc/letsencrypt/live/"$DOMAIN"/privkey.pem /etc/ws/server.key
 
         # Enable and start the sing-box service
         sudo systemctl enable --now WS
@@ -1283,6 +1284,7 @@ modify_ws_config() {
         vless://UUID@$DOMAIN:$user_port?security=tls&sni=$DOMAIN&alpn=http/1.1&fp=firefox&type=ws&encryption=none#WebSocket"
         echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/ws/config.txt
 
+        cat /etc/ws/user-config.txt
         config=$(cat /etc/ws/user-config.txt)
 
         echo Config:
@@ -1496,6 +1498,7 @@ show_ws_config() {
 
             sed "s/UUID/$user_uuid/g" /etc/ws/config.txt >/etc/ws/user-config.txt
 
+            cat /etc/ws/user-config.txt
             config=$(cat /etc/ws/user-config.txt)
 
             echo Config:
