@@ -28,13 +28,13 @@ while true; do
         while true; do
             user_choice=$(
                 whiptail --clear --title "Hysteria2 Menu" --menu "Please select an option:" 25 50 15 \
-                    "1" "Install Hysteria2" \
-                    "2" "Modify Hysteria2 Config" \
+                    "1" "Install" \
+                    "2" "Modify Config" \
                     "3" "Add a new user" \
                     "4" "Remove an existing user" \
                     "5" "Show User Configs" \
                     "6" "Enable/Disable WARP" \
-                    "7" "Uninstall Hysteria2" \
+                    "7" "Uninstall" \
                     "0" "Back to Main Menu" 3>&1 1>&2 2>&3
             )
 
@@ -80,13 +80,13 @@ while true; do
     "Tuic")
         while true; do
             user_choice=$(whiptail --clear --title "Tuic Menu" --menu "Please select an option:" 25 50 15 \
-                "1" "Install Tuic" \
-                "2" "Modify Tuic Config" \
+                "1" "Install" \
+                "2" "Modify Config" \
                 "3" "Add a new user" \
                 "4" "Remove an existing user" \
                 "5" "Show User Configs" \
                 "6" "Enable/Disable WARP" \
-                "7" "Uninstall Tuic" \
+                "7" "Uninstall" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
 
             case $user_choice in
@@ -130,14 +130,14 @@ while true; do
     "Reality")
         while true; do
             user_choice=$(whiptail --clear --title "Reality Menu" --menu "Please select an option:" 25 50 15 \
-                "1" "Install Reality" \
-                "2" "Modify Reality Config" \
-                "3" "Regenerate Reality Keys" \
+                "1" "Install" \
+                "2" "Modify Config" \
+                "3" "Regenerate Keys" \
                 "4" "Add a new user" \
                 "5" "Remove an existing user" \
                 "6" "Show User Configs" \
                 "7" "Enable/Disable WARP" \
-                "8" "Uninstall Reality" \
+                "8" "Uninstall" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
 
             case $user_choice in
@@ -185,13 +185,13 @@ while true; do
     "ShadowTLS")
         while true; do
             user_choice=$(whiptail --clear --title "ShadowTLS Menu" --menu "Please select an option:" 25 50 15 \
-                "1" "Install ShadowTLS" \
-                "2" "Modify ShadowTLS Config" \
+                "1" "Install " \
+                "2" "Modify Config" \
                 "3" "Add a new user" \
                 "4" "Remove an existing user" \
                 "5" "Show User Configs" \
                 "6" "Enable/Disable WARP" \
-                "7" "Uninstall ShadowTLS" \
+                "7" "Uninstall" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
 
             case $user_choice in
@@ -235,13 +235,13 @@ while true; do
     "WebSocket")
         while true; do
             user_choice=$(whiptail --clear --title "WebSocket Menu" --menu "Please select an option:" 25 50 15 \
-                "1" "Install WebSocket" \
-                "2" "Modify WebSocket Config" \
+                "1" "Install" \
+                "2" "Modify Config" \
                 "3" "Add a new user" \
                 "4" "Remove an existing user" \
                 "5" "Show User Configs" \
                 "6" "Enable/Disable WARP" \
-                "7" "Uninstall WebSocket" \
+                "7" "Uninstall" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
 
             case $user_choice in
@@ -288,8 +288,8 @@ while true; do
                 whiptail --clear --title "Warp Menu" --menu "Please select an option:" 25 50 15 \
                     "1" "Generate WARP+ Key" \
                     "2" "Generate WARP+ Wireguard Config" \
-                    "3" "Show Warp Config" \
-                    "4" "Uninstall Warp" \
+                    "3" "Show Config" \
+                    "4" "Uninstall" \
                     "0" "Back to Main Menu" 3>&1 1>&2 2>&3
             )
 
