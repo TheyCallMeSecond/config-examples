@@ -65,11 +65,6 @@ bash <(curl -fsSL https://bit.ly/config-installer)
 
 
 ------------
-برای نصب هیستریا2 به صورت دستی داخل فولدر [Hysteria](https://github.com/TheyCallMeSecond/config-examples/tree/main/Hysteria "Hysteria") برید
-
-
-------------
-
 
 #### کلاینت
 - Android
