@@ -11,6 +11,7 @@ while true; do
         "Tuic" "     Manage Tuic" \
         "Reality" "     Manage Reality" \
         "ShadowTLS" "     Manage ShadowTLS" \
+        "WebSocket" "     Manage ShadowTLS" \
         "Warp" "     Manage Warp" \
         "Exit" "     Exit the script" 3>&1 1>&2 2>&3)
 
