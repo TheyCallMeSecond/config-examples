@@ -24,7 +24,7 @@ optimize_server() {
 install_required_packages() {
     check_OS
     $systemPackage update -y
-    $systemPackage install wget whiptail qrencode jq openssl python3 python3-pip -y
+    $systemPackage install wget whiptail qrencode jq certbot openssl python3 python3-pip -y
     pip install httpx requests
     clear
 }
@@ -1109,6 +1109,215 @@ uninstall_shadowtls() {
 
 }
 
+install_ws() {
+    ws_check="/etc/ws/config.json"
+
+    if [ -e "$ws_check" ]; then
+
+        whiptail --msgbox "WebSocket is Already installed " 10 30
+        clear
+
+    else
+        # Prompt the user to enter a port
+        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+
+        # Prompt the user to enter a domain
+        DOMAIN=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+
+        # Download sing-box binary
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/WS"
+        cd && rm -rf singbox
+
+        # Create a directory for WS configuration and download the WebSocket.json file
+        mkdir -p /etc/ws && curl -Lo /etc/ws/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/WebSocket.json
+
+        # Download the WS.service file
+        curl -Lo /etc/systemd/system/WS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/WS.service && systemctl daemon-reload
+
+        # replace "PORT" in the config.json file
+        sed -i "s/PORT/$user_port/" /etc/ws/config.json
+
+        # replace "DOMAIM" in the config.json file
+        sed -i "s/DOMAIN/$DOMAIM/" /etc/ws/config.json
+
+        # replace "NAME" in the config.json file
+        sed -i "s/NAME/WebSocket/" /etc/ws/config.json
+
+        # Generate uuid and replace "UUID" in the config.json file
+        uuid=$(cat /proc/sys/kernel/random/uuid)
+        sed -i "s/UUID/$uuid/" /etc/ws/config.json
+
+        # UFW optimization
+        if sudo ufw status | grep -q "Status: active"; then
+
+            # Disable UFW
+            sudo ufw disable
+
+            # Open config port
+            sudo ufw allow "$user_port"
+            sleep 0.5
+
+            # Enable & Reload
+            echo "y" | sudo ufw enable
+            sudo ufw reload
+
+            echo 'UFW is Optimized.'
+
+            sleep 0.5
+
+        else
+
+            echo "UFW in not active"
+
+        fi
+
+        get_ssl
+        mv /etc/letsencrypt/live/"$DOMAIN"/fullchain.pem /etc/ws/server.crt
+        mv /etc/letsencrypt/live/"$DOMAIN"/privkey.pem /etc/ws/server.key
+
+        # Enable and start the sing-box service
+        sudo systemctl enable --now WS
+
+        (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart WS") | crontab -
+
+        # Construct and display the resulting URL
+        result_url=" 
+        vless://$uuid@$DOMAIN:$user_port?security=tls&sni=$DOMAIN&alpn=http/1.1&fp=firefox&type=ws&encryption=none#WebSocket"
+        echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/ws/user-config.txt
+
+        # Construct and display the resulting URL
+        result_url2=" 
+        vless://UUID@$DOMAIN:$user_port?security=tls&sni=$DOMAIN&alpn=http/1.1&fp=firefox&type=ws&encryption=none#WebSocket"
+        echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/ws/config.txt
+
+        config=$(cat /etc/ws/user-config.txt)
+
+        echo Config:
+        qrencode -t ANSIUTF8 <<<"$config"
+
+        echo "WebSocket setup completed."
+
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
+        clear
+    fi
+}
+
+modify_ws_config() {
+    ws_check="/etc/ws/config.json"
+
+    if [ -e "$ws_check" ]; then
+
+        # Prompt the user to enter a port
+        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+
+        # Prompt the user to enter a domain
+        DOMAIN=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+
+        # Stop the WS service
+        sudo systemctl stop WS
+
+        # Remove the existing configuration
+        rm -rf /etc/ws
+
+        # Create a directory for WS configuration and download the WebSocket.json file
+        mkdir -p /etc/ws && curl -Lo /etc/ws/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/WebSocket.json
+
+        # replace "PORT" in the config.json file
+        sed -i "s/PORT/$user_port/" /etc/ws/config.json
+
+        # replace "DOMAIM" in the config.json file
+        sed -i "s/DOMAIN/$DOMAIM/" /etc/ws/config.json
+
+        # replace "NAME" in the config.json file
+        sed -i "s/NAME/WebSocket/" /etc/ws/config.json
+
+        # Generate uuid and replace "UUID" in the config.json file
+        uuid=$(cat /proc/sys/kernel/random/uuid)
+        sed -i "s/UUID/$uuid/" /etc/ws/config.json
+
+        # UFW optimization
+        if sudo ufw status | grep -q "Status: active"; then
+
+            # Disable UFW
+            sudo ufw disable
+
+            # Open config port
+            sudo ufw allow "$user_port"
+            sleep 0.5
+
+            # Enable & Reload
+            echo "y" | sudo ufw enable
+            sudo ufw reload
+
+            echo 'UFW is Optimized.'
+
+            sleep 0.5
+
+        else
+
+            echo "UFW in not active"
+
+        fi
+
+        get_ssl
+        mv /etc/letsencrypt/live/"$DOMAIN"/fullchain.pem /etc/ws/server.crt
+        mv /etc/letsencrypt/live/"$DOMAIN"/privkey.pem /etc/ws/server.key
+
+        # Enable and start the sing-box service
+        sudo systemctl enable --now WS
+
+        # Construct and display the resulting URL
+        result_url=" 
+        vless://$uuid@$DOMAIN:$user_port?security=tls&sni=$DOMAIN&alpn=http/1.1&fp=firefox&type=ws&encryption=none#WebSocket"
+        echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/ws/user-config.txt
+
+        # Construct and display the resulting URL
+        result_url2=" 
+        vless://UUID@$DOMAIN:$user_port?security=tls&sni=$DOMAIN&alpn=http/1.1&fp=firefox&type=ws&encryption=none#WebSocket"
+        echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/ws/config.txt
+
+        config=$(cat /etc/ws/user-config.txt)
+
+        echo Config:
+        qrencode -t ANSIUTF8 <<<"$config"
+
+        echo "WebSocket configuration modified."
+
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
+        clear
+
+    else
+
+        whiptail --msgbox "WebSocket is not installed yet." 10 30
+        clear
+
+    fi
+
+}
+
+uninstall_ws() {
+    # Stop the WS service
+    sudo systemctl stop WS
+
+    # Remove RS binary, configuration, and service file
+    sudo rm -f /usr/bin/WS
+    rm -rf /etc/ws
+    sudo rm -f /etc/systemd/system/WS.service
+    (crontab -l 2>/dev/null | grep -v "0 */5 * * * systemctl restart WS") | crontab -
+
+    whiptail --msgbox "WebSocket uninstalled." 10 30
+    clear
+
+}
+
 show_hysteria_config() {
     hysteria_check="/etc/hysteria2/config.txt"
 
@@ -1273,6 +1482,40 @@ show_shadowtls_config() {
 
 }
 
+show_ws_config() {
+    ws_check="/etc/ws/config.txt"
+
+    if [ -e "$ws_check" ]; then
+
+        config_file="/etc/ws/config.json"
+        users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
+        user_choice=$(whiptail --menu "Select user:" 25 50 10 $users 2>&1 >/dev/tty)
+
+        if [ -n "$user_choice" ]; then
+            user_uuid=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].uuid' "$config_file")
+
+            sed "s/UUID/$user_uuid/g" /etc/ws/config.txt >/etc/ws/user-config.txt
+
+            config=$(cat /etc/ws/user-config.txt)
+
+            echo Config:
+            qrencode -t ANSIUTF8 <<<"$config"
+
+        fi
+
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
+        clear
+
+    else
+
+        whiptail --msgbox "WebSocket is not installed yet." 10 30
+        clear
+
+    fi
+
+}
+
 show_warp_config() {
     warp_conf_check="/etc/sbw/proxy.json"
 
@@ -1431,6 +1674,32 @@ uninstall_warp() {
         echo
     fi
 
+    file5="/etc/ws/config.json"
+
+    if [ -e "$file5" ]; then
+
+        if jq -e '.outbounds[0].type == "wireguard"' "$file5" &>/dev/null; then
+            # Set the new JSON object for outbounds (switch to direct)
+            new_json='{
+            "tag": "direct",
+            "type": "direct"
+        }'
+
+            jq '.outbounds = ['"$new_json"']' "$file5" >/tmp/tmp_config.json
+            mv /tmp/tmp_config.json "$file5"
+
+            systemctl restart WS
+
+            echo "WARP is disabled on WebSocket"
+        else
+
+            echo
+        fi
+
+    else
+        echo
+    fi
+
     whiptail --msgbox "WARP uninstalled." 10 30
     clear
 
@@ -1546,6 +1815,34 @@ update_sing-box_core() {
     else
 
         echo "Hysteria2 is not installed yet."
+
+    fi
+
+    ws_core_check="/usr/bin/ST"
+
+    if [ -e "$ws_core_check" ]; then
+
+        systemctl stop WS
+
+        rm /usr/bin/WS
+
+        # Download sing-box binary
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/WS"
+        cd && rm -rf singbox
+
+        systemctl start WS
+
+        echo "WebSocket sing-box core has been updated"
+
+    else
+
+        echo "WebSocket is not installed yet."
 
     fi
 
@@ -1754,6 +2051,56 @@ toggle_warp_hysteria() {
 
 }
 
+toggle_warp_ws() {
+    file="/etc/ws/config.json"
+    warp="/etc/sbw/proxy.json"
+
+    if [ -e "$file" ]; then
+
+        if [ -e "$warp" ]; then
+
+            systemctl stop WS
+
+            if jq -e '.outbounds[0].type == "wireguard"' "$file" &>/dev/null; then
+
+                new_json='{
+            "tag": "direct",
+            "type": "direct"
+        }'
+
+                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
+                mv /tmp/tmp_config.json "$file"
+
+                systemctl start WS
+
+                whiptail --msgbox "WARP is disabled now" 10 30
+                clear
+            else
+
+                outbounds_block=$(jq -c '.outbounds' "$warp")
+
+                jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
+                mv temp_config.json "$file"
+
+                systemctl start WS
+
+                whiptail --msgbox "WARP is enabled now" 10 30
+                clear
+            fi
+
+        else
+            whiptail --msgbox "WARP is not installed yet" 10 30
+            clear
+
+        fi
+
+    else
+        whiptail --msgbox "WebSocket is not installed yet." 10 30
+        clear
+    fi
+
+}
+
 check_OS() {
     [[ $EUID -ne 0 ]] && echo "not root!" && exit 0
     if [[ -f /etc/redhat-release ]]; then
@@ -1877,6 +2224,55 @@ check_and_display_process_status() {
     else
         echo
     fi
+}
+
+get_ssl() {
+
+    # Track services to restart
+    RESTART_SERVICES=()
+
+    # Stop and track service
+    stop_service() {
+        PROCESS=$(ps -p $1 -o comm=)
+        SERVICE=$(systemctl list-units --all | grep $PROCESS | awk '{print $1}')
+
+        if [[ -n "$SERVICE" ]]; then
+            echo "Stopping $SERVICE"
+            systemctl stop "$SERVICE"
+            RESTART_SERVICES+=("$SERVICE")
+        else
+            echo "No service found for PID $1"
+        fi
+    }
+
+    # Check ports 80 and 443
+    check_and_stop_service() {
+        local PORT_PIDS=$(lsof -i:"$1" | awk '/LISTEN/ {print $2}')
+        for PID in $PORT_PIDS; do
+            stop_service "$PID"
+        done
+    }
+
+    check_and_stop_service 80
+    check_and_stop_service 443
+
+    # Generate SSL cert
+    certbot certonly --standalone --agree-tos --register-unsafely-without-email -d "$DOMAIN"
+    if [[ $? -eq 0 ]]; then
+
+        echo "Certificate generated successfully"
+
+    else
+
+        echo "Certificate generation failed"
+        exit 1
+    fi
+
+    # Restart services
+    for SERVICE in "${RESTART_SERVICES[@]}"; do
+        systemctl start "$SERVICE"
+    done
+
 }
 
 add_hysteria_user() {
@@ -2117,6 +2513,66 @@ remove_shadowtls_user() {
         fi
     else
         whiptail --msgbox "ShadowTLS is not installed yet." 10 30
+        clear
+    fi
+}
+
+add_ws_user() {
+    config_file="/etc/ws/config.json"
+
+    if [ -e "$config_file" ]; then
+        name_regex="^[A-Za-z0-9]+$"
+
+        name=$(whiptail --inputbox "Enter the user's name:" 10 30 2>&1 >/dev/tty)
+
+        if [[ "$name" =~ $name_regex ]]; then
+            user_exists=$(jq --arg name "$name" '.inbounds[0].users | map(select(.name == $name)) | length' "$config_file")
+
+            if [ "$user_exists" -eq 0 ]; then
+
+                uuid=$(cat /proc/sys/kernel/random/uuid)
+
+                jq --arg name "$name" --arg uuid "$uuid" '.inbounds[0].users += [{"name": $name, "uuid": $uuid}]' "$config_file" >tmp_config.json
+                mv tmp_config.json "$config_file"
+
+                sudo systemctl restart WS
+
+                whiptail --msgbox "User added successfully!" 10 30
+                clear
+            else
+                whiptail --msgbox "User already exists!" 10 30
+                clear
+            fi
+        else
+            whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
+            clear
+        fi
+    else
+        whiptail --msgbox "WebSocket is not installed yet." 10 30
+        clear
+    fi
+}
+
+remove_ws_user() {
+    config_file="/etc/ws/config.json"
+
+    if [ -e "$config_file" ]; then
+
+        users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
+        user_choice=$(whiptail --menu "Select a user to remove:" 25 50 10 $users 2>&1 >/dev/tty)
+
+        if [ -n "$user_choice" ]; then
+            user_index=$(echo "$user_choice" | awk '{print $1}')
+            jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
+            mv tmp_config.json "$config_file"
+
+            sudo systemctl restart WS
+
+            whiptail --msgbox "User removed successfully!" 10 30
+            clear
+        fi
+    else
+        whiptail --msgbox "WebSocket is not installed yet." 10 30
         clear
     fi
 }
