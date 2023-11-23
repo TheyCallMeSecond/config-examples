@@ -1,5 +1,5 @@
 <div align="center">
-نصب و کانفیگ اتوماتیک WARP, ShadowTLS, Reality, TUIC, Hysteria2
+نصب و کانفیگ اتوماتیک WARP, ShadowTLS, WebSocket, Reality, TUIC, Hysteria2
 
 
 
