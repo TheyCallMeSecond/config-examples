@@ -42,10 +42,18 @@ while true; do
     echo -e "28: \e[93mEnable/Disable WARP on ShadowTLS\e[0m"
     echo -e "29: \e[93mUninstall ShadowTLS\e[0m"
     echo -------------------------------------------
-    echo -e "30: \e[93mGenerate WARP+ Key\e[0m"
-    echo -e "31: \e[93mGenerate WARP+ Wireguard Config\e[0m"
-    echo -e "32: \e[93mShow WARP Config\e[0m"
-    echo -e "33: \e[93mUninstall WARP\e[0m"
+    echo -e "30: \e[93mInstall WebSocket\e[0m"
+    echo -e "31: \e[93mModify WebSocket Config\e[0m"
+    echo -e "32: \e[93mAdd User\e[0m"
+    echo -e "33: \e[93mRemove User\e[0m"    
+    echo -e "34: \e[93mShow User Configs\e[0m"
+    echo -e "35: \e[93mEnable/Disable WARP on WebSocket\e[0m"
+    echo -e "36: \e[93mUninstall WebSocket\e[0m"
+    echo -------------------------------------------    
+    echo -e "37: \e[93mGenerate WARP+ Key\e[0m"
+    echo -e "38: \e[93mGenerate WARP+ Wireguard Config\e[0m"
+    echo -e "39: \e[93mShow WARP Config\e[0m"
+    echo -e "40: \e[93mUninstall WARP\e[0m"
     echo -------------------------------------------
     echo -e "0:  \e[95mExit\e[0m"
 
@@ -178,17 +186,45 @@ while true; do
         ;;
     30)
         clear
-        warp_key_gen
+        install_ws
         ;;
     31)
         clear
-        install_warp
+        modify_ws_config
         ;;
     32)
         clear
-        show_warp_config
+        add_ws_user
         ;;
     33)
+        clear
+        remove_ws_user
+        ;;         
+    34)
+        clear
+        show_ws_config
+        ;;
+    35)
+        clear
+        toggle_warp_ws
+        ;;
+    36)
+        clear
+        uninstall_ws
+        ;;        
+    37)
+        clear
+        warp_key_gen
+        ;;
+    38)
+        clear
+        install_warp
+        ;;
+    39)
+        clear
+        show_warp_config
+        ;;
+    40)
         clear
         uninstall_warp
         ;;
