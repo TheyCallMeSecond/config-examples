@@ -231,6 +231,56 @@ while true; do
             esac
         done
         ;;
+    "WebSocket")
+        while true; do
+            user_choice=$(whiptail --clear --title "WebSocket Menu" --menu "Please select an option:" 25 50 15 \
+                "1" "Install WebSocket" \
+                "2" "Modify WebSocket Config" \
+                "3" "Add a new user" \
+                "4" "Remove an existing user" \
+                "5" "Show User Configs" \
+                "6" "Enable/Disable WARP on v" \
+                "7" "Uninstall WebSocket" \
+                "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
+
+            case $user_choice in
+            "1")
+                clear
+                install_ws
+                ;;
+            "2")
+                clear
+                modify_ws_config
+                ;;
+            "3")
+                clear
+                add_ws_user
+                ;;
+            "4")
+                clear
+                remove_ws_user
+                ;;
+            "5")
+                clear
+                show_ws_config
+                ;;
+            "6")
+                clear
+                toggle_warp_ws
+                ;;
+            "7")
+                clear
+                uninstall_ws
+                ;;
+            "0")
+                break
+                ;;
+            *)
+                whiptail --msgbox "Invalid choice. Please select a valid option." 10 30
+                ;;
+            esac
+        done
+        ;;
     "Warp")
         while true; do
             user_choice=$(
