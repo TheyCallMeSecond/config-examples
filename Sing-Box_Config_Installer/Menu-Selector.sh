@@ -8,7 +8,7 @@ get_storage_usage
 check_system_info
 check_system_ip
 
-processes=("SH:Hysteria2:/etc/hysteria2/server.json" "TS:TUIC:/etc/tuic/server.json" "RS:Reality:/etc/reality/config.json" "ST:ShadowTLS:/etc/shadowtls/config.json")
+processes=("SH:Hysteria2:/etc/hysteria2/server.json" "TS:TUIC:/etc/tuic/server.json" "RS:Reality:/etc/reality/config.json" "ST:ShadowTLS:/etc/shadowtls/config.json" "WS:WebSocket:/etc/ws/config.json")
 
 while true; do
   echo "
