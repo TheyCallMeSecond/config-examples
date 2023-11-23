@@ -54,7 +54,7 @@ while true; do
     echo -e "38: \e[93mGenerate WARP+ Wireguard Config\e[0m"
     echo -e "39: \e[93mShow WARP Config\e[0m"
     echo -e "40: \e[93mUninstall WARP\e[0m"
-    echo -------------------------------------------
+    echo ----------------------------------------------------
     echo -e "0:  \e[95mExit\e[0m"
 
     read -p "Enter your choice: " user_choice
