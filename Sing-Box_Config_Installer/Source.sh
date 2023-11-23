@@ -276,7 +276,7 @@ uninstall_hysteria() {
     sudo rm -f /usr/bin/SH
     rm -rf /etc/hysteria2
     sudo rm -f /etc/systemd/system/SH.service
-    (crontab -l 2>/dev/null | grep -v "0 */5 * * * systemctl restart SH") | crontab -
+    crontab -l | sed '/0 \*\/5 \* \* \* systemctl restart SH/d' | crontab -
 
     whiptail --msgbox "Hysteria2 uninstalled." 10 30
     clear
@@ -537,7 +537,7 @@ uninstall_tuic() {
     sudo rm -f /usr/bin/TS
     rm -rf /etc/tuic
     sudo rm -f /etc/systemd/system/TS.service
-    (crontab -l 2>/dev/null | grep -v "0 */5 * * * systemctl restart TS") | crontab -
+    crontab -l | sed '/0 \*\/5 \* \* \* systemctl restart TS/d' | crontab -
 
     whiptail --msgbox "TUIC uninstalled." 10 30
     clear
@@ -833,7 +833,7 @@ uninstall_reality() {
     sudo rm -f /usr/bin/RS
     rm -rf /etc/reality
     sudo rm -f /etc/systemd/system/RS.service
-    (crontab -l 2>/dev/null | grep -v "0 */5 * * * systemctl restart RS") | crontab -
+    crontab -l | sed '/0 \*\/5 \* \* \* systemctl restart RS/d' | crontab -
 
     whiptail --msgbox "Reality uninstalled." 10 30
     clear
@@ -1102,7 +1102,7 @@ uninstall_shadowtls() {
     sudo rm -f /usr/bin/ST
     rm -rf /etc/shadowtls
     sudo rm -f /etc/systemd/system/ST.service
-    (crontab -l 2>/dev/null | grep -v "0 */5 * * * systemctl restart ST") | crontab -
+    crontab -l | sed '/0 \*\/5 \* \* \* systemctl restart ST/d' | crontab -
 
     whiptail --msgbox "ShadowTLS uninstalled." 10 30
     clear
@@ -1311,7 +1311,7 @@ uninstall_ws() {
     sudo rm -f /usr/bin/WS
     rm -rf /etc/ws
     sudo rm -f /etc/systemd/system/WS.service
-    (crontab -l 2>/dev/null | grep -v "0 */5 * * * systemctl restart WS") | crontab -
+    crontab -l | sed '/0 \*\/5 \* \* \* systemctl restart WS/d' | crontab -
 
     whiptail --msgbox "WebSocket uninstalled." 10 30
     clear
