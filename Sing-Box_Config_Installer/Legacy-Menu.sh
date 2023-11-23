@@ -8,7 +8,7 @@ while true; do
     echo -e
     echo -e "000:\e[95mOptimize Server\e[0m"
     echo -e "00: \e[95mUpdate Sing-Box Core\e[0m"
-    echo ------------------Hysteria2---------------------
+    echo --------------Hysteria2-----------------
     echo -e "1:  \e[93mInstall\e[0m"
     echo -e "2:  \e[93mModify Config\e[0m"
     echo -e "3:  \e[93mAdd User\e[0m"
@@ -16,7 +16,7 @@ while true; do
     echo -e "5:  \e[93mShow User Configs\e[0m"
     echo -e "6:  \e[93mEnable/Disable WARP\e[0m"
     echo -e "7:  \e[93mUninstall\e[0m"
-    echo --------------------TUIC------------------------
+    echo ----------------TUIC--------------------
     echo -e "8:  \e[93mInstall\e[0m"
     echo -e "9:  \e[93mModify Config\e[0m"
     echo -e "10: \e[93mAdd User\e[0m"
@@ -24,7 +24,7 @@ while true; do
     echo -e "12: \e[93mShow User Configs\e[0m"
     echo -e "13: \e[93mEnable/Disable WARP\e[0m"
     echo -e "14: \e[93mUninstall\e[0m"
-    echo -------------------Reality----------------------
+    echo ---------------Reality------------------
     echo -e "15: \e[93mInstall\e[0m"
     echo -e "16: \e[93mModify Config\e[0m"
     echo -e "17: \e[93mRegenerate Keys\e[0m"
@@ -33,7 +33,7 @@ while true; do
     echo -e "20: \e[93mShow User Configs\e[0m"
     echo -e "21: \e[93mEnable/Disable WARP\e[0m"
     echo -e "22: \e[93mUninstall\e[0m"
-    echo ------------------ShadowTLS---------------------
+    echo --------------ShadowTLS-----------------
     echo -e "23: \e[93mInstall\e[0m"
     echo -e "24: \e[93mModify Config\e[0m"
     echo -e "25: \e[93mAdd User\e[0m"
@@ -41,7 +41,7 @@ while true; do
     echo -e "27: \e[93mShow User Configs\e[0m"
     echo -e "28: \e[93mEnable/Disable WARP\e[0m"
     echo -e "29: \e[93mUninstall\e[0m"
-    echo ------------------WebSocket---------------------
+    echo --------------WebSocket-----------------
     echo -e "30: \e[93mInstall\e[0m"
     echo -e "31: \e[93mModify Config\e[0m"
     echo -e "32: \e[93mAdd User\e[0m"
@@ -49,12 +49,12 @@ while true; do
     echo -e "34: \e[93mShow User Configs\e[0m"
     echo -e "35: \e[93mEnable/Disable WARP\e[0m"
     echo -e "36: \e[93mUninstall\e[0m"
-    echo --------------------WARP------------------------    
+    echo ----------------WARP--------------------    
     echo -e "37: \e[93mGenerate WARP+ Key\e[0m"
     echo -e "38: \e[93mGenerate WARP+ Wireguard Config\e[0m"
     echo -e "39: \e[93mShow Config\e[0m"
     echo -e "40: \e[93mUninstall\e[0m"
-    echo ------------------------------------------------
+    echo ----------------------------------------
     echo -e "0:  \e[95mExit\e[0m"
 
     read -p "Enter your choice: " user_choice
