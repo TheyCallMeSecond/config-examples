@@ -124,13 +124,13 @@ install_hysteria() {
         result_url=" 
         ipv4 : hy2://$password@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
         ---------------------------------------------------------------
-        ipv6 : hy2://$password@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2"
+        ipv6 : hy2://$password@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2-V6"
         echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/hysteria2/user-config.txt # Red color for URL
 
         result_url2=" 
-        ipv4 : hy2://PASSWORD@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
+        ipv4 : hy2://PASSWORD@$public_ipv4:$user_port?insecure=1&sni=www.google.com#NAME-HY2
         ---------------------------------------------------------------
-        ipv6 : hy2://PASSWORD@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2"
+        ipv6 : hy2://PASSWORD@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#NAME-HY2-V6"
         echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/hysteria2/config.txt # Red color for URL
 
         cat /etc/hysteria2/user-config.txt
@@ -233,13 +233,13 @@ modify_hysteria_config() {
         result_url=" 
         ipv4 : hy2://$password@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
         ---------------------------------------------------------------
-        ipv6 : hy2://$password@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2"
+        ipv6 : hy2://$password@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2-V6"
         echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/hysteria2/user-config.txt # Red color for URL
 
         result_url2=" 
-        ipv4 : hy2://PASSWORD@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
+        ipv4 : hy2://PASSWORD@$public_ipv4:$user_port?insecure=1&sni=www.google.com#NAME-HY2
         ---------------------------------------------------------------
-        ipv6 : hy2://PASSWORD@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2"
+        ipv6 : hy2://PASSWORD@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#NAME-HY2-V6"
         echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/hysteria2/config.txt # Red color for URL
 
         cat /etc/hysteria2/user-config.txt
@@ -381,13 +381,13 @@ install_tuic() {
         result_url=" 
         ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
         ---------------------------------------------------------------
-        ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
+        ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC-V6"
         echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/tuic/user-config.txt # Red color for URL
 
         result_url2=" 
-        ipv4 : tuic://UUID:PASSWORD@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
+        ipv4 : tuic://UUID:PASSWORD@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC
         ---------------------------------------------------------------
-        ipv6 : tuic://UUID:PASSWORD@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
+        ipv6 : tuic://UUID:PASSWORD@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC-V6"
         echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/tuic/config.txt # Red color for URL
 
         cat /etc/tuic/user-config.txt
@@ -494,13 +494,13 @@ modify_tuic_config() {
         result_url=" 
         ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
         ---------------------------------------------------------------
-        ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
+        ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC-V6"
         echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/tuic/user-config.txt # Red color for URL
 
         result_url2=" 
-        ipv4 : tuic://UUID:PASSWORD@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
+        ipv4 : tuic://UUID:PASSWORD@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC
         ---------------------------------------------------------------
-        ipv6 : tuic://UUID:PASSWORD@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC"
+        ipv6 : tuic://UUID:PASSWORD@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC-V6"
         echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/tuic/config.txt # Red color for URL
 
         cat /etc/tuic/user-config.txt
@@ -641,14 +641,14 @@ install_reality() {
         result_url=" 
         ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
         ---------------------------------------------------------------
-        ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality"
+        ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality-V6"
         echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/reality/user-config.txt # Red color for URL
 
         # Construct and display the resulting URL
         result_url2=" 
-        ipv4 : vless://UUID@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
+        ipv4 : vless://UUID@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#NAME-Reality
         ---------------------------------------------------------------
-        ipv6 : vless://UUID@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality"
+        ipv6 : vless://UUID@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#NAME-Reality-V6"
         echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/reality/config.txt # Red color for URL
 
         cat /etc/reality/user-config.txt
@@ -754,14 +754,14 @@ modify_reality_config() {
         result_url=" 
         ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
         ---------------------------------------------------------------
-        ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality"
+        ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality-V6"
         echo -e "Config URL: \e[91m$result_url\e[0m" >/etc/reality/user-config.txt # Red color for URL
 
         # Construct and display the resulting URL
         result_url2=" 
-        ipv4 : vless://UUID@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
+        ipv4 : vless://UUID@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#NAME-Reality
         ---------------------------------------------------------------
-        ipv6 : vless://UUID@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality"
+        ipv6 : vless://UUID@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#NAME-Reality-V6"
         echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/reality/config.txt # Red color for URL
 
         cat /etc/reality/user-config.txt
@@ -1193,13 +1193,13 @@ install_ws() {
 
         # Construct and display the resulting URL
         result_url2=" 
-        vless://UUID@$DOMAIN:$user_port?security=tls&sni=$DOMAIN&alpn=http/1.1&fp=firefox&type=ws&encryption=none#WebSocket"
+        vless://UUID@$DOMAIN:$user_port?security=tls&sni=$DOMAIN&alpn=http/1.1&fp=firefox&type=ws&encryption=none#NAME-WebSocket"
         echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/ws/config.txt
 
         cat /etc/ws/user-config.txt
         config=$(cat /etc/ws/user-config.txt)
 
-        echo Config:
+        echo QR:
         qrencode -t ANSIUTF8 <<<"$config"
 
         echo "WebSocket setup completed."
@@ -1281,13 +1281,13 @@ modify_ws_config() {
 
         # Construct and display the resulting URL
         result_url2=" 
-        vless://UUID@$DOMAIN:$user_port?security=tls&sni=$DOMAIN&alpn=http/1.1&fp=firefox&type=ws&encryption=none#WebSocket"
+        vless://UUID@$DOMAIN:$user_port?security=tls&sni=$DOMAIN&alpn=http/1.1&fp=firefox&type=ws&encryption=none#NAME-WebSocket"
         echo -e "Config URL: \e[91m$result_url2\e[0m" >/etc/ws/config.txt
 
         cat /etc/ws/user-config.txt
         config=$(cat /etc/ws/user-config.txt)
 
-        echo Config:
+        echo QR:
         qrencode -t ANSIUTF8 <<<"$config"
 
         echo "WebSocket configuration modified."
@@ -1331,8 +1331,9 @@ show_hysteria_config() {
 
         if [ -n "$user_choice" ]; then
             user_password=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].password' "$config_file")
+            user_name=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].name' "$config_file")
 
-            sed "s/PASSWORD/$user_password/g" /etc/hysteria2/config.txt >/etc/hysteria2/user-config.txt
+            sed -e "s/PASSWORD/$user_password/g" -e "s/NAME/$user_name/g" /etc/hysteria2/config.txt >/etc/hysteria2/user-config.txt
 
             cat /etc/hysteria2/user-config.txt
 
@@ -1371,8 +1372,9 @@ show_tuic_config() {
         if [ -n "$user_choice" ]; then
             user_password=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].password' "$config_file")
             user_uuid=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].uuid' "$config_file")
+            user_name=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].name' "$config_file")
 
-            sed "s/PASSWORD/$user_password/g; s/UUID/$user_uuid/g" /etc/tuic/config.txt >/etc/tuic/user-config.txt
+            sed -e "s/PASSWORD/$user_password/g -e s/UUID/$user_uuid/g" -e "s/NAME/$user_name/g" /etc/tuic/config.txt >/etc/tuic/user-config.txt
 
             cat /etc/tuic/user-config.txt
 
@@ -1410,8 +1412,9 @@ show_reality_config() {
 
         if [ -n "$user_choice" ]; then
             user_uuid=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].uuid' "$config_file")
+            user_name=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].name' "$config_file")
 
-            sed "s/UUID/$user_uuid/g" /etc/reality/config.txt >/etc/reality/user-config.txt
+            sed -e "s/UUID/$user_uuid/g" -e "s/NAME/$user_name/g" /etc/reality/config.txt >/etc/reality/user-config.txt
 
             cat /etc/reality/user-config.txt
 
@@ -1495,13 +1498,14 @@ show_ws_config() {
 
         if [ -n "$user_choice" ]; then
             user_uuid=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].uuid' "$config_file")
+            user_name=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].name' "$config_file")
 
-            sed "s/UUID/$user_uuid/g" /etc/ws/config.txt >/etc/ws/user-config.txt
+            sed -e "s/UUID/$user_uuid/g" -e "s/NAME/$user_name/g" /etc/ws/config.txt >/etc/ws/user-config.txt
 
             cat /etc/ws/user-config.txt
             config=$(cat /etc/ws/user-config.txt)
 
-            echo Config:
+            echo QR:
             qrencode -t ANSIUTF8 <<<"$config"
 
         fi
