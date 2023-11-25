@@ -2295,7 +2295,7 @@ add_hysteria_user() {
 
             if [ "$user_exists" -eq 0 ]; then
 
-                password=$(whiptail --inputbox "Enter the user's password:" 10 30 2>&1 >/dev/tty)
+                password=$(openssl rand -hex 8)
 
                 jq --arg name "$name" --arg password "$password" '.inbounds[0].users += [{"name": $name, "password": $password}]' "$config_file" >tmp_config.json
                 mv tmp_config.json "$config_file"
@@ -2355,7 +2355,7 @@ add_tuic_user() {
 
             if [ "$user_exists" -eq 0 ]; then
 
-                password=$(whiptail --inputbox "Enter the user's password:" 10 30 2>&1 >/dev/tty)
+                password=$(openssl rand -hex 8)
 
                 uuid=$(cat /proc/sys/kernel/random/uuid)
 
@@ -2477,7 +2477,7 @@ add_shadowtls_user() {
 
             if [ "$user_exists" -eq 0 ]; then
 
-                password=$(whiptail --inputbox "Enter the user's password:" 10 30 2>&1 >/dev/tty)
+                password=$(openssl rand -hex 8)
 
                 jq --arg name "$name" --arg password "$password" '.inbounds[0].users += [{"name": $name, "password": $password}]' "$config_file" >tmp_config.json
                 mv tmp_config.json "$config_file"
