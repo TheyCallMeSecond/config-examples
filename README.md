@@ -5,6 +5,7 @@
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/TheyCallMeSecond/config-examples?style=for-the-badge&color=cba6f7) ![GitHub last commit](https://img.shields.io/github/last-commit/TheyCallMeSecond/config-examples?style=for-the-badge&color=b4befe) ![GitHub forks](https://img.shields.io/github/forks/TheyCallMeSecond/config-examples?style=for-the-badge&color=cba6f7)
 
+[![banner](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/SCI.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/SCI.png?raw=true "bash screen")
 
 <br/>
 </div>
