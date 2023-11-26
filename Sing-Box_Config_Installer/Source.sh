@@ -975,6 +975,8 @@ install_ws() {
             sudo rm -f /usr/bin/WS
             rm -rf /etc/ws
             sudo rm -f /etc/systemd/system/WS.service
+            systemctl daemon-reload
+
             whiptail --msgbox "Certificate generation failed! WebSocket not installed!" 10 30
 
         fi
@@ -1060,6 +1062,8 @@ modify_ws_config() {
             sudo rm -f /usr/bin/WS
             rm -rf /etc/ws
             sudo rm -f /etc/systemd/system/WS.service
+            systemctl daemon-reload
+
             whiptail --msgbox "Certificate generation failed! WebSocket not installed!" 10 30
 
         fi
@@ -2089,6 +2093,12 @@ get_ssl() {
 
     else
 
+        for SERVICE in "${RESTART_SERVICES[@]}"; do
+
+            systemctl start "$SERVICE"
+
+        done
+        
         echo "Certificate generation failed"
         exit 1
 
