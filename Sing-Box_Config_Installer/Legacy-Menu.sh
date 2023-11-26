@@ -2,7 +2,6 @@
 
 source <(curl -sSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/Source.sh)
 
-# Main menu loop
 while true; do
     echo -e "\e[91mPlease select an option:\e[0m"
     echo -e
