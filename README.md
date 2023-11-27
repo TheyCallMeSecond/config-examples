@@ -89,13 +89,13 @@ bash <(curl -fsSL https://bit.ly/config-installer)
   ## Special Thanks
 
 
-   **[hawshemi]** - *For server optimizer*
+  - **[hawshemi]** - *For server optimizer*
 
-   **[misaka]** - *For warp config and key generator*
+  - **[misaka]** - *For warp config and key generator*
 
 
-[hawshemi]: https://github.com/hawshemi/Linux-Optimizer
-[misaka]: https://replit.com/@misaka-blog/warpgo-profile-generator
+  [hawshemi]: https://github.com/hawshemi/Linux-Optimizer
+  [misaka]: https://replit.com/@misaka-blog/warpgo-profile-generator
 
 
 
