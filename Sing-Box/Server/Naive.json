@@ -1,0 +1,33 @@
+{
+    "inbounds": [
+        {
+            "type": "naive",
+            "tag": "naive-in",
+            "listen": "::",
+            "listen_port": PORT,
+            "users": [
+                {
+                    "username": "NAME",
+                    "password": "PASSWORD"
+                }
+            ],
+            "tls": {
+                "alpn": [],
+                "enabled": true,
+                "server_name": "DOMAIN",
+                "certificate_path": "/etc/naive/server.crt",
+                "key_path": "/etc/naive/server.key"
+            }
+        }
+    ],
+    "log": {
+        "level": "warn",
+        "timestamp": true
+    },
+    "outbounds": [
+        {
+            "tag": "direct",
+            "type": "direct"
+        }
+    ]
+}
