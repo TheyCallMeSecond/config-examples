@@ -12,6 +12,7 @@ while true; do
         "Reality" "     Manage Reality" \
         "ShadowTLS" "     Manage ShadowTLS" \
         "WebSocket" "     Manage WebSocket" \
+        "Naive" "     Manage Naive" \
         "Warp" "     Manage Warp" \
         "Exit" "     Exit the script" 3>&1 1>&2 2>&3)
 
@@ -282,6 +283,56 @@ while true; do
             esac
         done
         ;;
+    "Naive")
+        while true; do
+            user_choice=$(whiptail --clear --title "Naive Menu" --menu "Please select an option:" 25 50 15 \
+                "1" "Install" \
+                "2" "Modify Config" \
+                "3" "Add a new user" \
+                "4" "Remove an existing user" \
+                "5" "Show User Configs" \
+                "6" "Enable/Disable WARP" \
+                "7" "Uninstall" \
+                "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
+
+            case $user_choice in
+            "1")
+                clear
+                install_naive
+                ;;
+            "2")
+                clear
+                modify_naive_config
+                ;;
+            "3")
+                clear
+                add_naive_user
+                ;;
+            "4")
+                clear
+                remove_naive_user
+                ;;
+            "5")
+                clear
+                show_naive_config
+                ;;
+            "6")
+                clear
+                toggle_warp_naive
+                ;;
+            "7")
+                clear
+                uninstall_naive
+                ;;
+            "0")
+                break
+                ;;
+            *)
+                whiptail --msgbox "Invalid choice. Please select a valid option." 10 30
+                ;;
+            esac
+        done
+        ;;        
     "Warp")
         while true; do
             user_choice=$(
