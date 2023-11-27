@@ -2504,8 +2504,7 @@ add_naive_user() {
             if [ "$user_exists" -eq 0 ]; then
                 password=$(openssl rand -hex 8)
 
-                jq --arg username "$name" --arg password "$password" '.inbounds[0].users += [{"username": $name, "password": $password}]' "$config_file" >tmp_config.json
-                mv tmp_config.json "$config_file"
+                jq --arg username "$name" --arg password "$password" '.inbounds[0].users += [{"username": $username, "password": $password}]' "$config_file" > tmp_config.json && mv tmp_config.json "$config_file"
 
                 sudo systemctl restart NS
 
