@@ -934,52 +934,36 @@ install_ws() {
         fi
         
         get_ssl
+        cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/ws/server.crt
+        cp /etc/letsencrypt/live/"$domain"/privkey.pem /etc/ws/server.key
 
-        if [[ $? -eq 0 ]]; then
+        sudo systemctl enable --now WS
 
-            cp /etc/ws/fullchain.pem /etc/ws/server.crt
-            cp /etc/ws/privkey.pem /etc/ws/server.key
-            rm -f /etc/ws/fullchain.pem
-            rm -f /etc/ws/privkey.pem
-            rm -f /etc/ws/chain.pem
-            rm -f /etc/ws/cert.pem
+        (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart WS") | crontab -
 
-            sudo systemctl enable --now WS
+        result_url=" 
+        vless://$uuid@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=ws&encryption=none#WebSocket"
 
-            (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart WS") | crontab -
+        echo -e "Config URL: $result_url" >/etc/ws/user-config.txt
 
-            result_url=" 
-            vless://$uuid@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=ws&encryption=none#WebSocket"
+        result_url2=" 
+        vless://UUID@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=ws&encryption=none#NAME-WebSocket"
 
-            echo -e "Config URL: $result_url" >/etc/ws/user-config.txt
+        echo -e "Config URL: $result_url2" >/etc/ws/config.txt
+        echo -e "Config URL: \e[91m$result_url\e[0m"
 
-            result_url2=" 
-            vless://UUID@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=ws&encryption=none#NAME-WebSocket"
+        config=$(cat /etc/ws/user-config.txt)
 
-            echo -e "Config URL: $result_url2" >/etc/ws/config.txt
-            echo -e "Config URL: \e[91m$result_url\e[0m"
+        echo QR:
+        qrencode -t ANSIUTF8 <<<"$config"
 
-            config=$(cat /etc/ws/user-config.txt)
+        echo "WebSocket setup completed."
 
-            echo QR:
-            qrencode -t ANSIUTF8 <<<"$config"
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
+        clear
 
-            echo "WebSocket setup completed."
 
-            echo -e "\e[31mPress Enter to Exit\e[0m"
-            read
-            clear
-
-        else
-
-            sudo rm -f /usr/bin/WS
-            rm -rf /etc/ws
-            sudo rm -f /etc/systemd/system/WS.service
-            systemctl daemon-reload
-
-            whiptail --msgbox "Certificate generation failed! WebSocket not installed!" 10 30
-
-        fi
     fi
 }
 
@@ -2085,7 +2069,7 @@ get_ssl() {
     check_and_stop_service 80
     check_and_stop_service 443
 
-    certbot certonly --standalone --agree-tos --register-unsafely-without-email -d "$domain" --config-dir /etc/ws
+    certbot certonly --standalone --agree-tos --register-unsafely-without-email -d "$domain"
 
     if [[ $? -eq 0 ]]; then
 
@@ -2098,7 +2082,7 @@ get_ssl() {
             systemctl start "$SERVICE"
 
         done
-        
+
         echo "Certificate generation failed"
         exit 1
 
