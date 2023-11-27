@@ -1000,15 +1000,15 @@ install_naive() {
         fi
         
         get_ssl_naive
-        cp /etc/letsencrypt/live/"$domain"/fullchain.pem /naive/naive/server.crt
-        cp /etc/letsencrypt/live/"$domain"/privkey.pem /naive/naive/server.key
+        cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/naive/server.crt
+        cp /etc/letsencrypt/live/"$domain"/privkey.pem /etc/naive/server.key
 
         sudo systemctl enable --now NS
 
         (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart NS") | crontab -
 
         result_url=" 
-        naive+https://$name:$password@$domain:$user_port#Naive"
+        naive+https://Naive:$password@$domain:$user_port#Naive"
 
         echo -e "Config URL: $result_url" >/etc/naive/user-config.txt
 
@@ -1073,12 +1073,7 @@ modify_naive_config() {
         sudo systemctl enable --now NS
 
         result_url=" 
-        vless://$uuid@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=ws&encryption=none#WebSocket"
-
-        echo -e "Config URL: $result_url" >/etc/ws/user-config.txt
-
-        result_url=" 
-        naive+https://$name:$password@$domain:$user_port#Naive"
+        naive+https://Naive:$password@$domain:$user_port#Naive"
 
         echo -e "Config URL: $result_url" >/etc/naive/user-config.txt
 
