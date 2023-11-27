@@ -841,7 +841,7 @@ install_ws() {
             echo "UFW in not active"
         fi
         
-        get_ssl
+        get_ssl_ws
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/ws/server.crt
         cp /etc/letsencrypt/live/"$domain"/privkey.pem /etc/ws/server.key
 
@@ -906,7 +906,7 @@ modify_ws_config() {
             echo "UFW in not active"
         fi
 
-        get_ssl
+        get_ssl_ws
         rm -f /etc/ws/server.crt
         rm -f /etc/ws/server.key
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/ws/server.crt
@@ -952,6 +952,169 @@ uninstall_ws() {
     systemctl daemon-reload
 
     whiptail --msgbox "WebSocket uninstalled." 10 30
+    clear
+
+}
+
+install_naive() {
+
+    naive_check="/etc/naive/config.json"
+
+    if [ -e "$naive_check" ]; then
+        whiptail --msgbox "Naive is Already installed " 10 30
+        clear
+    else
+
+        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+        domain=$(whiptail --inputbox "Enter Domain:" 10 30 2>&1 >/dev/tty)
+
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/NS"
+        cd && rm -rf singbox
+
+        mkdir -p /etc/naive && curl -Lo /etc/naive/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Naive.json
+        curl -Lo /etc/systemd/system/NS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/NS.service 
+        systemctl daemon-reload
+
+        password=$(openssl rand -hex 8)
+        sed -i "s/PASSWORD/$password/" /etc/naive/config.json
+        sed -i "s/PORT/$user_port/" /etc/naive/config.json
+        sed -i "s/DOMAIN/$domain/" /etc/naive/config.json
+        sed -i "s/NAME/Naive/" /etc/naive/config.json
+
+        if sudo ufw status | grep -q "Status: active"; then
+            sudo ufw disable
+            sudo ufw allow "$user_port"
+            sleep 0.5
+            echo "y" | sudo ufw enable
+            sudo ufw reload
+            echo 'UFW is Optimized.'
+            sleep 0.5
+        else
+            echo "UFW in not active"
+        fi
+        
+        get_ssl_naive
+        cp /etc/letsencrypt/live/"$domain"/fullchain.pem /naive/naive/server.crt
+        cp /etc/letsencrypt/live/"$domain"/privkey.pem /naive/naive/server.key
+
+        sudo systemctl enable --now NS
+
+        (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart NS") | crontab -
+
+        result_url=" 
+        naive+https://$name:$password@$domain:$user_port#Naive"
+
+        echo -e "Config URL: $result_url" >/etc/naive/user-config.txt
+
+        result_url2=" 
+        naive+https://NAME:PASSWORD@$domain:$user_port#NAME-Naive"
+
+        echo -e "Config URL: $result_url2" >/etc/naive/config.txt
+        echo -e "Config URL: \e[91m$result_url\e[0m"
+
+        config=$(cat /etc/naive/user-config.txt)
+
+        echo QR:
+        qrencode -t ANSIUTF8 <<<"$config"
+
+        echo "Naive setup completed."
+
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        
+        read
+        clear
+    fi
+}
+
+modify_naive_config() {
+
+    naive_check="/etc/naive/config.json"
+
+    if [ -e "$naive_check" ]; then
+        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+        domain=$(whiptail --inputbox "Enter Domain:" 10 30 2>&1 >/dev/tty)
+
+        sudo systemctl stop NS
+
+        rm -rf /etc/naive
+
+        mkdir -p /etc/naive && curl -Lo /etc/naive/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Naive.json
+
+        password=$(openssl rand -hex 8)
+        sed -i "s/PASSWORD/$password/" /etc/naive/config.json
+        sed -i "s/PORT/$user_port/" /etc/naive/config.json
+        sed -i "s/DOMAIN/$domain/" /etc/naive/config.json
+        sed -i "s/NAME/Naive/" /etc/naive/config.json
+
+        if sudo ufw status | grep -q "Status: active"; then
+            sudo ufw disable
+            sudo ufw allow "$user_port"
+            sleep 0.5
+            echo "y" | sudo ufw enable
+            sudo ufw reload
+            echo 'UFW is Optimized.'
+            sleep 0.5
+        else
+            echo "UFW in not active"
+        fi
+
+        get_ssl_naive
+        rm -f /etc/naive/server.crt
+        rm -f /etc/naive/server.key
+        cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/naive/server.crt
+        cp /etc/letsencrypt/live/"$domain"/privkey.pem /etc/naive/server.key
+
+        sudo systemctl enable --now NS
+
+        result_url=" 
+        vless://$uuid@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=ws&encryption=none#WebSocket"
+
+        echo -e "Config URL: $result_url" >/etc/ws/user-config.txt
+
+        result_url=" 
+        naive+https://$name:$password@$domain:$user_port#Naive"
+
+        echo -e "Config URL: $result_url" >/etc/naive/user-config.txt
+
+        result_url2=" 
+        naive+https://NAME:PASSWORD@$domain:$user_port#NAME-Naive"
+
+        echo -e "Config URL: $result_url2" >/etc/naive/config.txt
+        echo -e "Config URL: \e[91m$result_url\e[0m"
+
+        config=$(cat /etc/naive/user-config.txt)
+
+        echo QR:
+        qrencode -t ANSIUTF8 <<<"$config"
+
+        echo "Naive Configuration Modified."
+
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        
+        read
+        clear
+    else
+        whiptail --msgbox "Naive is not installed yet." 10 30
+        clear
+    fi
+}
+
+uninstall_naive() {
+
+    sudo systemctl stop NS
+    sudo rm -f /usr/bin/NS
+    rm -rf /etc/naive
+    sudo rm -f /etc/systemd/system/NS.service
+    crontab -l | sed '/0 \*\/5 \* \* \* systemctl restart NS/d' | crontab -
+    systemctl daemon-reload
+
+    whiptail --msgbox "Naive uninstalled." 10 30
     clear
 
 }
@@ -1139,6 +1302,38 @@ show_ws_config() {
     fi
 }
 
+show_naive_config() {
+
+    naive_check="/etc/naive/config.txt"
+
+    if [ -e "$naive_check" ]; then
+        config_file="/etc/naive/config.json"
+        users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.username)"' "$config_file")
+        user_choice=$(whiptail --menu "Select user:" 25 50 10 $users 2>&1 >/dev/tty)
+
+        if [ -n "$user_choice" ]; then
+            user_password=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].password' "$config_file")
+            user_name=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].username' "$config_file")
+
+            sed -e "s/PASSWORD/$user_password/g" -e "s/NAME/$user_name/g" /etc/naive/config.txt >/etc/naive/user-config.txt
+
+            echo -e "\e[91m$(cat /etc/naive/user-config.txt)\e[0m"
+
+            config=$(cat /etc/naive/user-config.txt)
+
+            echo QR:
+            qrencode -t ANSIUTF8 <<<"$config"
+        fi
+
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
+        clear
+    else
+        whiptail --msgbox "Naive is not installed yet." 10 30
+        clear
+    fi
+}
+
 show_warp_config() {
     
     warp_conf_check="/etc/sbw/proxy.json"
@@ -1301,6 +1496,29 @@ uninstall_warp() {
         echo
     fi
 
+    file6="/etc/naive/config.json"
+
+    if [ -e "$file6" ]; then
+        if jq -e '.outbounds[0].type == "wireguard"' "$file6" &>/dev/null; then
+            new_json='{
+            "tag": "direct",
+            "type": "direct"
+            }'
+
+            jq '.outbounds = ['"$new_json"']' "$file6" >/tmp/tmp_config.json
+            mv /tmp/tmp_config.json "$file6"
+
+            systemctl restart NS
+
+            echo "WARP is disabled on Naive"
+        else
+            echo
+        fi
+
+    else
+        echo
+    fi    
+
     whiptail --msgbox "WARP uninstalled." 10 30
     clear
 
@@ -1422,6 +1640,29 @@ update_sing-box_core() {
     else
         echo "WebSocket is not installed yet."
     fi
+
+    ns_core_check="/usr/bin/NS"
+
+    if [ -e "$ns_core_check" ]; then
+        systemctl stop NS
+
+        rm /usr/bin/NS
+
+        mkdir /root/singbox && cd /root/singbox || exit
+        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
+        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        wget "$LINK"
+        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/NS"
+        cd && rm -rf singbox
+
+        systemctl start NS
+
+        echo "Naive sing-box core has been updated"
+    else
+        echo "Naive is not installed yet."
+    fi    
 
     whiptail --msgbox "Sing-Box Cores Has Been Updated" 10 30
     clear
@@ -1653,6 +1894,51 @@ toggle_warp_ws() {
     fi
 }
 
+toggle_warp_naive() {
+
+    file="/etc/naive/config.json"
+    warp="/etc/sbw/proxy.json"
+
+    if [ -e "$file" ]; then
+        if [ -e "$warp" ]; then
+            systemctl stop NS
+
+            if jq -e '.outbounds[0].type == "wireguard"' "$file" &>/dev/null; then
+                new_json='{
+                "tag": "direct",
+                "type": "direct"
+                }'
+
+                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
+                mv /tmp/tmp_config.json "$file"
+
+                systemctl start NS
+
+                whiptail --msgbox "WARP is disabled now" 10 30
+                clear
+            else
+                outbounds_block=$(jq -c '.outbounds' "$warp")
+
+                jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
+                mv temp_config.json "$file"
+
+                systemctl start NS
+
+                whiptail --msgbox "WARP is enabled now" 10 30
+                clear
+            fi
+
+        else
+            whiptail --msgbox "WARP is not installed yet" 10 30
+            clear
+        fi
+
+    else
+        whiptail --msgbox "Naive is not installed yet." 10 30
+        clear
+    fi
+}
+
 check_OS() {
 
     [[ $EUID -ne 0 ]] && echo "not root!" && exit 0
@@ -1788,7 +2074,7 @@ check_and_display_process_status() {
 
 }
 
-get_ssl() {
+get_ssl_ws() {
 
     RESTART_SERVICES=()
 
@@ -1826,6 +2112,60 @@ get_ssl() {
         sudo rm -f /usr/bin/WS
         rm -rf /etc/ws
         sudo rm -f /etc/systemd/system/WS.service
+        systemctl daemon-reload
+
+        for SERVICE in "${RESTART_SERVICES[@]}"; do
+            systemctl start "$SERVICE"
+        done
+
+        echo "Certificate generation failed!"
+        exit 1
+    fi
+
+    for SERVICE in "${RESTART_SERVICES[@]}"; do
+        systemctl start "$SERVICE"
+    done
+
+}
+
+get_ssl_naive() {
+
+    RESTART_SERVICES=()
+
+    stop_service() {
+        PROCESS=$(ps -p $1 -o comm=)
+        SERVICE=$(systemctl list-units --all | grep $PROCESS | awk '{print $1}')
+
+        if [[ -n "$SERVICE" ]]; then
+            echo "Stopping $SERVICE"
+            systemctl stop "$SERVICE"
+            RESTART_SERVICES+=("$SERVICE")
+        else
+            echo "No service found for PID $1"
+        fi
+    }
+
+    check_and_stop_service() {
+
+        local PORT_PIDS=$(lsof -i:"$1" | awk '/LISTEN/ {print $2}')
+
+        for PID in $PORT_PIDS; do
+            stop_service "$PID"
+        done
+
+    }
+
+    check_and_stop_service 80
+    check_and_stop_service 443
+
+    certbot certonly --standalone --agree-tos --register-unsafely-without-email -d "$domain"
+
+    if [[ $? -eq 0 ]]; then
+        echo "Certificate generated successfully"
+    else
+        sudo rm -f /usr/bin/NS
+        rm -rf /etc/naive
+        sudo rm -f /etc/systemd/system/NS.service
         systemctl daemon-reload
 
         for SERVICE in "${RESTART_SERVICES[@]}"; do
@@ -2151,6 +2491,68 @@ remove_ws_user() {
 
     else
         whiptail --msgbox "WebSocket is not installed yet." 10 30
+        clear
+    fi
+}
+
+add_naive_user() {
+
+    config_file="/etc/naive/config.json"
+
+    if [ -e "$config_file" ]; then
+        name_regex="^[A-Za-z0-9]+$"
+        name=$(whiptail --inputbox "Enter the user's name:" 10 30 2>&1 >/dev/tty)
+
+        if [[ "$name" =~ $name_regex ]]; then
+            user_exists=$(jq --arg name "$name" '.inbounds[0].users | map(select(.username == $name)) | length' "$config_file")
+
+            if [ "$user_exists" -eq 0 ]; then
+                password=$(openssl rand -hex 8)
+
+                jq --arg username "$name" --arg password "$password" '.inbounds[0].users += [{"username": $name, "password": $password}]' "$config_file" >tmp_config.json
+                mv tmp_config.json "$config_file"
+
+                sudo systemctl restart NS
+
+                whiptail --msgbox "User added successfully!" 10 30
+                clear
+            else
+                whiptail --msgbox "User already exists!" 10 30
+                clear
+            fi
+
+        else
+            whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
+            clear
+        fi
+
+    else
+        whiptail --msgbox "Naive is not installed yet." 10 30
+        clear
+    fi
+}
+
+remove_naive_user() {
+
+    config_file="/etc/naive/config.json"
+
+    if [ -e "$config_file" ]; then
+        users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.username)"' "$config_file")
+        user_choice=$(whiptail --menu "Select a user to remove:" 25 50 10 $users 2>&1 >/dev/tty)
+
+        if [ -n "$user_choice" ]; then
+            user_index=$(echo "$user_choice" | awk '{print $1}')
+            jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
+            mv tmp_config.json "$config_file"
+
+            sudo systemctl restart NS
+
+            whiptail --msgbox "User removed successfully!" 10 30
+            clear
+        fi
+
+    else
+        whiptail --msgbox "Naive is not installed yet." 10 30
         clear
     fi
 }
