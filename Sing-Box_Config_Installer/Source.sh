@@ -960,9 +960,9 @@ install_ws() {
         echo "WebSocket setup completed."
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
+        
         read
         clear
-
 
     fi
 }
@@ -1031,9 +1031,9 @@ modify_ws_config() {
         echo "WebSocket configuration modified."
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
+        
         read
         clear
-
 
     else
 
