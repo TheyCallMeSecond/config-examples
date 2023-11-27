@@ -36,10 +36,8 @@ install_hysteria() {
     hysteria_check="/etc/hysteria2/server.json"
 
     if [ -e "$hysteria_check" ]; then
-
         whiptail --msgbox "Hysteria2 is Already installed " 10 30
         clear
-
     else
 
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
@@ -76,7 +74,6 @@ install_hysteria() {
         public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
         if sudo ufw status | grep -q "Status: active"; then
-
             sudo ufw disable
             sudo ufw allow "$user_port"/udp
             sleep 0.5
@@ -84,11 +81,8 @@ install_hysteria() {
             sudo ufw reload
             echo 'UFW is Optimized.'
             sleep 0.5
-
         else
-
             echo "UFW in not active"
-
         fi
 
         sudo systemctl enable --now SH
@@ -131,7 +125,6 @@ modify_hysteria_config() {
     hysteria_check="/etc/hysteria2/server.json"
 
     if [ -e "$hysteria_check" ]; then
-
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
 
         sudo systemctl stop SH
@@ -159,7 +152,6 @@ modify_hysteria_config() {
         public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
         if sudo ufw status | grep -q "Status: active"; then
-
             sudo ufw disable
             sudo ufw allow "$user_port"/udp
             sleep 0.5
@@ -167,11 +159,8 @@ modify_hysteria_config() {
             sudo ufw reload
             echo 'UFW is Optimized.'
             sleep 0.5
-
         else
-
             echo "UFW in not active"
-
         fi
 
         sudo systemctl start SH
@@ -205,14 +194,10 @@ modify_hysteria_config() {
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
         clear
-
     else
-
         whiptail --msgbox "Hysteria2 is not installed yet." 10 30
         clear
-
     fi
-
 }
 
 uninstall_hysteria() {
@@ -234,12 +219,9 @@ install_tuic() {
     tuic_check="/etc/tuic/server.json"
 
     if [ -e "$tuic_check" ]; then
-
         whiptail --msgbox "TUIC is Already installed " 10 30
         clear
-
     else
-
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
 
         mkdir /root/singbox && cd /root/singbox || exit
@@ -276,7 +258,6 @@ install_tuic() {
         public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
         if sudo ufw status | grep -q "Status: active"; then
-
             sudo ufw disable
             sudo ufw allow "$user_port"/udp
             sleep 0.5
@@ -284,11 +265,8 @@ install_tuic() {
             sudo ufw reload
             echo 'UFW is Optimized.'
             sleep 0.5
-
         else
-
             echo "UFW in not active"
-
         fi
 
         sudo systemctl enable --now TS
@@ -332,7 +310,6 @@ modify_tuic_config() {
     tuic_check="/etc/tuic/server.json"
 
     if [ -e "$tuic_check" ]; then
-
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
 
         sudo systemctl stop TS
@@ -362,8 +339,6 @@ modify_tuic_config() {
         public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
         if sudo ufw status | grep -q "Status: active"; then
-
-
             sudo ufw disable
             sudo ufw allow "$user_port"/udp
             sleep 0.5
@@ -371,11 +346,8 @@ modify_tuic_config() {
             sudo ufw reload
             echo 'UFW is Optimized.'
             sleep 0.5
-
         else
-
             echo "UFW in not active"
-
         fi
 
         sudo systemctl start TS
@@ -409,14 +381,10 @@ modify_tuic_config() {
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
         clear
-
     else
-
         whiptail --msgbox "TUIC is not installed yet." 10 30
         clear
-
     fi
-
 }
 
 uninstall_tuic() {
@@ -438,12 +406,9 @@ install_reality() {
     reality_check="/etc/reality/config.json"
 
     if [ -e "$reality_check" ]; then
-
         whiptail --msgbox "Reality is Already installed " 10 30
         clear
-
     else
-
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
         user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
 
@@ -478,7 +443,6 @@ install_reality() {
         public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
         if sudo ufw status | grep -q "Status: active"; then
-
             sudo ufw disable
             sudo ufw allow "$user_port"
             sleep 0.5
@@ -486,11 +450,8 @@ install_reality() {
             sudo ufw reload
             echo 'UFW is Optimized.'
             sleep 0.5
-
         else
-
             echo "UFW in not active"
-
         fi
 
         sudo systemctl enable --now RS
@@ -534,7 +495,6 @@ modify_reality_config() {
     reality_check="/etc/reality/config.json"
 
     if [ -e "$reality_check" ]; then
-
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
         user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
 
@@ -562,7 +522,6 @@ modify_reality_config() {
         public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
         if sudo ufw status | grep -q "Status: active"; then
-
             sudo ufw disable
             sudo ufw allow "$user_port"
             sleep 0.5
@@ -570,11 +529,8 @@ modify_reality_config() {
             sudo ufw reload
             echo 'UFW is Optimized.'
             sleep 0.5
-
         else
-
             echo "UFW in not active"
-
         fi
 
         sudo systemctl start RS
@@ -608,14 +564,10 @@ modify_reality_config() {
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
         clear
-
     else
-
         whiptail --msgbox "Reality is not installed yet." 10 30
         clear
-
     fi
-
 }
 
 regenerate_keys() {
@@ -623,7 +575,6 @@ regenerate_keys() {
     reality_check="/etc/reality/config.json"
 
     if [ -e "$reality_check" ]; then
-
         output=$(RS generate reality-keypair)
         new_private_key=$(echo "$output" | grep -oP 'PrivateKey: \K\S+')
         new_public_key=$(echo "$output" | grep -oP 'PublicKey: \K\S+')
@@ -640,12 +591,9 @@ regenerate_keys() {
 
         whiptail --msgbox "Keys updated successfully!" 10 30
         clear
-
     else
-
         whiptail --msgbox "Reality is not installed yet." 10 30
         clear
-
     fi
 }
 
@@ -668,12 +616,9 @@ install_shadowtls() {
     shadowtls_check="/etc/shadowtls/config.json"
 
     if [ -e "$shadowtls_check" ]; then
-
         whiptail --msgbox "ShadowTLS is Already installed " 10 30
         clear
-
     else
-
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
         user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
 
@@ -727,7 +672,6 @@ install_shadowtls() {
         sed -i "s/NAME/ShadowTLS/" /etc/shadowtls/config.json        
 
         if sudo ufw status | grep -q "Status: active"; then
-
             sudo ufw disable
             sudo ufw allow "$user_port"
             sleep 0.5
@@ -735,11 +679,8 @@ install_shadowtls() {
             sudo ufw reload
             echo 'UFW is Optimized.'
             sleep 0.5
-
         else
-
             echo "UFW in not active"
-
         fi
 
         sudo systemctl enable --now ST
@@ -775,7 +716,6 @@ modify_shadowtls_config() {
     shadowtls_check="/etc/shadowtls/config.json"
 
     if [ -e "$shadowtls_check" ]; then
-
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
         user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
 
@@ -822,7 +762,6 @@ modify_shadowtls_config() {
         sed -i "s/NAME/ShadowTLS/" /etc/shadowtls/config.json        
 
         if sudo ufw status | grep -q "Status: active"; then
-
             sudo ufw disable
             sudo ufw allow "$user_port"
             sleep 0.5
@@ -830,11 +769,8 @@ modify_shadowtls_config() {
             sudo ufw reload
             echo 'UFW is Optimized.'
             sleep 0.5
-
         else
-
             echo "UFW in not active"
-
         fi
 
         sudo systemctl start ST
@@ -860,14 +796,10 @@ modify_shadowtls_config() {
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
         clear
-
     else
-
         whiptail --msgbox "ShadowTLS is not installed yet." 10 30
         clear
-
     fi
-
 }
 
 uninstall_shadowtls() {
@@ -889,10 +821,8 @@ install_ws() {
     ws_check="/etc/ws/config.json"
 
     if [ -e "$ws_check" ]; then
-
         whiptail --msgbox "WebSocket is Already installed " 10 30
         clear
-
     else
 
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
@@ -918,7 +848,6 @@ install_ws() {
         sed -i "s/NAME/WebSocket/" /etc/ws/config.json
 
         if sudo ufw status | grep -q "Status: active"; then
-
             sudo ufw disable
             sudo ufw allow "$user_port"
             sleep 0.5
@@ -926,11 +855,8 @@ install_ws() {
             sudo ufw reload
             echo 'UFW is Optimized.'
             sleep 0.5
-
         else
-
             echo "UFW in not active"
-
         fi
         
         get_ssl
@@ -963,7 +889,6 @@ install_ws() {
         
         read
         clear
-
     fi
 }
 
@@ -972,7 +897,6 @@ modify_ws_config() {
     ws_check="/etc/ws/config.json"
 
     if [ -e "$ws_check" ]; then
-
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
         domain=$(whiptail --inputbox "Enter Domain:" 10 30 2>&1 >/dev/tty)
 
@@ -989,7 +913,6 @@ modify_ws_config() {
         sed -i "s/NAME/WebSocket/" /etc/ws/config.json
 
         if sudo ufw status | grep -q "Status: active"; then
-
             sudo ufw disable
             sudo ufw allow "$user_port"
             sleep 0.5
@@ -997,11 +920,8 @@ modify_ws_config() {
             sudo ufw reload
             echo 'UFW is Optimized.'
             sleep 0.5
-
         else
-
             echo "UFW in not active"
-
         fi
 
         get_ssl
@@ -1034,14 +954,10 @@ modify_ws_config() {
         
         read
         clear
-
     else
-
         whiptail --msgbox "WebSocket is not installed yet." 10 30
         clear
-
     fi
-
 }
 
 uninstall_ws() {
@@ -1063,13 +979,11 @@ show_hysteria_config() {
     hysteria_check="/etc/hysteria2/config.txt"
 
     if [ -e "$hysteria_check" ]; then
-
         config_file="/etc/hysteria2/server.json"
         users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
         user_choice=$(whiptail --menu "Select user:" 25 50 10 $users 2>&1 >/dev/tty)
 
         if [ -n "$user_choice" ]; then
-
             user_password=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].password' "$config_file")
             user_name=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].name' "$config_file")
 
@@ -1090,14 +1004,10 @@ show_hysteria_config() {
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
         clear
-
     else
-
         whiptail --msgbox "Hysteria2 is not installed yet." 10 30
         clear
-
     fi
-
 }
 
 show_tuic_config() {
@@ -1105,13 +1015,11 @@ show_tuic_config() {
     tuic_check="/etc/tuic/config.txt"
 
     if [ -e "$tuic_check" ]; then
-
         config_file="/etc/tuic/server.json"
         users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
         user_choice=$(whiptail --menu "Select user:" 25 50 10 $users 2>&1 >/dev/tty)
 
         if [ -n "$user_choice" ]; then
-
             user_password=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].password' "$config_file")
             user_uuid=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].uuid' "$config_file")
             user_name=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].name' "$config_file")
@@ -1133,12 +1041,9 @@ show_tuic_config() {
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
         clear
-
     else
-
         whiptail --msgbox "TUIC is not installed yet." 10 30
         clear
-
     fi
 
 }
@@ -1148,13 +1053,11 @@ show_reality_config() {
     reality_check="/etc/reality/config.txt"
 
     if [ -e "$reality_check" ]; then
-
         config_file="/etc/reality/config.json"
         users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
         user_choice=$(whiptail --menu "Select user:" 25 50 10 $users 2>&1 >/dev/tty)
 
         if [ -n "$user_choice" ]; then
-
             user_uuid=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].uuid' "$config_file")
             user_name=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].name' "$config_file")
 
@@ -1175,14 +1078,10 @@ show_reality_config() {
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
         clear
-
     else
-
         whiptail --msgbox "Reality is not installed yet." 10 30
         clear
-
     fi
-
 }
 
 show_shadowtls_config() {
@@ -1190,13 +1089,11 @@ show_shadowtls_config() {
     shadowtls_check="/etc/shadowtls/nekorayconfig.txt"
 
     if [ -e "$shadowtls_check" ]; then
-
         config_file="/etc/shadowtls/config.json"
         users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
         user_choice=$(whiptail --menu "Select user:" 25 50 10 $users 2>&1 >/dev/tty)
 
         if [ -n "$user_choice" ]; then
-
             user_password=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].password' "$config_file")
 
             sed "s/STPASS/$user_password/g" /etc/shadowtls/nekorayconfig.txt >/etc/shadowtls/user-nekorayconfig.txt
@@ -1223,14 +1120,10 @@ show_shadowtls_config() {
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
         clear
-
     else
-
         whiptail --msgbox "ShadowTLS is not installed yet." 10 30
         clear
-
     fi
-
 }
 
 show_ws_config() {
@@ -1238,13 +1131,11 @@ show_ws_config() {
     ws_check="/etc/ws/config.txt"
 
     if [ -e "$ws_check" ]; then
-
         config_file="/etc/ws/config.json"
         users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
         user_choice=$(whiptail --menu "Select user:" 25 50 10 $users 2>&1 >/dev/tty)
 
         if [ -n "$user_choice" ]; then
-
             user_uuid=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].uuid' "$config_file")
             user_name=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].name' "$config_file")
 
@@ -1256,20 +1147,15 @@ show_ws_config() {
 
             echo QR:
             qrencode -t ANSIUTF8 <<<"$config"
-
         fi
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
         clear
-
     else
-
         whiptail --msgbox "WebSocket is not installed yet." 10 30
         clear
-
     fi
-
 }
 
 show_warp_config() {
@@ -1277,20 +1163,15 @@ show_warp_config() {
     warp_conf_check="/etc/sbw/proxy.json"
 
     if [ -e "$warp_conf_check" ]; then
-
         cat /etc/sbw/proxy.json | jq
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
         clear
-
     else
-
         whiptail --msgbox "WARP is not installed yet." 10 30
         clear
-
     fi
-
 }
 
 warp_key_gen() {
@@ -1327,9 +1208,7 @@ uninstall_warp() {
     file1="/etc/reality/config.json"
 
     if [ -e "$file1" ]; then
-
         if jq -e '.outbounds[0].type == "wireguard"' "$file1" &>/dev/null; then
-
             new_json='{
             "tag": "direct",
             "type": "direct"
@@ -1341,7 +1220,6 @@ uninstall_warp() {
             systemctl restart RS
 
             echo "WARP is disabled on Reality"
-
         else
             echo
         fi
@@ -1353,7 +1231,6 @@ uninstall_warp() {
     file2="/etc/shadowtls/config.json"
 
     if [ -e "$file2" ]; then
-
         if jq -e '.outbounds[0].type == "wireguard"' "$file2" &>/dev/null; then
 
             new_json='{
@@ -1367,7 +1244,6 @@ uninstall_warp() {
             systemctl restart ST
 
             echo "WARP is disabled on ShadowTLS"
-
         else
             echo
         fi
@@ -1379,7 +1255,6 @@ uninstall_warp() {
     file3="/etc/tuic/server.json"
 
     if [ -e "$file3" ]; then
-
         if jq -e '.outbounds[0].type == "wireguard"' "$file3" &>/dev/null; then
 
             new_json='{
@@ -1393,7 +1268,6 @@ uninstall_warp() {
             systemctl restart TS
 
             echo "WARP is disabled on TUIC"
-
         else
             echo
         fi
@@ -1405,7 +1279,6 @@ uninstall_warp() {
     file4="/etc/hysteria2/server.json"
 
     if [ -e "$file4" ]; then
-
         if jq -e '.outbounds[0].type == "wireguard"' "$file4" &>/dev/null; then
 
             new_json='{
@@ -1419,7 +1292,6 @@ uninstall_warp() {
             systemctl restart SH
 
             echo "WARP is disabled on Hysteria2"
-
         else
             echo
         fi
@@ -1431,7 +1303,6 @@ uninstall_warp() {
     file5="/etc/ws/config.json"
 
     if [ -e "$file5" ]; then
-
         if jq -e '.outbounds[0].type == "wireguard"' "$file5" &>/dev/null; then
 
             new_json='{
@@ -1445,7 +1316,6 @@ uninstall_warp() {
             systemctl restart WS
 
             echo "WARP is disabled on WebSocket"
-
         else
             echo
         fi
@@ -1464,7 +1334,6 @@ update_sing-box_core() {
     rlt_core_check="/usr/bin/RS"
 
     if [ -e "$rlt_core_check" ]; then
-
         systemctl stop RS
 
         rm /usr/bin/RS
@@ -1481,17 +1350,13 @@ update_sing-box_core() {
         systemctl start RS
 
         echo "Reality sing-box core has been updated"
-
     else
-
         echo "Reality is not installed yet."
-
     fi
 
     st_core_check="/usr/bin/ST"
 
     if [ -e "$st_core_check" ]; then
-
         systemctl stop ST
 
         rm /usr/bin/ST
@@ -1508,17 +1373,13 @@ update_sing-box_core() {
         systemctl start ST
 
         echo "ShadowTLS sing-box core has been updated"
-
     else
-
         echo "ShadowTLS is not installed yet."
-
     fi
 
     ts_core_check="/usr/bin/TS"
 
     if [ -e "$ts_core_check" ]; then
-
         systemctl stop TS
 
         rm /usr/bin/TS
@@ -1535,17 +1396,13 @@ update_sing-box_core() {
         systemctl start TS
 
         echo "TUIC sing-box core has been updated"
-
     else
-
         echo "TUIC is not installed yet."
-
     fi
 
     sh_core_check="/usr/bin/SH"
 
     if [ -e "$sh_core_check" ]; then
-
         systemctl stop SH
 
         rm /usr/bin/SH
@@ -1562,17 +1419,13 @@ update_sing-box_core() {
         systemctl start SH
 
         echo "Hysteria2 sing-box core has been updated"
-
     else
-
         echo "Hysteria2 is not installed yet."
-
     fi
 
     ws_core_check="/usr/bin/WS"
 
     if [ -e "$ws_core_check" ]; then
-
         systemctl stop WS
 
         rm /usr/bin/WS
@@ -1589,11 +1442,8 @@ update_sing-box_core() {
         systemctl start WS
 
         echo "WebSocket sing-box core has been updated"
-
     else
-
         echo "WebSocket is not installed yet."
-
     fi
 
     whiptail --msgbox "Sing-Box Cores Has Been Updated" 10 30
@@ -1607,13 +1457,10 @@ toggle_warp_reality() {
     warp="/etc/sbw/proxy.json"
 
     if [ -e "$file" ]; then
-
         if [ -e "$warp" ]; then
-
             systemctl stop RS
 
             if jq -e '.outbounds[0].type == "wireguard"' "$file" &>/dev/null; then
-
                 new_json='{
                 "tag": "direct",
                 "type": "direct"
@@ -1626,9 +1473,7 @@ toggle_warp_reality() {
 
                 whiptail --msgbox "WARP is disabled now" 10 30
                 clear
-
             else
-
                 outbounds_block=$(jq -c '.outbounds' "$warp")
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
@@ -1638,23 +1483,17 @@ toggle_warp_reality() {
 
                 whiptail --msgbox "WARP is enabled now" 10 30
                 clear
-
             fi
 
         else
-
             whiptail --msgbox "WARP is not installed yet" 10 30
             clear
-
         fi
 
     else
-
         whiptail --msgbox "Reality is not installed yet." 10 30
         clear
-
     fi
-
 }
 
 toggle_warp_shadowtls() {
@@ -1663,13 +1502,10 @@ toggle_warp_shadowtls() {
     warp="/etc/sbw/proxy.json"
 
     if [ -e "$file" ]; then
-
         if [ -e "$warp" ]; then
-
             systemctl stop ST
 
             if jq -e '.outbounds[0].type == "wireguard"' "$file" &>/dev/null; then
-
                 new_json='{
                 "tag": "direct",
                 "type": "direct"
@@ -1682,9 +1518,7 @@ toggle_warp_shadowtls() {
 
                 whiptail --msgbox "WARP is disabled now" 10 30
                 clear
-
             else
-
                 outbounds_block=$(jq -c '.outbounds' "$warp")
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
@@ -1694,23 +1528,17 @@ toggle_warp_shadowtls() {
 
                 whiptail --msgbox "WARP is enabled now" 10 30
                 clear
-
             fi
 
         else
-
             whiptail --msgbox "WARP is not installed yet" 10 30
             clear
-
         fi
 
     else
-
         whiptail --msgbox "ShadowTLS is not installed yet." 10 30
         clear
-
     fi
-
 }
 
 toggle_warp_tuic() {
@@ -1719,13 +1547,10 @@ toggle_warp_tuic() {
     warp="/etc/sbw/proxy.json"
 
     if [ -e "$file" ]; then
-
         if [ -e "$warp" ]; then
-
             systemctl stop TS
 
             if jq -e '.outbounds[0].type == "wireguard"' "$file" &>/dev/null; then
-
                 new_json='{
                 "tag": "direct",
                 "type": "direct"
@@ -1738,9 +1563,7 @@ toggle_warp_tuic() {
 
                 whiptail --msgbox "WARP is disabled now" 10 30
                 clear
-
             else
-
                 outbounds_block=$(jq -c '.outbounds' "$warp")
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
@@ -1750,23 +1573,17 @@ toggle_warp_tuic() {
 
                 whiptail --msgbox "WARP is enabled now" 10 30
                 clear
-
             fi
 
         else
-
             whiptail --msgbox "WARP is not installed yet" 10 30
             clear
-
         fi
 
     else
-
         whiptail --msgbox "TUIC is not installed yet." 10 30
         clear
-
     fi
-
 }
 
 toggle_warp_hysteria() {
@@ -1775,13 +1592,10 @@ toggle_warp_hysteria() {
     warp="/etc/sbw/proxy.json"
 
     if [ -e "$file" ]; then
-
         if [ -e "$warp" ]; then
-
             systemctl stop SH
 
             if jq -e '.outbounds[0].type == "wireguard"' "$file" &>/dev/null; then
-
                 new_json='{
                 "tag": "direct",
                 "type": "direct"
@@ -1794,9 +1608,7 @@ toggle_warp_hysteria() {
 
                 whiptail --msgbox "WARP is disabled now" 10 30
                 clear
-
             else
-
                 outbounds_block=$(jq -c '.outbounds' "$warp")
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
@@ -1806,23 +1618,17 @@ toggle_warp_hysteria() {
 
                 whiptail --msgbox "WARP is enabled now" 10 30
                 clear
-
             fi
 
         else
-
             whiptail --msgbox "WARP is not installed yet" 10 30
             clear
-
         fi
 
     else
-
         whiptail --msgbox "Hysteria2 is not installed yet." 10 30
         clear
-
     fi
-
 }
 
 toggle_warp_ws() {
@@ -1831,13 +1637,10 @@ toggle_warp_ws() {
     warp="/etc/sbw/proxy.json"
 
     if [ -e "$file" ]; then
-
         if [ -e "$warp" ]; then
-
             systemctl stop WS
 
             if jq -e '.outbounds[0].type == "wireguard"' "$file" &>/dev/null; then
-
                 new_json='{
                 "tag": "direct",
                 "type": "direct"
@@ -1850,9 +1653,7 @@ toggle_warp_ws() {
 
                 whiptail --msgbox "WARP is disabled now" 10 30
                 clear
-
             else
-
                 outbounds_block=$(jq -c '.outbounds' "$warp")
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
@@ -1862,23 +1663,17 @@ toggle_warp_ws() {
 
                 whiptail --msgbox "WARP is enabled now" 10 30
                 clear
-
             fi
 
         else
-
             whiptail --msgbox "WARP is not installed yet" 10 30
             clear
-
         fi
 
     else
-
         whiptail --msgbox "WebSocket is not installed yet." 10 30
         clear
-
     fi
-
 }
 
 check_OS() {
@@ -2025,15 +1820,11 @@ get_ssl() {
         SERVICE=$(systemctl list-units --all | grep $PROCESS | awk '{print $1}')
 
         if [[ -n "$SERVICE" ]]; then
-
             echo "Stopping $SERVICE"
             systemctl stop "$SERVICE"
             RESTART_SERVICES+=("$SERVICE")
-
         else
-
             echo "No service found for PID $1"
-
         fi
     }
 
@@ -2042,9 +1833,7 @@ get_ssl() {
         local PORT_PIDS=$(lsof -i:"$1" | awk '/LISTEN/ {print $2}')
 
         for PID in $PORT_PIDS; do
-
             stop_service "$PID"
-
         done
 
     }
@@ -2055,31 +1844,23 @@ get_ssl() {
     certbot certonly --standalone --agree-tos --register-unsafely-without-email -d "$domain"
 
     if [[ $? -eq 0 ]]; then
-
         echo "Certificate generated successfully"
-
     else
-
         sudo rm -f /usr/bin/WS
         rm -rf /etc/ws
         sudo rm -f /etc/systemd/system/WS.service
         systemctl daemon-reload
 
         for SERVICE in "${RESTART_SERVICES[@]}"; do
-
             systemctl start "$SERVICE"
-
         done
 
         echo "Certificate generation failed!"
         exit 1
-
     fi
 
     for SERVICE in "${RESTART_SERVICES[@]}"; do
-
         systemctl start "$SERVICE"
-
     done
 
 }
@@ -2089,17 +1870,13 @@ add_hysteria_user() {
     config_file="/etc/hysteria2/server.json"
 
     if [ -e "$config_file" ]; then
-
         name_regex="^[A-Za-z0-9]+$"
-
         name=$(whiptail --inputbox "Enter the user's name:" 10 30 2>&1 >/dev/tty)
 
         if [[ "$name" =~ $name_regex ]]; then
-
             user_exists=$(jq --arg name "$name" '.inbounds[0].users | map(select(.name == $name)) | length' "$config_file")
 
             if [ "$user_exists" -eq 0 ]; then
-
                 password=$(openssl rand -hex 8)
 
                 jq --arg name "$name" --arg password "$password" '.inbounds[0].users += [{"name": $name, "password": $password}]' "$config_file" >tmp_config.json
@@ -2109,24 +1886,19 @@ add_hysteria_user() {
 
                 whiptail --msgbox "User added successfully!" 10 30
                 clear
-
             else
-
                 whiptail --msgbox "User already exists!" 10 30
                 clear
-
             fi
-        else
 
+        else
             whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
             clear
-
         fi
-    else
 
+    else
         whiptail --msgbox "Hysteria2 is not installed yet." 10 30
         clear
-
     fi
 }
 
@@ -2135,12 +1907,10 @@ remove_hysteria_user() {
     config_file="/etc/hysteria2/server.json"
 
     if [ -e "$config_file" ]; then
-
         users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
         user_choice=$(whiptail --menu "Select a user to remove:" 25 50 10 $users 2>&1 >/dev/tty)
 
         if [ -n "$user_choice" ]; then
-
             user_index=$(echo "$user_choice" | awk '{print $1}')
             jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
             mv tmp_config.json "$config_file"
@@ -2149,13 +1919,11 @@ remove_hysteria_user() {
 
             whiptail --msgbox "User removed successfully!" 10 30
             clear
-
         fi
-    else
 
+    else
         whiptail --msgbox "Hysteria2 is not installed yet." 10 30
         clear
-
     fi
 }
 
@@ -2164,17 +1932,13 @@ add_tuic_user() {
     config_file="/etc/tuic/server.json"
 
     if [ -e "$config_file" ]; then
-
         name_regex="^[A-Za-z0-9]+$"
-
         name=$(whiptail --inputbox "Enter the user's name:" 10 30 2>&1 >/dev/tty)
 
         if [[ "$name" =~ $name_regex ]]; then
-
             user_exists=$(jq --arg name "$name" '.inbounds[0].users | map(select(.name == $name)) | length' "$config_file")
 
             if [ "$user_exists" -eq 0 ]; then
-
                 password=$(openssl rand -hex 8)
 
                 uuid=$(cat /proc/sys/kernel/random/uuid)
@@ -2186,24 +1950,20 @@ add_tuic_user() {
 
                 whiptail --msgbox "User added successfully!" 10 30
                 clear
-
             else
 
                 whiptail --msgbox "User already exists!" 10 30
                 clear
-
             fi
-        else
 
+        else
             whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
             clear
-
         fi
-    else
 
+    else
         whiptail --msgbox "TUIC is not installed yet." 10 30
         clear
-
     fi
 }
 
@@ -2212,12 +1972,10 @@ remove_tuic_user() {
     config_file="/etc/tuic/server.json"
 
     if [ -e "$config_file" ]; then
-
         users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
         user_choice=$(whiptail --menu "Select a user to remove:" 25 50 10 $users 2>&1 >/dev/tty)
 
         if [ -n "$user_choice" ]; then
-
             user_index=$(echo "$user_choice" | awk '{print $1}')
             jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
             mv tmp_config.json "$config_file"
@@ -2226,13 +1984,11 @@ remove_tuic_user() {
 
             whiptail --msgbox "User removed successfully!" 10 30
             clear
-
         fi
-    else
 
+    else
         whiptail --msgbox "TUIC is not installed yet." 10 30
         clear
-
     fi
 }
 
@@ -2241,17 +1997,13 @@ add_reality_user() {
     config_file="/etc/reality/config.json"
 
     if [ -e "$config_file" ]; then
-
         name_regex="^[A-Za-z0-9]+$"
-
         name=$(whiptail --inputbox "Enter the user's name:" 10 30 2>&1 >/dev/tty)
 
         if [[ "$name" =~ $name_regex ]]; then
-
             user_exists=$(jq --arg name "$name" '.inbounds[0].users | map(select(.name == $name)) | length' "$config_file")
 
             if [ "$user_exists" -eq 0 ]; then
-
                 uuid=$(cat /proc/sys/kernel/random/uuid)
 
                 jq --arg name "$name" --arg uuid "$uuid" '.inbounds[0].users += [{"name": $name, "uuid": $uuid}]' "$config_file" >tmp_config.json
@@ -2261,24 +2013,19 @@ add_reality_user() {
 
                 whiptail --msgbox "User added successfully!" 10 30
                 clear
-
             else
-
                 whiptail --msgbox "User already exists!" 10 30
                 clear
-
             fi
-        else
 
+        else
             whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
             clear
-
         fi
-    else
 
+    else
         whiptail --msgbox "Reality is not installed yet." 10 30
         clear
-
     fi
 }
 
@@ -2287,12 +2034,10 @@ remove_reality_user() {
     config_file="/etc/reality/config.json"
 
     if [ -e "$config_file" ]; then
-
         users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
         user_choice=$(whiptail --menu "Select a user to remove:" 25 50 10 $users 2>&1 >/dev/tty)
 
         if [ -n "$user_choice" ]; then
-
             user_index=$(echo "$user_choice" | awk '{print $1}')
             jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
             mv tmp_config.json "$config_file"
@@ -2301,13 +2046,11 @@ remove_reality_user() {
 
             whiptail --msgbox "User removed successfully!" 10 30
             clear
-
         fi
-    else
 
+    else
         whiptail --msgbox "Reality is not installed yet." 10 30
         clear
-
     fi
 }
 
@@ -2316,17 +2059,13 @@ add_shadowtls_user() {
     config_file="/etc/shadowtls/config.json"
 
     if [ -e "$config_file" ]; then
-
         name_regex="^[A-Za-z0-9]+$"
-
         name=$(whiptail --inputbox "Enter the user's name:" 10 30 2>&1 >/dev/tty)
 
         if [[ "$name" =~ $name_regex ]]; then
-
             user_exists=$(jq --arg name "$name" '.inbounds[0].users | map(select(.name == $name)) | length' "$config_file")
 
             if [ "$user_exists" -eq 0 ]; then
-
                 password=$(openssl rand -hex 8)
 
                 jq --arg name "$name" --arg password "$password" '.inbounds[0].users += [{"name": $name, "password": $password}]' "$config_file" >tmp_config.json
@@ -2336,24 +2075,19 @@ add_shadowtls_user() {
 
                 whiptail --msgbox "User added successfully!" 10 30
                 clear
-
             else
-
                 whiptail --msgbox "User already exists!" 10 30
                 clear
-
             fi
-        else
 
+        else
             whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
             clear
-
         fi
-    else
 
+    else
         whiptail --msgbox "ShadowTLS is not installed yet." 10 30
         clear
-
     fi
 }
 
@@ -2362,12 +2096,10 @@ remove_shadowtls_user() {
     config_file="/etc/shadowtls/config.json"
 
     if [ -e "$config_file" ]; then
-
         users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
         user_choice=$(whiptail --menu "Select a user to remove:" 25 50 10 $users 2>&1 >/dev/tty)
 
         if [ -n "$user_choice" ]; then
-
             user_index=$(echo "$user_choice" | awk '{print $1}')
             jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
             mv tmp_config.json "$config_file"
@@ -2376,13 +2108,11 @@ remove_shadowtls_user() {
 
             whiptail --msgbox "User removed successfully!" 10 30
             clear
-
         fi
-    else
 
+    else
         whiptail --msgbox "ShadowTLS is not installed yet." 10 30
         clear
-
     fi
 }
 
@@ -2391,17 +2121,13 @@ add_ws_user() {
     config_file="/etc/ws/config.json"
 
     if [ -e "$config_file" ]; then
-
         name_regex="^[A-Za-z0-9]+$"
-
         name=$(whiptail --inputbox "Enter the user's name:" 10 30 2>&1 >/dev/tty)
 
         if [[ "$name" =~ $name_regex ]]; then
-
             user_exists=$(jq --arg name "$name" '.inbounds[0].users | map(select(.name == $name)) | length' "$config_file")
 
             if [ "$user_exists" -eq 0 ]; then
-
                 uuid=$(cat /proc/sys/kernel/random/uuid)
 
                 jq --arg name "$name" --arg uuid "$uuid" '.inbounds[0].users += [{"name": $name, "uuid": $uuid}]' "$config_file" >tmp_config.json
@@ -2411,24 +2137,19 @@ add_ws_user() {
 
                 whiptail --msgbox "User added successfully!" 10 30
                 clear
-
             else
-
                 whiptail --msgbox "User already exists!" 10 30
                 clear
-
             fi
-        else
 
+        else
             whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
             clear
-
         fi
-    else
 
+    else
         whiptail --msgbox "WebSocket is not installed yet." 10 30
         clear
-
     fi
 }
 
@@ -2437,12 +2158,10 @@ remove_ws_user() {
     config_file="/etc/ws/config.json"
 
     if [ -e "$config_file" ]; then
-
         users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
         user_choice=$(whiptail --menu "Select a user to remove:" 25 50 10 $users 2>&1 >/dev/tty)
 
         if [ -n "$user_choice" ]; then
-
             user_index=$(echo "$user_choice" | awk '{print $1}')
             jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
             mv tmp_config.json "$config_file"
@@ -2451,12 +2170,10 @@ remove_ws_user() {
 
             whiptail --msgbox "User removed successfully!" 10 30
             clear
-
         fi
-    else
 
+    else
         whiptail --msgbox "WebSocket is not installed yet." 10 30
         clear
-
     fi
 }
