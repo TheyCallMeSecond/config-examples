@@ -3,7 +3,7 @@
 [![banner](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/SCI.png?raw=true "banner")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/SCI.png?raw=true "banner")
 
 
-نصب و کانفیگ اتوماتیک WARP, ShadowTLS, WebSocket, Reality, TUIC, Hysteria2
+نصب و کانفیگ اتوماتیک WARP, ShadowTLS, WebSocket, Reality, Naive, TUIC, Hysteria2
 
 
 
