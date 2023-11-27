@@ -48,11 +48,19 @@ while true; do
     echo -e "34: \e[93mShow User Configs\e[0m"
     echo -e "35: \e[93mEnable/Disable WARP\e[0m"
     echo -e "36: \e[93mUninstall\e[0m"
+    echo --------------Naive-----------------
+    echo -e "37: \e[93mInstall\e[0m"
+    echo -e "38: \e[93mModify Config\e[0m"
+    echo -e "39: \e[93mAdd User\e[0m"
+    echo -e "40: \e[93mRemove User\e[0m"    
+    echo -e "41: \e[93mShow User Configs\e[0m"
+    echo -e "42: \e[93mEnable/Disable WARP\e[0m"
+    echo -e "43: \e[93mUninstall\e[0m"
     echo --------------WARP------------------    
-    echo -e "37: \e[93mGenerate WARP+ Key\e[0m"
-    echo -e "38: \e[93mGenerate WARP+ Wireguard Config\e[0m"
-    echo -e "39: \e[93mShow Config\e[0m"
-    echo -e "40: \e[93mUninstall\e[0m"
+    echo -e "44: \e[93mGenerate WARP+ Key\e[0m"
+    echo -e "45: \e[93mGenerate WARP+ Wireguard Config\e[0m"
+    echo -e "46: \e[93mShow Config\e[0m"
+    echo -e "47: \e[93mUninstall\e[0m"
     echo ------------------------------------
     echo -e "0:  \e[95mExit\e[0m"
 
@@ -210,20 +218,48 @@ while true; do
     36)
         clear
         uninstall_ws
-        ;;        
+        ;;   
     37)
         clear
-        warp_key_gen
+        install_naive
         ;;
     38)
         clear
-        install_warp
+        modify_naive_config
         ;;
     39)
         clear
-        show_warp_config
+        add_naive_user
         ;;
     40)
+        clear
+        remove_naive_user
+        ;;         
+    41)
+        clear
+        show_naive_config
+        ;;
+    42)
+        clear
+        toggle_warp_naive
+        ;;
+    43)
+        clear
+        uninstall_naive
+        ;;              
+    44)
+        clear
+        warp_key_gen
+        ;;
+    45)
+        clear
+        install_warp
+        ;;
+    46)
+        clear
+        show_warp_config
+        ;;
+    47)
         clear
         uninstall_warp
         ;;
