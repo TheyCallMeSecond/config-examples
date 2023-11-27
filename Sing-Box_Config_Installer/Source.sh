@@ -1232,7 +1232,6 @@ uninstall_warp() {
 
     if [ -e "$file2" ]; then
         if jq -e '.outbounds[0].type == "wireguard"' "$file2" &>/dev/null; then
-
             new_json='{
             "tag": "direct",
             "type": "direct"
@@ -1256,7 +1255,6 @@ uninstall_warp() {
 
     if [ -e "$file3" ]; then
         if jq -e '.outbounds[0].type == "wireguard"' "$file3" &>/dev/null; then
-
             new_json='{
             "tag": "direct",
             "type": "direct"
@@ -1280,7 +1278,6 @@ uninstall_warp() {
 
     if [ -e "$file4" ]; then
         if jq -e '.outbounds[0].type == "wireguard"' "$file4" &>/dev/null; then
-
             new_json='{
             "tag": "direct",
             "type": "direct"
@@ -1304,7 +1301,6 @@ uninstall_warp() {
 
     if [ -e "$file5" ]; then
         if jq -e '.outbounds[0].type == "wireguard"' "$file5" &>/dev/null; then
-
             new_json='{
             "tag": "direct",
             "type": "direct"
