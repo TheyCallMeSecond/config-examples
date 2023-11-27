@@ -1114,7 +1114,6 @@ show_shadowtls_config() {
             cat /etc/shadowtls/user-nekoboxconfig.txt
 
             echo
-
         fi
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
