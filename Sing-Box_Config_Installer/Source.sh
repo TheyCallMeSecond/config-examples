@@ -688,23 +688,14 @@ install_shadowtls() {
         (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart ST") | crontab -
 
         echo "ShadowTLS config for Nekoray : "
-
         echo
-
         cat /etc/shadowtls/user-nekorayconfig.txt
-
         echo
-
         echo "ShadowTLS config for Nekobox : "
-
         echo
-
         cat /etc/shadowtls/user-nekoboxconfig.txt
-
         echo
-
         echo "ShadowTLS setup completed."
-
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
         clear
@@ -776,23 +767,14 @@ modify_shadowtls_config() {
         sudo systemctl start ST
 
         echo "ShadowTLS config for Nekoray : "
-
         echo
-
         cat /etc/shadowtls/user-nekorayconfig.txt
-
         echo
-
         echo "ShadowTLS config for Nekobox : "
-
         echo
-
         cat /etc/shadowtls/user-nekoboxconfig.txt
-
         echo
-
         echo "ShadowTLS configuration modified."
-
         echo -e "\e[31mPress Enter to Exit\e[0m"
         read
         clear
