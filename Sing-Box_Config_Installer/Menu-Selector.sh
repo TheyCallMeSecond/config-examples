@@ -4,6 +4,7 @@ source <(curl -sSL https://raw.githubusercontent.com/TheyCallMeSecond/config-exa
 
 if ! grep -qxF 'alias sci="bash <(curl -fsSL https://bit.ly/config-installer)"' ~/.bashrc; then
     echo 'alias sci="bash <(curl -fsSL https://bit.ly/config-installer)"' >> ~/.bashrc
+    alias sci="bash <(curl -fsSL https://bit.ly/config-installer)"
     source ~/.bashrc
 fi
 
