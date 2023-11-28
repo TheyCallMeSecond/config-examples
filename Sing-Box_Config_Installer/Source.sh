@@ -75,7 +75,7 @@ install_hysteria() {
 
         set_ufw
 
-        sudo systemctl enable --now SH
+        systemctl enable --now SH
         (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart SH") | crontab -
 
         result_url=" 
@@ -117,7 +117,7 @@ modify_hysteria_config() {
     if [ -e "$hysteria_check" ]; then
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
 
-        sudo systemctl stop SH
+        systemctl stop SH
 
         rm -rf /etc/hysteria2
 
@@ -143,7 +143,7 @@ modify_hysteria_config() {
 
         set_ufw
 
-        sudo systemctl start SH
+        systemctl start SH
 
         result_url=" 
         ipv4 : hy2://$password@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
@@ -182,10 +182,10 @@ modify_hysteria_config() {
 
 uninstall_hysteria() {
 
-    sudo systemctl stop SH
-    sudo rm -f /usr/bin/SH
+    systemctl stop SH
+    rm -f /usr/bin/SH
     rm -rf /etc/hysteria2
-    sudo rm -f /etc/systemd/system/SH.service
+    rm -f /etc/systemd/system/SH.service
     crontab -l | sed '/0 \*\/5 \* \* \* systemctl restart SH/d' | crontab -
     systemctl daemon-reload
 
@@ -239,7 +239,7 @@ install_tuic() {
 
         set_ufw
 
-        sudo systemctl enable --now TS
+        systemctl enable --now TS
 
         (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart TS") | crontab -
 
@@ -282,7 +282,7 @@ modify_tuic_config() {
     if [ -e "$tuic_check" ]; then
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
 
-        sudo systemctl stop TS
+        systemctl stop TS
 
         rm -rf /etc/tuic
 
@@ -310,7 +310,7 @@ modify_tuic_config() {
 
         set_ufw
 
-        sudo systemctl start TS
+        systemctl start TS
 
         result_url=" 
         ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
@@ -349,10 +349,10 @@ modify_tuic_config() {
 
 uninstall_tuic() {
 
-    sudo systemctl stop TS
-    sudo rm -f /usr/bin/TS
+    systemctl stop TS
+    rm -f /usr/bin/TS
     rm -rf /etc/tuic
-    sudo rm -f /etc/systemd/system/TS.service
+    rm -f /etc/systemd/system/TS.service
     crontab -l | sed '/0 \*\/5 \* \* \* systemctl restart TS/d' | crontab -
     systemctl daemon-reload
 
@@ -404,7 +404,7 @@ install_reality() {
 
         set_ufw
 
-        sudo systemctl enable --now RS
+        systemctl enable --now RS
 
         (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart RS") | crontab -
 
@@ -448,7 +448,7 @@ modify_reality_config() {
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
         user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
 
-        sudo systemctl stop RS
+        systemctl stop RS
 
         rm -rf /etc/reality
 
@@ -473,7 +473,7 @@ modify_reality_config() {
 
         set_ufw
 
-        sudo systemctl start RS
+        systemctl start RS
 
         result_url=" 
         ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
@@ -527,7 +527,7 @@ regenerate_keys() {
         sed -i "s/pbk=[^\&]*/pbk=$new_public_key/g" "$config_txt"
         sed -i "s/sid=[^\&]*/sid=$new_short_id/g" "$config_txt"
 
-        sudo systemctl restart RS
+        systemctl restart RS
 
         whiptail --msgbox "Keys updated successfully!" 10 30
         clear
@@ -539,10 +539,10 @@ regenerate_keys() {
 
 uninstall_reality() {
 
-    sudo systemctl stop RS
-    sudo rm -f /usr/bin/RS
+    systemctl stop RS
+    rm -f /usr/bin/RS
     rm -rf /etc/reality
-    sudo rm -f /etc/systemd/system/RS.service
+    rm -f /etc/systemd/system/RS.service
     crontab -l | sed '/0 \*\/5 \* \* \* systemctl restart RS/d' | crontab -
     systemctl daemon-reload
 
@@ -613,7 +613,7 @@ install_shadowtls() {
 
         set_ufw
 
-        sudo systemctl enable --now ST
+        systemctl enable --now ST
 
         (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart ST") | crontab -
 
@@ -640,7 +640,7 @@ modify_shadowtls_config() {
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
         user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
 
-        sudo systemctl stop ST
+        systemctl stop ST
 
         rm -rf /etc/shadowtls
 
@@ -684,7 +684,7 @@ modify_shadowtls_config() {
 
         set_ufw
 
-        sudo systemctl start ST
+        systemctl start ST
 
         echo "ShadowTLS config for Nekoray : "
         echo
@@ -706,10 +706,10 @@ modify_shadowtls_config() {
 
 uninstall_shadowtls() {
 
-    sudo systemctl stop ST
-    sudo rm -f /usr/bin/ST
+    systemctl stop ST
+    rm -f /usr/bin/ST
     rm -rf /etc/shadowtls
-    sudo rm -f /etc/systemd/system/ST.service
+    rm -f /etc/systemd/system/ST.service
     crontab -l | sed '/0 \*\/5 \* \* \* systemctl restart ST/d' | crontab -
     systemctl daemon-reload
 
@@ -755,7 +755,7 @@ install_ws() {
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/ws/server.crt
         cp /etc/letsencrypt/live/"$domain"/privkey.pem /etc/ws/server.key
 
-        sudo systemctl enable --now WS
+        systemctl enable --now WS
 
         (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart WS") | crontab -
 
@@ -792,7 +792,7 @@ modify_ws_config() {
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
         domain=$(whiptail --inputbox "Enter Domain:" 10 30 2>&1 >/dev/tty)
 
-        sudo systemctl stop WS
+        systemctl stop WS
 
         rm -rf /etc/ws
 
@@ -812,7 +812,7 @@ modify_ws_config() {
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/ws/server.crt
         cp /etc/letsencrypt/live/"$domain"/privkey.pem /etc/ws/server.key
 
-        sudo systemctl enable --now WS
+        systemctl enable --now WS
 
         result_url=" 
         vless://$uuid@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=ws&encryption=none#WebSocket"
@@ -844,10 +844,10 @@ modify_ws_config() {
 
 uninstall_ws() {
 
-    sudo systemctl stop WS
-    sudo rm -f /usr/bin/WS
+    systemctl stop WS
+    rm -f /usr/bin/WS
     rm -rf /etc/ws
-    sudo rm -f /etc/systemd/system/WS.service
+    rm -f /etc/systemd/system/WS.service
     crontab -l | sed '/0 \*\/5 \* \* \* systemctl restart WS/d' | crontab -
     systemctl daemon-reload
 
@@ -893,7 +893,7 @@ install_naive() {
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/naive/server.crt
         cp /etc/letsencrypt/live/"$domain"/privkey.pem /etc/naive/server.key
 
-        sudo systemctl enable --now NS
+        systemctl enable --now NS
 
         (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart NS") | crontab -
 
@@ -930,7 +930,7 @@ modify_naive_config() {
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
         domain=$(whiptail --inputbox "Enter Domain:" 10 30 2>&1 >/dev/tty)
 
-        sudo systemctl stop NS
+        systemctl stop NS
 
         rm -rf /etc/naive
 
@@ -950,7 +950,7 @@ modify_naive_config() {
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/naive/server.crt
         cp /etc/letsencrypt/live/"$domain"/privkey.pem /etc/naive/server.key
 
-        sudo systemctl enable --now NS
+        systemctl enable --now NS
 
         result_url=" 
         naive+https://Naive:$password@$domain:$user_port#Naive"
@@ -982,10 +982,10 @@ modify_naive_config() {
 
 uninstall_naive() {
 
-    sudo systemctl stop NS
-    sudo rm -f /usr/bin/NS
+    systemctl stop NS
+    rm -f /usr/bin/NS
     rm -rf /etc/naive
-    sudo rm -f /etc/systemd/system/NS.service
+    rm -f /etc/systemd/system/NS.service
     crontab -l | sed '/0 \*\/5 \* \* \* systemctl restart NS/d' | crontab -
     systemctl daemon-reload
 
@@ -1985,9 +1985,9 @@ get_ssl() {
         if [[ $? -eq 0 ]]; then
             echo "Certificate generated successfully"
         else
-            sudo rm -f /usr/bin/WS
+            rm -f /usr/bin/WS
             rm -rf /etc/ws
-            sudo rm -f /etc/systemd/system/WS.service
+            rm -f /etc/systemd/system/WS.service
             systemctl daemon-reload
 
             for SERVICE in "${RESTART_SERVICES[@]}"; do
@@ -2005,9 +2005,9 @@ get_ssl() {
         if [[ $? -eq 0 ]]; then
             echo "Certificate generated successfully"
         else
-            sudo rm -f /usr/bin/NS
+            rm -f /usr/bin/NS
             rm -rf /etc/naive
-            sudo rm -f /etc/systemd/system/NS.service
+            rm -f /etc/systemd/system/NS.service
             systemctl daemon-reload
 
             for SERVICE in "${RESTART_SERVICES[@]}"; do
@@ -2061,7 +2061,7 @@ add_hysteria_user() {
                 jq --arg name "$name" --arg password "$password" '.inbounds[0].users += [{"name": $name, "password": $password}]' "$config_file" >tmp_config.json
                 mv tmp_config.json "$config_file"
 
-                sudo systemctl restart SH
+                systemctl restart SH
 
                 whiptail --msgbox "User added successfully!" 10 30
                 clear
@@ -2094,7 +2094,7 @@ remove_hysteria_user() {
             jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
             mv tmp_config.json "$config_file"
 
-            sudo systemctl restart SH
+            systemctl restart SH
 
             whiptail --msgbox "User removed successfully!" 10 30
             clear
@@ -2125,7 +2125,7 @@ add_tuic_user() {
                 jq --arg name "$name" --arg password "$password" --arg uuid "$uuid" '.inbounds[0].users += [{"name": $name, "password": $password, "uuid": $uuid}]' "$config_file" >tmp_config.json
                 mv tmp_config.json "$config_file"
 
-                sudo systemctl restart TS
+                systemctl restart TS
 
                 whiptail --msgbox "User added successfully!" 10 30
                 clear
@@ -2159,7 +2159,7 @@ remove_tuic_user() {
             jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
             mv tmp_config.json "$config_file"
 
-            sudo systemctl restart TS
+            systemctl restart TS
 
             whiptail --msgbox "User removed successfully!" 10 30
             clear
@@ -2188,7 +2188,7 @@ add_reality_user() {
                 jq --arg name "$name" --arg uuid "$uuid" '.inbounds[0].users += [{"name": $name, "uuid": $uuid}]' "$config_file" >tmp_config.json
                 mv tmp_config.json "$config_file"
 
-                sudo systemctl restart RS
+                systemctl restart RS
 
                 whiptail --msgbox "User added successfully!" 10 30
                 clear
@@ -2221,7 +2221,7 @@ remove_reality_user() {
             jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
             mv tmp_config.json "$config_file"
 
-            sudo systemctl restart RS
+            systemctl restart RS
 
             whiptail --msgbox "User removed successfully!" 10 30
             clear
@@ -2250,7 +2250,7 @@ add_shadowtls_user() {
                 jq --arg name "$name" --arg password "$password" '.inbounds[0].users += [{"name": $name, "password": $password}]' "$config_file" >tmp_config.json
                 mv tmp_config.json "$config_file"
 
-                sudo systemctl restart ST
+                systemctl restart ST
 
                 whiptail --msgbox "User added successfully!" 10 30
                 clear
@@ -2283,7 +2283,7 @@ remove_shadowtls_user() {
             jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
             mv tmp_config.json "$config_file"
 
-            sudo systemctl restart ST
+            systemctl restart ST
 
             whiptail --msgbox "User removed successfully!" 10 30
             clear
@@ -2312,7 +2312,7 @@ add_ws_user() {
                 jq --arg name "$name" --arg uuid "$uuid" '.inbounds[0].users += [{"name": $name, "uuid": $uuid}]' "$config_file" >tmp_config.json
                 mv tmp_config.json "$config_file"
 
-                sudo systemctl restart WS
+                systemctl restart WS
 
                 whiptail --msgbox "User added successfully!" 10 30
                 clear
@@ -2345,7 +2345,7 @@ remove_ws_user() {
             jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
             mv tmp_config.json "$config_file"
 
-            sudo systemctl restart WS
+            systemctl restart WS
 
             whiptail --msgbox "User removed successfully!" 10 30
             clear
@@ -2373,7 +2373,7 @@ add_naive_user() {
 
                 jq --arg username "$name" --arg password "$password" '.inbounds[0].users += [{"username": $username, "password": $password}]' "$config_file" > tmp_config.json && mv tmp_config.json "$config_file"
 
-                sudo systemctl restart NS
+                systemctl restart NS
 
                 whiptail --msgbox "User added successfully!" 10 30
                 clear
@@ -2406,7 +2406,7 @@ remove_naive_user() {
             jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
             mv tmp_config.json "$config_file"
 
-            sudo systemctl restart NS
+            systemctl restart NS
 
             whiptail --msgbox "User removed successfully!" 10 30
             clear
