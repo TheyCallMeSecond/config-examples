@@ -73,17 +73,7 @@ install_hysteria() {
         public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
         public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
-        if sudo ufw status | grep -q "Status: active"; then
-            sudo ufw disable
-            sudo ufw allow "$user_port"/udp
-            sleep 0.5
-            echo "y" | sudo ufw enable
-            sudo ufw reload
-            echo 'UFW is Optimized.'
-            sleep 0.5
-        else
-            echo "UFW in not active"
-        fi
+        set_ufw
 
         sudo systemctl enable --now SH
         (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart SH") | crontab -
@@ -151,17 +141,7 @@ modify_hysteria_config() {
         public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
         public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
-        if sudo ufw status | grep -q "Status: active"; then
-            sudo ufw disable
-            sudo ufw allow "$user_port"/udp
-            sleep 0.5
-            echo "y" | sudo ufw enable
-            sudo ufw reload
-            echo 'UFW is Optimized.'
-            sleep 0.5
-        else
-            echo "UFW in not active"
-        fi
+        set_ufw
 
         sudo systemctl start SH
 
@@ -257,17 +237,7 @@ install_tuic() {
         public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
         public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
-        if sudo ufw status | grep -q "Status: active"; then
-            sudo ufw disable
-            sudo ufw allow "$user_port"/udp
-            sleep 0.5
-            echo "y" | sudo ufw enable
-            sudo ufw reload
-            echo 'UFW is Optimized.'
-            sleep 0.5
-        else
-            echo "UFW in not active"
-        fi
+        set_ufw
 
         sudo systemctl enable --now TS
 
@@ -338,17 +308,7 @@ modify_tuic_config() {
         public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
         public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
-        if sudo ufw status | grep -q "Status: active"; then
-            sudo ufw disable
-            sudo ufw allow "$user_port"/udp
-            sleep 0.5
-            echo "y" | sudo ufw enable
-            sudo ufw reload
-            echo 'UFW is Optimized.'
-            sleep 0.5
-        else
-            echo "UFW in not active"
-        fi
+        set_ufw
 
         sudo systemctl start TS
 
@@ -442,17 +402,7 @@ install_reality() {
         public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
         public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
-        if sudo ufw status | grep -q "Status: active"; then
-            sudo ufw disable
-            sudo ufw allow "$user_port"
-            sleep 0.5
-            echo "y" | sudo ufw enable
-            sudo ufw reload
-            echo 'UFW is Optimized.'
-            sleep 0.5
-        else
-            echo "UFW in not active"
-        fi
+        set_ufw
 
         sudo systemctl enable --now RS
 
@@ -521,17 +471,7 @@ modify_reality_config() {
         public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
         public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
-        if sudo ufw status | grep -q "Status: active"; then
-            sudo ufw disable
-            sudo ufw allow "$user_port"
-            sleep 0.5
-            echo "y" | sudo ufw enable
-            sudo ufw reload
-            echo 'UFW is Optimized.'
-            sleep 0.5
-        else
-            echo "UFW in not active"
-        fi
+        set_ufw
 
         sudo systemctl start RS
 
@@ -671,17 +611,7 @@ install_shadowtls() {
 
         sed -i "s/NAME/ShadowTLS/" /etc/shadowtls/config.json        
 
-        if sudo ufw status | grep -q "Status: active"; then
-            sudo ufw disable
-            sudo ufw allow "$user_port"
-            sleep 0.5
-            echo "y" | sudo ufw enable
-            sudo ufw reload
-            echo 'UFW is Optimized.'
-            sleep 0.5
-        else
-            echo "UFW in not active"
-        fi
+        set_ufw
 
         sudo systemctl enable --now ST
 
@@ -752,17 +682,7 @@ modify_shadowtls_config() {
 
         sed -i "s/NAME/ShadowTLS/" /etc/shadowtls/config.json        
 
-        if sudo ufw status | grep -q "Status: active"; then
-            sudo ufw disable
-            sudo ufw allow "$user_port"
-            sleep 0.5
-            echo "y" | sudo ufw enable
-            sudo ufw reload
-            echo 'UFW is Optimized.'
-            sleep 0.5
-        else
-            echo "UFW in not active"
-        fi
+        set_ufw
 
         sudo systemctl start ST
 
@@ -829,17 +749,7 @@ install_ws() {
         sed -i "s/DOMAIN/$domain/" /etc/ws/config.json
         sed -i "s/NAME/WebSocket/" /etc/ws/config.json
 
-        if sudo ufw status | grep -q "Status: active"; then
-            sudo ufw disable
-            sudo ufw allow "$user_port"
-            sleep 0.5
-            echo "y" | sudo ufw enable
-            sudo ufw reload
-            echo 'UFW is Optimized.'
-            sleep 0.5
-        else
-            echo "UFW in not active"
-        fi
+        set_ufw
         
         get_ssl ws
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/ws/server.crt
@@ -894,17 +804,7 @@ modify_ws_config() {
         sed -i "s/DOMAIN/$domain/" /etc/ws/config.json
         sed -i "s/NAME/WebSocket/" /etc/ws/config.json
 
-        if sudo ufw status | grep -q "Status: active"; then
-            sudo ufw disable
-            sudo ufw allow "$user_port"
-            sleep 0.5
-            echo "y" | sudo ufw enable
-            sudo ufw reload
-            echo 'UFW is Optimized.'
-            sleep 0.5
-        else
-            echo "UFW in not active"
-        fi
+        set_ufw
 
         get_ssl ws
         rm -f /etc/ws/server.crt
@@ -987,17 +887,7 @@ install_naive() {
         sed -i "s/DOMAIN/$domain/" /etc/naive/config.json
         sed -i "s/NAME/Naive/" /etc/naive/config.json
 
-        if sudo ufw status | grep -q "Status: active"; then
-            sudo ufw disable
-            sudo ufw allow "$user_port"
-            sleep 0.5
-            echo "y" | sudo ufw enable
-            sudo ufw reload
-            echo 'UFW is Optimized.'
-            sleep 0.5
-        else
-            echo "UFW in not active"
-        fi
+        set_ufw
         
         get_ssl naive
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/naive/server.crt
@@ -1052,17 +942,7 @@ modify_naive_config() {
         sed -i "s/DOMAIN/$domain/" /etc/naive/config.json
         sed -i "s/NAME/Naive/" /etc/naive/config.json
 
-        if sudo ufw status | grep -q "Status: active"; then
-            sudo ufw disable
-            sudo ufw allow "$user_port"
-            sleep 0.5
-            echo "y" | sudo ufw enable
-            sudo ufw reload
-            echo 'UFW is Optimized.'
-            sleep 0.5
-        else
-            echo "UFW in not active"
-        fi
+        set_ufw
 
         get_ssl naive
         rm -f /etc/naive/server.crt
@@ -2146,6 +2026,22 @@ get_ssl() {
         systemctl start "$SERVICE"
     done
     
+}
+
+set_ufw() {
+
+    if ufw status | grep -q "Status: active"; then
+        ufw disable
+        ufw allow "$user_port"/udp
+        sleep 0.5
+        echo "y" | ufw enable
+        ufw reload
+        echo 'UFW is Optimized.'
+        sleep 0.5
+    else
+        echo "UFW in not active"
+    fi
+
 }
 
 add_hysteria_user() {
