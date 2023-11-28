@@ -841,7 +841,7 @@ install_ws() {
             echo "UFW in not active"
         fi
         
-        get_ssl_ws
+        get_ssl ws
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/ws/server.crt
         cp /etc/letsencrypt/live/"$domain"/privkey.pem /etc/ws/server.key
 
@@ -906,7 +906,7 @@ modify_ws_config() {
             echo "UFW in not active"
         fi
 
-        get_ssl_ws
+        get_ssl ws
         rm -f /etc/ws/server.crt
         rm -f /etc/ws/server.key
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/ws/server.crt
@@ -999,7 +999,7 @@ install_naive() {
             echo "UFW in not active"
         fi
         
-        get_ssl_naive
+        get_ssl naive
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/naive/server.crt
         cp /etc/letsencrypt/live/"$domain"/privkey.pem /etc/naive/server.key
 
@@ -1064,7 +1064,7 @@ modify_naive_config() {
             echo "UFW in not active"
         fi
 
-        get_ssl_naive
+        get_ssl naive
         rm -f /etc/naive/server.crt
         rm -f /etc/naive/server.key
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/naive/server.crt
@@ -2069,8 +2069,9 @@ check_and_display_process_status() {
 
 }
 
-get_ssl_ws() {
+get_ssl() {
 
+    SERVICE_TYPE="$1" 
     RESTART_SERVICES=()
 
     stop_service() {
@@ -2096,85 +2097,55 @@ get_ssl_ws() {
 
     }
 
-    check_and_stop_service 80
-    check_and_stop_service 443
+    if [ "$SERVICE_TYPE" == "ws" ]; then
+        check_and_stop_service 80
+        check_and_stop_service 443
+        certbot certonly --standalone --agree-tos --register-unsafely-without-email -d "$domain"
 
-    certbot certonly --standalone --agree-tos --register-unsafely-without-email -d "$domain"
-
-    if [[ $? -eq 0 ]]; then
-        echo "Certificate generated successfully"
-    else
-        sudo rm -f /usr/bin/WS
-        rm -rf /etc/ws
-        sudo rm -f /etc/systemd/system/WS.service
-        systemctl daemon-reload
-
-        for SERVICE in "${RESTART_SERVICES[@]}"; do
-            systemctl start "$SERVICE"
-        done
-
-        echo "Certificate generation failed!"
-        exit 1
-    fi
-
-    for SERVICE in "${RESTART_SERVICES[@]}"; do
-        systemctl start "$SERVICE"
-    done
-
-}
-
-get_ssl_naive() {
-
-    RESTART_SERVICES=()
-
-    stop_service() {
-        PROCESS=$(ps -p $1 -o comm=)
-        SERVICE=$(systemctl list-units --all | grep $PROCESS | awk '{print $1}')
-
-        if [[ -n "$SERVICE" ]]; then
-            echo "Stopping $SERVICE"
-            systemctl stop "$SERVICE"
-            RESTART_SERVICES+=("$SERVICE")
+        if [[ $? -eq 0 ]]; then
+            echo "Certificate generated successfully"
         else
-            echo "No service found for PID $1"
+            sudo rm -f /usr/bin/WS
+            rm -rf /etc/ws
+            sudo rm -f /etc/systemd/system/WS.service
+            systemctl daemon-reload
+
+            for SERVICE in "${RESTART_SERVICES[@]}"; do
+                systemctl start "$SERVICE"
+            done
+
+            echo "Certificate generation failed!"
+            exit 1
         fi
-    }
+    elif [ "$SERVICE_TYPE" == "naive" ]; then
+        check_and_stop_service 80
+        check_and_stop_service 443
+        certbot certonly --standalone --agree-tos --register-unsafely-without-email -d "$domain"
 
-    check_and_stop_service() {
+        if [[ $? -eq 0 ]]; then
+            echo "Certificate generated successfully"
+        else
+            sudo rm -f /usr/bin/NS
+            rm -rf /etc/naive
+            sudo rm -f /etc/systemd/system/NS.service
+            systemctl daemon-reload
 
-        local PORT_PIDS=$(lsof -i:"$1" | awk '/LISTEN/ {print $2}')
+            for SERVICE in "${RESTART_SERVICES[@]}"; do
+                systemctl start "$SERVICE"
+            done
 
-        for PID in $PORT_PIDS; do
-            stop_service "$PID"
-        done
-
-    }
-
-    check_and_stop_service 80
-    check_and_stop_service 443
-
-    certbot certonly --standalone --agree-tos --register-unsafely-without-email -d "$domain"
-
-    if [[ $? -eq 0 ]]; then
-        echo "Certificate generated successfully"
+            echo "Certificate generation failed!"
+            exit 1
+        fi
     else
-        sudo rm -f /usr/bin/NS
-        rm -rf /etc/naive
-        sudo rm -f /etc/systemd/system/NS.service
-        systemctl daemon-reload
-
-        for SERVICE in "${RESTART_SERVICES[@]}"; do
-            systemctl start "$SERVICE"
-        done
-
-        echo "Certificate generation failed!"
+        echo "Invalid service type. Please provide 'ws' or 'naive'."
         exit 1
     fi
 
     for SERVICE in "${RESTART_SERVICES[@]}"; do
         systemctl start "$SERVICE"
     done
-
+    
 }
 
 add_hysteria_user() {
