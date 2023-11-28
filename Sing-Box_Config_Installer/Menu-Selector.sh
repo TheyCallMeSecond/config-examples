@@ -2,7 +2,9 @@
 
 source <(curl -sSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/Source.sh)
 
-echo 'alias sci="bash <(curl -fsSL https://bit.ly/config-installer)"' >> ~/.bashrc && source ~/.bashrc
+grep -qxF 'alias sci="bash <(curl -fsSL https://bit.ly/config-installer)"' ~/.bashrc 
+|| echo 'alias sci="bash <(curl -fsSL https://bit.ly/config-installer)"' >> ~/.bashrc 
+&& source ~/.bashrc
 
 get_cpu_usage
 get_ram_usage
