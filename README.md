@@ -27,6 +27,11 @@
 ```bash
 bash <(curl -fsSL https://bit.ly/config-installer)
 ```
+
+ [بعد از اولین استفاده میتونین فقط با زدن "sci" داخل سرورتون به آخرین ورژن اسکریپت دسترسی داشته باشین]
+
+ 
+ 
 [![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/29.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/29.png?raw=true "bash screen")
 
 [![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/30.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/30.png?raw=true "bash screen")
