@@ -1,45 +1,35 @@
 #!/bin/bash
 
 legacy() {
-
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/Legacy-Menu.sh)"
     exit 0
-
 }
 
 tui() {
-
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/TUI-Menu.sh)"
     exit 0
-
 }
 
 optimize_server() {
-
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/Linux-Optimizer/main/linux-optimizer.sh)"
     clear
-
 }
 
 install_required_packages() {
-
     check_OS
     $systemPackage update -y
     $systemPackage install wget whiptail qrencode jq certbot openssl python3 python3-pip -y
     pip install httpx requests
     clear
-
 }
 
 install_hysteria() {
-
     hysteria_check="/etc/hysteria2/server.json"
 
     if [ -e "$hysteria_check" ]; then
         whiptail --msgbox "Hysteria2 is Already installed " 10 30
         clear
     else
-
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
 
         mkdir /root/singbox && cd /root/singbox || exit
@@ -111,7 +101,6 @@ install_hysteria() {
 }
 
 modify_hysteria_config() {
-
     hysteria_check="/etc/hysteria2/server.json"
 
     if [ -e "$hysteria_check" ]; then
@@ -181,7 +170,6 @@ modify_hysteria_config() {
 }
 
 uninstall_hysteria() {
-
     systemctl stop SH
     rm -f /usr/bin/SH
     rm -rf /etc/hysteria2
@@ -191,11 +179,9 @@ uninstall_hysteria() {
 
     whiptail --msgbox "Hysteria2 uninstalled." 10 30
     clear
-
 }
 
 install_tuic() {
-
     tuic_check="/etc/tuic/server.json"
 
     if [ -e "$tuic_check" ]; then
@@ -276,7 +262,6 @@ install_tuic() {
 }
 
 modify_tuic_config() {
-
     tuic_check="/etc/tuic/server.json"
 
     if [ -e "$tuic_check" ]; then
@@ -348,7 +333,6 @@ modify_tuic_config() {
 }
 
 uninstall_tuic() {
-
     systemctl stop TS
     rm -f /usr/bin/TS
     rm -rf /etc/tuic
@@ -358,11 +342,9 @@ uninstall_tuic() {
 
     whiptail --msgbox "TUIC uninstalled." 10 30
     clear
-
 }
 
 install_reality() {
-
     reality_check="/etc/reality/config.json"
 
     if [ -e "$reality_check" ]; then
@@ -441,7 +423,6 @@ install_reality() {
 }
 
 modify_reality_config() {
-
     reality_check="/etc/reality/config.json"
 
     if [ -e "$reality_check" ]; then
@@ -511,7 +492,6 @@ modify_reality_config() {
 }
 
 regenerate_keys() {
-
     reality_check="/etc/reality/config.json"
 
     if [ -e "$reality_check" ]; then
@@ -538,7 +518,6 @@ regenerate_keys() {
 }
 
 uninstall_reality() {
-
     systemctl stop RS
     rm -f /usr/bin/RS
     rm -rf /etc/reality
@@ -548,11 +527,9 @@ uninstall_reality() {
 
     whiptail --msgbox "Reality uninstalled." 10 30
     clear
-
 }
 
 install_shadowtls() {
-
     shadowtls_check="/etc/shadowtls/config.json"
 
     if [ -e "$shadowtls_check" ]; then
@@ -633,7 +610,6 @@ install_shadowtls() {
 }
 
 modify_shadowtls_config() {
-
     shadowtls_check="/etc/shadowtls/config.json"
 
     if [ -e "$shadowtls_check" ]; then
@@ -705,7 +681,6 @@ modify_shadowtls_config() {
 }
 
 uninstall_shadowtls() {
-
     systemctl stop ST
     rm -f /usr/bin/ST
     rm -rf /etc/shadowtls
@@ -715,18 +690,15 @@ uninstall_shadowtls() {
 
     whiptail --msgbox "ShadowTLS uninstalled." 10 30
     clear
-
 }
 
 install_ws() {
-
     ws_check="/etc/ws/config.json"
 
     if [ -e "$ws_check" ]; then
         whiptail --msgbox "WebSocket is Already installed " 10 30
         clear
     else
-
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
         domain=$(whiptail --inputbox "Enter Domain:" 10 30 2>&1 >/dev/tty)
 
@@ -785,7 +757,6 @@ install_ws() {
 }
 
 modify_ws_config() {
-
     ws_check="/etc/ws/config.json"
 
     if [ -e "$ws_check" ]; then
@@ -843,7 +814,6 @@ modify_ws_config() {
 }
 
 uninstall_ws() {
-
     systemctl stop WS
     rm -f /usr/bin/WS
     rm -rf /etc/ws
@@ -853,18 +823,15 @@ uninstall_ws() {
 
     whiptail --msgbox "WebSocket uninstalled." 10 30
     clear
-
 }
 
 install_naive() {
-
     naive_check="/etc/naive/config.json"
 
     if [ -e "$naive_check" ]; then
         whiptail --msgbox "Naive is Already installed " 10 30
         clear
     else
-
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
         domain=$(whiptail --inputbox "Enter Domain:" 10 30 2>&1 >/dev/tty)
 
@@ -923,7 +890,6 @@ install_naive() {
 }
 
 modify_naive_config() {
-
     naive_check="/etc/naive/config.json"
 
     if [ -e "$naive_check" ]; then
@@ -981,7 +947,6 @@ modify_naive_config() {
 }
 
 uninstall_naive() {
-
     systemctl stop NS
     rm -f /usr/bin/NS
     rm -rf /etc/naive
@@ -991,11 +956,9 @@ uninstall_naive() {
 
     whiptail --msgbox "Naive uninstalled." 10 30
     clear
-
 }
 
 show_hysteria_config() {
-
     hysteria_check="/etc/hysteria2/config.txt"
 
     if [ -e "$hysteria_check" ]; then
@@ -1031,7 +994,6 @@ show_hysteria_config() {
 }
 
 show_tuic_config() {
-
     tuic_check="/etc/tuic/config.txt"
 
     if [ -e "$tuic_check" ]; then
@@ -1069,7 +1031,6 @@ show_tuic_config() {
 }
 
 show_reality_config() {
-
     reality_check="/etc/reality/config.txt"
 
     if [ -e "$reality_check" ]; then
@@ -1105,7 +1066,6 @@ show_reality_config() {
 }
 
 show_shadowtls_config() {
-
     shadowtls_check="/etc/shadowtls/nekorayconfig.txt"
 
     if [ -e "$shadowtls_check" ]; then
@@ -1146,7 +1106,6 @@ show_shadowtls_config() {
 }
 
 show_ws_config() {
-
     ws_check="/etc/ws/config.txt"
 
     if [ -e "$ws_check" ]; then
@@ -1178,7 +1137,6 @@ show_ws_config() {
 }
 
 show_naive_config() {
-
     naive_check="/etc/naive/config.txt"
 
     if [ -e "$naive_check" ]; then
@@ -1210,7 +1168,6 @@ show_naive_config() {
 }
 
 show_warp_config() {
-    
     warp_conf_check="/etc/sbw/proxy.json"
 
     if [ -e "$warp_conf_check" ]; then
@@ -1226,17 +1183,13 @@ show_warp_config() {
 }
 
 warp_key_gen() {
-
     curl -fsSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/key-generator.py -o key-generator.py
     python3 key-generator.py
-
     rm -f key-generator.py
-
     clear
 }
 
 install_warp() {
-
     rm -rf /etc/sbw
     mkdir /etc/sbw && cd /etc/sbw || exit
     wget https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/WARP%2B-sing-box-config-generator/main.sh
@@ -1249,11 +1202,9 @@ install_warp() {
 
     whiptail --msgbox "WARP Wireguard Config Generated successfuly" 10 30
     clear
-
 }
 
 uninstall_warp() {
-
     rm -rf /etc/sbw
 
     file1="/etc/reality/config.json"
@@ -1274,7 +1225,6 @@ uninstall_warp() {
         else
             echo
         fi
-
     else
         echo
     fi
@@ -1297,7 +1247,6 @@ uninstall_warp() {
         else
             echo
         fi
-
     else
         echo
     fi
@@ -1320,7 +1269,6 @@ uninstall_warp() {
         else
             echo
         fi
-
     else
         echo
     fi
@@ -1343,7 +1291,6 @@ uninstall_warp() {
         else
             echo
         fi
-
     else
         echo
     fi
@@ -1366,7 +1313,6 @@ uninstall_warp() {
         else
             echo
         fi
-
     else
         echo
     fi
@@ -1389,7 +1335,6 @@ uninstall_warp() {
         else
             echo
         fi
-
     else
         echo
     fi    
@@ -1545,7 +1490,6 @@ update_sing-box_core() {
 }
 
 toggle_warp_reality() {
-
     file="/etc/reality/config.json"
     warp="/etc/sbw/proxy.json"
 
@@ -1577,12 +1521,10 @@ toggle_warp_reality() {
                 whiptail --msgbox "WARP is enabled now" 10 30
                 clear
             fi
-
         else
             whiptail --msgbox "WARP is not installed yet" 10 30
             clear
         fi
-
     else
         whiptail --msgbox "Reality is not installed yet." 10 30
         clear
@@ -1590,7 +1532,6 @@ toggle_warp_reality() {
 }
 
 toggle_warp_shadowtls() {
-
     file="/etc/shadowtls/config.json"
     warp="/etc/sbw/proxy.json"
 
@@ -1622,12 +1563,10 @@ toggle_warp_shadowtls() {
                 whiptail --msgbox "WARP is enabled now" 10 30
                 clear
             fi
-
         else
             whiptail --msgbox "WARP is not installed yet" 10 30
             clear
         fi
-
     else
         whiptail --msgbox "ShadowTLS is not installed yet." 10 30
         clear
@@ -1635,7 +1574,6 @@ toggle_warp_shadowtls() {
 }
 
 toggle_warp_tuic() {
-
     file="/etc/tuic/server.json"
     warp="/etc/sbw/proxy.json"
 
@@ -1667,12 +1605,10 @@ toggle_warp_tuic() {
                 whiptail --msgbox "WARP is enabled now" 10 30
                 clear
             fi
-
         else
             whiptail --msgbox "WARP is not installed yet" 10 30
             clear
         fi
-
     else
         whiptail --msgbox "TUIC is not installed yet." 10 30
         clear
@@ -1680,7 +1616,6 @@ toggle_warp_tuic() {
 }
 
 toggle_warp_hysteria() {
-
     file="/etc/hysteria2/server.json"
     warp="/etc/sbw/proxy.json"
 
@@ -1712,12 +1647,10 @@ toggle_warp_hysteria() {
                 whiptail --msgbox "WARP is enabled now" 10 30
                 clear
             fi
-
         else
             whiptail --msgbox "WARP is not installed yet" 10 30
             clear
         fi
-
     else
         whiptail --msgbox "Hysteria2 is not installed yet." 10 30
         clear
@@ -1725,7 +1658,6 @@ toggle_warp_hysteria() {
 }
 
 toggle_warp_ws() {
-
     file="/etc/ws/config.json"
     warp="/etc/sbw/proxy.json"
 
@@ -1757,12 +1689,10 @@ toggle_warp_ws() {
                 whiptail --msgbox "WARP is enabled now" 10 30
                 clear
             fi
-
         else
             whiptail --msgbox "WARP is not installed yet" 10 30
             clear
         fi
-
     else
         whiptail --msgbox "WebSocket is not installed yet." 10 30
         clear
@@ -1770,7 +1700,6 @@ toggle_warp_ws() {
 }
 
 toggle_warp_naive() {
-
     file="/etc/naive/config.json"
     warp="/etc/sbw/proxy.json"
 
@@ -1802,12 +1731,10 @@ toggle_warp_naive() {
                 whiptail --msgbox "WARP is enabled now" 10 30
                 clear
             fi
-
         else
             whiptail --msgbox "WARP is not installed yet" 10 30
             clear
         fi
-
     else
         whiptail --msgbox "Naive is not installed yet." 10 30
         clear
@@ -1815,7 +1742,6 @@ toggle_warp_naive() {
 }
 
 check_OS() {
-
     [[ $EUID -ne 0 ]] && echo "not root!" && exit 0
     if [[ -f /etc/redhat-release ]]; then
         systemPackage="yum"
@@ -1832,11 +1758,9 @@ check_OS() {
     elif cat /proc/version | grep -q -E -i "centos|red hat|redhat"; then
         systemPackage="yum"
     fi
-
 }
 
 check_system_info() {
-
     if [[ $(type -p systemd-detect-virt) ]]; then
         VIRT=$(systemd-detect-virt)
     elif [[ $(type -p hostnamectl) ]]; then
@@ -1861,15 +1785,13 @@ check_system_info() {
     [ -z "$SYSTEM" ] && error " $(text 5) "
 
     for ex in "${EXCLUDE[@]}"; do [[ ! $(tr 'A-Z' 'a-z' <<<"$SYS") =~ $ex ]]; done &&
-        [[ "$(echo "$SYS" | sed "s/[^0-9.]//g" | cut -d. -f1)" -lt "${MAJOR[int]}" ]] && error " $(text_eval 6) "
+    [[ "$(echo "$SYS" | sed "s/[^0-9.]//g" | cut -d. -f1)" -lt "${MAJOR[int]}" ]] && error " $(text_eval 6) "
 
     KERNEL=$(uname -r)
     ARCHITECTURE=$(uname -m)
-
 }
 
 get_cpu_usage() {
-
     cpu_info=($(grep 'cpu ' /proc/stat))
     prev_idle="${cpu_info[4]}"
     prev_total=0
@@ -1891,29 +1813,23 @@ get_cpu_usage() {
     delta_idle=$((idle - prev_idle))
     delta_total=$((total - prev_total))
     cpu_usage=$(awk "BEGIN {printf \"%.2f\", 100 * (1 - $delta_idle / $delta_total)}")
-
 }
 
 get_ram_usage() {
-
     memory_info=$(free | grep Mem)
     total_memory=$(echo "$memory_info" | awk '{print $2}')
     used_memory=$(echo "$memory_info" | awk '{print $3}')
     memory_usage=$(awk "BEGIN {printf \"%.2f\", $used_memory / $total_memory * 100}")
-
 }
 
 get_storage_usage() {
-    
     storage_info=$(df / | awk 'NR==2{print $3,$2}')
     used_storage=$(echo "$storage_info" | awk '{print $1}')
     total_storage=$(echo "$storage_info" | awk '{print $2}')
     storage_usage=$(awk "BEGIN {printf \"%.2f\", $used_storage / $total_storage * 100}")
-
 }
 
 check_system_ip() {
-
     IP4=$(wget -4 -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 http://ip-api.com/json/) &&
     WAN4=$(expr "$IP4" : '.*query\":[ ]*\"\([^"]*\).*') &&
     COUNTRY=$(expr "$IP4" : '.*country\":[ ]*\"\([^"]*\).*') &&
@@ -1921,11 +1837,9 @@ check_system_ip() {
 
     IP6=$(wget -6 -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://api.ip.sb/geoip) &&
     WAN6=$(expr "$IP6" : '.*ip\":[ ]*\"\([^"]*\).*')
-
 }
 
 check_and_display_process_status() {
-
     PROCESS_NAME="$1"
     CUSTOM_NAME="$2"
     JSON_FILE="$3"
@@ -1946,7 +1860,6 @@ check_and_display_process_status() {
     else
         echo
     fi
-
 }
 
 get_ssl() {
@@ -2007,7 +1920,6 @@ get_ssl() {
 }
 
 set_ufw() {
-
     if ufw status | grep -q "Status: active"; then
         ufw disable
         ufw allow "$user_port"/udp
@@ -2019,11 +1931,9 @@ set_ufw() {
     else
         echo "UFW in not active"
     fi
-
 }
 
 add_hysteria_user() {
-
     config_file="/etc/hysteria2/server.json"
 
     if [ -e "$config_file" ]; then
@@ -2047,12 +1957,10 @@ add_hysteria_user() {
                 whiptail --msgbox "User already exists!" 10 30
                 clear
             fi
-
         else
             whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
             clear
         fi
-
     else
         whiptail --msgbox "Hysteria2 is not installed yet." 10 30
         clear
@@ -2060,7 +1968,6 @@ add_hysteria_user() {
 }
 
 remove_hysteria_user() {
-
     config_file="/etc/hysteria2/server.json"
 
     if [ -e "$config_file" ]; then
@@ -2077,7 +1984,6 @@ remove_hysteria_user() {
             whiptail --msgbox "User removed successfully!" 10 30
             clear
         fi
-
     else
         whiptail --msgbox "Hysteria2 is not installed yet." 10 30
         clear
@@ -2085,7 +1991,6 @@ remove_hysteria_user() {
 }
 
 add_tuic_user() {
-
     config_file="/etc/tuic/server.json"
 
     if [ -e "$config_file" ]; then
@@ -2108,16 +2013,13 @@ add_tuic_user() {
                 whiptail --msgbox "User added successfully!" 10 30
                 clear
             else
-
                 whiptail --msgbox "User already exists!" 10 30
                 clear
             fi
-
         else
             whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
             clear
         fi
-
     else
         whiptail --msgbox "TUIC is not installed yet." 10 30
         clear
@@ -2125,7 +2027,6 @@ add_tuic_user() {
 }
 
 remove_tuic_user() {
-
     config_file="/etc/tuic/server.json"
 
     if [ -e "$config_file" ]; then
@@ -2142,7 +2043,6 @@ remove_tuic_user() {
             whiptail --msgbox "User removed successfully!" 10 30
             clear
         fi
-
     else
         whiptail --msgbox "TUIC is not installed yet." 10 30
         clear
@@ -2150,7 +2050,6 @@ remove_tuic_user() {
 }
 
 add_reality_user() {
-
     config_file="/etc/reality/config.json"
 
     if [ -e "$config_file" ]; then
@@ -2174,12 +2073,10 @@ add_reality_user() {
                 whiptail --msgbox "User already exists!" 10 30
                 clear
             fi
-
         else
             whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
             clear
         fi
-
     else
         whiptail --msgbox "Reality is not installed yet." 10 30
         clear
@@ -2187,7 +2084,6 @@ add_reality_user() {
 }
 
 remove_reality_user() {
-
     config_file="/etc/reality/config.json"
 
     if [ -e "$config_file" ]; then
@@ -2204,7 +2100,6 @@ remove_reality_user() {
             whiptail --msgbox "User removed successfully!" 10 30
             clear
         fi
-
     else
         whiptail --msgbox "Reality is not installed yet." 10 30
         clear
@@ -2212,7 +2107,6 @@ remove_reality_user() {
 }
 
 add_shadowtls_user() {
-
     config_file="/etc/shadowtls/config.json"
 
     if [ -e "$config_file" ]; then
@@ -2236,12 +2130,10 @@ add_shadowtls_user() {
                 whiptail --msgbox "User already exists!" 10 30
                 clear
             fi
-
         else
             whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
             clear
         fi
-
     else
         whiptail --msgbox "ShadowTLS is not installed yet." 10 30
         clear
@@ -2249,7 +2141,6 @@ add_shadowtls_user() {
 }
 
 remove_shadowtls_user() {
-
     config_file="/etc/shadowtls/config.json"
 
     if [ -e "$config_file" ]; then
@@ -2266,7 +2157,6 @@ remove_shadowtls_user() {
             whiptail --msgbox "User removed successfully!" 10 30
             clear
         fi
-
     else
         whiptail --msgbox "ShadowTLS is not installed yet." 10 30
         clear
@@ -2274,7 +2164,6 @@ remove_shadowtls_user() {
 }
 
 add_ws_user() {
-
     config_file="/etc/ws/config.json"
 
     if [ -e "$config_file" ]; then
@@ -2298,12 +2187,10 @@ add_ws_user() {
                 whiptail --msgbox "User already exists!" 10 30
                 clear
             fi
-
         else
             whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
             clear
         fi
-
     else
         whiptail --msgbox "WebSocket is not installed yet." 10 30
         clear
@@ -2311,7 +2198,6 @@ add_ws_user() {
 }
 
 remove_ws_user() {
-
     config_file="/etc/ws/config.json"
 
     if [ -e "$config_file" ]; then
@@ -2328,7 +2214,6 @@ remove_ws_user() {
             whiptail --msgbox "User removed successfully!" 10 30
             clear
         fi
-
     else
         whiptail --msgbox "WebSocket is not installed yet." 10 30
         clear
@@ -2336,7 +2221,6 @@ remove_ws_user() {
 }
 
 add_naive_user() {
-
     config_file="/etc/naive/config.json"
 
     if [ -e "$config_file" ]; then
@@ -2359,12 +2243,10 @@ add_naive_user() {
                 whiptail --msgbox "User already exists!" 10 30
                 clear
             fi
-
         else
             whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
             clear
         fi
-
     else
         whiptail --msgbox "Naive is not installed yet." 10 30
         clear
@@ -2372,7 +2254,6 @@ add_naive_user() {
 }
 
 remove_naive_user() {
-
     config_file="/etc/naive/config.json"
 
     if [ -e "$config_file" ]; then
@@ -2389,7 +2270,6 @@ remove_naive_user() {
             whiptail --msgbox "User removed successfully!" 10 30
             clear
         fi
-
     else
         whiptail --msgbox "Naive is not installed yet." 10 30
         clear
