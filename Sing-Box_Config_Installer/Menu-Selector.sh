@@ -8,6 +8,8 @@ if ! grep -qxF 'alias sci="bash <(curl -fsSL https://bit.ly/config-installer)"' 
     source ~/.bashrc
 fi
 
+source ~/.bashrc
+
 get_cpu_usage
 get_ram_usage
 get_storage_usage
