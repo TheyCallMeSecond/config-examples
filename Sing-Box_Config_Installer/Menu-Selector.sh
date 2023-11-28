@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ $EUID -ne 0 ]]; then
-    echo "\e[91mThis script requires root privileges. Please run it as root\e[0m"
+    echo "This script requires root privileges. Please run it as root!"
     exit 1
 fi
 
