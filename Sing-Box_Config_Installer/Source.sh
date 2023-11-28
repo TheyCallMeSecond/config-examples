@@ -1950,8 +1950,7 @@ check_and_display_process_status() {
 }
 
 get_ssl() {
-
-    SERVICE_TYPE="$1" 
+    SERVICE_TYPE="$1"
     RESTART_SERVICES=()
 
     stop_service() {
@@ -1968,64 +1967,43 @@ get_ssl() {
     }
 
     check_and_stop_service() {
-
         local PORT_PIDS=$(lsof -i:"$1" | awk '/LISTEN/ {print $2}')
 
         for PID in $PORT_PIDS; do
             stop_service "$PID"
         done
-
     }
 
-    if [ "$SERVICE_TYPE" == "ws" ]; then
-        check_and_stop_service 80
-        check_and_stop_service 443
-        certbot certonly --standalone --agree-tos --register-unsafely-without-email -d "$domain"
+    check_and_stop_service 80
+    check_and_stop_service 443
+    certbot certonly --standalone --agree-tos --register-unsafely-without-email -d "$domain"
 
-        if [[ $? -eq 0 ]]; then
-            echo "Certificate generated successfully"
-        else
+    if [[ $? -eq 0 ]]; then
+        echo "Certificate generated successfully"
+    else
+        if [ "$SERVICE_TYPE" == "ws" ]; then
             rm -f /usr/bin/WS
             rm -rf /etc/ws
             rm -f /etc/systemd/system/WS.service
-            systemctl daemon-reload
-
-            for SERVICE in "${RESTART_SERVICES[@]}"; do
-                systemctl start "$SERVICE"
-            done
-
-            echo "Certificate generation failed!"
-            exit 1
-        fi
-    elif [ "$SERVICE_TYPE" == "naive" ]; then
-        check_and_stop_service 80
-        check_and_stop_service 443
-        certbot certonly --standalone --agree-tos --register-unsafely-without-email -d "$domain"
-
-        if [[ $? -eq 0 ]]; then
-            echo "Certificate generated successfully"
-        else
+        elif [ "$SERVICE_TYPE" == "naive" ]; then
             rm -f /usr/bin/NS
             rm -rf /etc/naive
             rm -f /etc/systemd/system/NS.service
-            systemctl daemon-reload
-
-            for SERVICE in "${RESTART_SERVICES[@]}"; do
-                systemctl start "$SERVICE"
-            done
-
-            echo "Certificate generation failed!"
-            exit 1
         fi
-    else
-        echo "Invalid service type. Please provide 'ws' or 'naive'."
+
+        systemctl daemon-reload
+
+        for SERVICE in "${RESTART_SERVICES[@]}"; do
+            systemctl start "$SERVICE"
+        done
+
+        echo "Certificate generation failed!"
         exit 1
     fi
 
     for SERVICE in "${RESTART_SERVICES[@]}"; do
         systemctl start "$SERVICE"
     done
-    
 }
 
 set_ufw() {
