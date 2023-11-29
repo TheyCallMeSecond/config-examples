@@ -1,0 +1,41 @@
+{
+  "inbounds": [
+    {
+      "type": "hysteria2",
+      "tag": "hy2-in",
+      "listen": "::",
+      "listen_port": PORT,
+      "ignore_client_bandwidth": true,
+      "masquerade": "https://www.google.com",
+      "obfs": {
+        "type": "salamander",
+        "password": "OBFS"
+      },
+      "users": [
+        {
+          "name": "NAME",
+          "password": "PASSWORD"
+        }
+      ],
+      "tls": {
+        "alpn": [
+          "h3"
+        ],
+        "enabled": true,
+        "server_name": "www.google.com",
+        "certificate_path": "/etc/hysteria2/server.crt",
+        "key_path": "/etc/hysteria2/server.key"
+      }
+    }
+  ],
+  "log": {
+    "level": "warn",
+    "timestamp": true
+  },
+  "outbounds": [
+    {
+      "tag": "direct",
+      "type": "direct"
+    }
+  ]
+}
