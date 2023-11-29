@@ -1,0 +1,44 @@
+{
+  "inbounds": [
+    {
+      "type": "vless",
+      "tag": "vless-in",
+      "listen": "::",
+      "listen_port": PORT,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tls": {
+        "enabled": true,
+        "reality": {
+          "enabled": true,
+          "handshake": {
+            "server": "SNI",
+            "server_port": 443
+          },
+          "private_key": "PRIVATE-KEY",
+          "short_id": [
+            "SHORT-ID"
+          ]
+        },
+        "server_name": "SNI"
+      },
+      "users": [
+        {
+          "name": "NAME",
+          "uuid": "UUID",
+          "flow": "xtls-rprx-vision"
+        }
+      ]
+    }
+  ],
+  "log": {
+    "level": "warn",
+    "timestamp": true
+  },
+  "outbounds": [
+    {
+      "tag": "direct",
+      "type": "direct"
+    }
+  ]
+}
