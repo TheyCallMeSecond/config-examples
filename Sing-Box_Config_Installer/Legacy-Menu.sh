@@ -121,11 +121,11 @@ while true; do
                 case $sub_choice in
                 1)
                     clear
-                    modify_hysteria obfs
+                    modify_hysteria_config obfs
                     ;;
                 2)
                     clear
-                    modify_hysteria native
+                    modify_hysteria_config native
                     ;;
                 *)
                     echo "Invalid choice. Please select a valid option."
@@ -231,11 +231,11 @@ while true; do
                 case $sub_choice in
                 1)
                     clear
-                    modify_reality grpc
+                    modify_reality_config grpc
                     ;;
                 2)
                     clear
-                    modify_reality tcp
+                    modify_reality_config tcp
                     ;;
                 *)
                     echo "Invalid choice. Please select a valid option."
