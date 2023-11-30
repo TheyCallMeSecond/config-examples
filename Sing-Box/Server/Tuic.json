@@ -14,7 +14,7 @@
           "h3"
         ],
         "enabled": true,
-        "server_name": "www.apple.com",        
+        "server_name": "www.google.com",        
         "certificate_path": "/etc/tuic/server.crt",
         "key_path": "/etc/tuic/server.key"
       },
