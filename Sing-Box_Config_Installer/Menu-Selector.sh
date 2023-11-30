@@ -2,16 +2,8 @@
 
 source <(curl -sSL https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box_Config_Installer/Source.sh)
 
-if [[ $EUID -ne 0 ]]; then
-    echo "This script requires root privileges. Please run it as root!"
-    exit 1
-fi
-
-if ! grep -qxF 'alias sci="bash <(curl -fsSL https://bit.ly/config-installer)"' ~/.bashrc; then
-    echo 'alias sci="bash <(curl -fsSL https://bit.ly/config-installer)"' >> ~/.bashrc
-    source ~/.bashrc
-fi
-
+root_check
+add_alias
 get_cpu_usage
 get_ram_usage
 get_storage_usage
