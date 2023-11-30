@@ -1749,6 +1749,20 @@ check_and_display_process_status() {
     fi
 }
 
+root_check() {
+    if [[ $EUID -ne 0 ]]; then
+        echo "This script requires root privileges. Please run it as root!"
+        exit 1
+    fi
+}
+
+add_alias() {
+    if ! grep -qxF 'alias sci="bash <(curl -fsSL https://bit.ly/config-installer)"' ~/.bashrc; then
+        echo 'alias sci="bash <(curl -fsSL https://bit.ly/config-installer)"' >> ~/.bashrc
+        source ~/.bashrc
+    fi
+}
+
 get_ssl() {
     SERVICE_TYPE="$1"
     RESTART_SERVICES=()
