@@ -89,11 +89,11 @@ while true; do
                         case $user_choice in
                         "1")
                             clear
-                            modify_hysteria obfs
+                            modify_hysteria_config obfs
                             ;;
                         "2")
                             clear
-                            modify_hysteria native
+                            modify_hysteria_config native
                             ;;
                         *)
                             whiptail --msgbox "Invalid choice. Please select a valid option." 10 30
@@ -248,11 +248,11 @@ while true; do
                         case $user_choice in
                         "1")
                             clear
-                            modify_reality grpc
+                            modify_reality_config grpc
                             ;;
                         "2")
                             clear
-                            modify_reality tcp
+                            modify_reality_config tcp
                             ;;
                         *)
                             whiptail --msgbox "Invalid choice. Please select a valid option." 10 30
