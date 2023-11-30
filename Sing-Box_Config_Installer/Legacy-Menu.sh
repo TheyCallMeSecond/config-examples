@@ -19,7 +19,7 @@ while true; do
     echo -e "8:  \e[93mInstall\e[0m"
     echo -e "9:  \e[93mModify Config\e[0m"
     echo -e "10: \e[93mAdd User\e[0m"
-    echo -e "11: \e[93mRemove User\e[0m"    
+    echo -e "11: \e[93mRemove User\e[0m"
     echo -e "12: \e[93mShow User Configs\e[0m"
     echo -e "13: \e[93mEnable/Disable WARP\e[0m"
     echo -e "14: \e[93mUninstall\e[0m"
@@ -28,7 +28,7 @@ while true; do
     echo -e "16: \e[93mModify Config\e[0m"
     echo -e "17: \e[93mRegenerate Keys\e[0m"
     echo -e "18: \e[93mAdd User\e[0m"
-    echo -e "19: \e[93mRemove User\e[0m"    
+    echo -e "19: \e[93mRemove User\e[0m"
     echo -e "20: \e[93mShow User Configs\e[0m"
     echo -e "21: \e[93mEnable/Disable WARP\e[0m"
     echo -e "22: \e[93mUninstall\e[0m"
@@ -36,7 +36,7 @@ while true; do
     echo -e "23: \e[93mInstall\e[0m"
     echo -e "24: \e[93mModify Config\e[0m"
     echo -e "25: \e[93mAdd User\e[0m"
-    echo -e "26: \e[93mRemove User\e[0m"    
+    echo -e "26: \e[93mRemove User\e[0m"
     echo -e "27: \e[93mShow User Configs\e[0m"
     echo -e "28: \e[93mEnable/Disable WARP\e[0m"
     echo -e "29: \e[93mUninstall\e[0m"
@@ -44,7 +44,7 @@ while true; do
     echo -e "30: \e[93mInstall\e[0m"
     echo -e "31: \e[93mModify Config\e[0m"
     echo -e "32: \e[93mAdd User\e[0m"
-    echo -e "33: \e[93mRemove User\e[0m"    
+    echo -e "33: \e[93mRemove User\e[0m"
     echo -e "34: \e[93mShow User Configs\e[0m"
     echo -e "35: \e[93mEnable/Disable WARP\e[0m"
     echo -e "36: \e[93mUninstall\e[0m"
@@ -52,11 +52,11 @@ while true; do
     echo -e "37: \e[93mInstall\e[0m"
     echo -e "38: \e[93mModify Config\e[0m"
     echo -e "39: \e[93mAdd User\e[0m"
-    echo -e "40: \e[93mRemove User\e[0m"    
+    echo -e "40: \e[93mRemove User\e[0m"
     echo -e "41: \e[93mShow User Configs\e[0m"
     echo -e "42: \e[93mEnable/Disable WARP\e[0m"
     echo -e "43: \e[93mUninstall\e[0m"
-    echo --------------WARP------------------    
+    echo --------------WARP------------------
     echo -e "44: \e[93mGenerate WARP+ Key\e[0m"
     echo -e "45: \e[93mGenerate WARP+ Wireguard Config\e[0m"
     echo -e "46: \e[93mShow Config\e[0m"
@@ -77,11 +77,66 @@ while true; do
         ;;
     1)
         clear
-        install_hysteria
+        hysteria_check="/etc/hysteria2/server.json"
+
+        if [ -e "$hysteria_check" ]; then
+            whiptail --msgbox "Hysteria2 is Already installed " 10 30
+            clear
+        else
+            while true; do
+                echo "Please select an option:"
+                echo "1: With OBFS"
+                echo "2: Without OBFS"
+                read -p "Enter your choice: " sub_choice
+
+                case $sub_choice in
+                1)
+                    clear
+                    install_hysteria obfs
+                    ;;
+                2)
+                    clear
+                    install_hysteria native
+                    ;;
+                *)
+                    echo "Invalid choice. Please select a valid option."
+                    ;;
+                esac
+                break
+            done
+        fi
         ;;
+
     2)
         clear
-        modify_hysteria_config
+        hysteria_check="/etc/hysteria2/server.json"
+
+        if [ -e "$hysteria_check" ]; then
+            while true; do
+                echo "Please select an option:"
+                echo "1: With OBFS"
+                echo "2: Without OBFS"
+                read -p "Enter your choice: " sub_choice
+
+                case $sub_choice in
+                1)
+                    clear
+                    modify_hysteria obfs
+                    ;;
+                2)
+                    clear
+                    modify_hysteria native
+                    ;;
+                *)
+                    echo "Invalid choice. Please select a valid option."
+                    ;;
+                esac
+                break
+            done
+        else
+            whiptail --msgbox "Hysteria2 is not installed yet." 10 30
+            clear
+        fi
         ;;
     3)
         clear
@@ -90,7 +145,7 @@ while true; do
     4)
         clear
         remove_hysteria_user
-        ;;                
+        ;;
     5)
         clear
         show_hysteria_config
@@ -118,7 +173,7 @@ while true; do
     11)
         clear
         remove_tuic_user
-        ;;                
+        ;;
     12)
         clear
         show_tuic_config
@@ -133,16 +188,70 @@ while true; do
         ;;
     15)
         clear
-        install_reality
+        reality_check="/etc/reality/config.json"
+
+        if [ -e "$reality_check" ]; then
+            whiptail --msgbox "Reality is Already installed " 10 30
+            clear
+        else
+            while true; do
+                echo "Please select Transport Type:"
+                echo "1: gRPC"
+                echo "2: TCP"
+                read -p "Enter your choice: " sub_choice
+
+                case $sub_choice in
+                1)
+                    clear
+                    install_reality grpc
+                    ;;
+                2)
+                    clear
+                    install_reality tcp
+                    ;;
+                *)
+                    echo "Invalid choice. Please select a valid option."
+                    ;;
+                esac
+                break
+            done
+        fi
         ;;
     16)
         clear
-        modify_reality_config
+        reality_check="/etc/reality/config.json"
+
+        if [ -e "$reality_check" ]; then
+            while true; do
+                echo "Please select Transport Type:"
+                echo "1: gRPC"
+                echo "2: TCP"
+                read -p "Enter your choice: " sub_choice
+
+                case $sub_choice in
+                1)
+                    clear
+                    modify_reality grpc
+                    ;;
+                2)
+                    clear
+                    modify_reality tcp
+                    ;;
+                *)
+                    echo "Invalid choice. Please select a valid option."
+                    ;;
+                esac
+                break
+            done
+        else
+            whiptail --msgbox "Reality is not installed yet." 10 30
+            clear
+        fi
         ;;
     17)
         clear
         regenerate_keys
-        ;;        
+        ;;
     18)
         clear
         add_reality_user
@@ -150,7 +259,7 @@ while true; do
     19)
         clear
         remove_reality_user
-        ;;                
+        ;;
     20)
         clear
         show_reality_config
@@ -178,7 +287,7 @@ while true; do
     26)
         clear
         remove_shadowtls_user
-        ;;         
+        ;;
     27)
         clear
         show_shadowtls_config
@@ -206,7 +315,7 @@ while true; do
     33)
         clear
         remove_ws_user
-        ;;         
+        ;;
     34)
         clear
         show_ws_config
@@ -218,7 +327,7 @@ while true; do
     36)
         clear
         uninstall_ws
-        ;;   
+        ;;
     37)
         clear
         install_naive
@@ -234,7 +343,7 @@ while true; do
     40)
         clear
         remove_naive_user
-        ;;         
+        ;;
     41)
         clear
         show_naive_config
@@ -246,7 +355,7 @@ while true; do
     43)
         clear
         uninstall_naive
-        ;;              
+        ;;
     44)
         clear
         warp_key_gen

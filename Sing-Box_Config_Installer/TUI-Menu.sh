@@ -42,11 +42,69 @@ while true; do
             case $user_choice in
             "1")
                 clear
-                install_hysteria
+                hysteria_check="/etc/hysteria2/server.json"
+
+                if [ -e "$hysteria_check" ]; then
+                    whiptail --msgbox "Hysteria2 is Already installed " 10 30
+                    clear
+                else
+                    while true; do
+                        user_choice=$(
+                            whiptail --clear --title "Hysteria2 Installation Menu" --menu "Please select an option:" 25 50 15 \
+                            "1" "With OBFS" \
+                            "2" "Without OBFS" \
+                            "0" "Back" 3>&1 1>&2 2>&3 )
+
+                        case $user_choice in
+                        "1")
+                            clear
+                            install_hysteria obfs
+                            ;;
+                        "2")
+                            clear
+                            install_hysteria native
+                            ;;
+                        "0")
+                            break
+                            ;;
+                        *)
+                            whiptail --msgbox "Invalid choice. Please select a valid option." 10 30
+                            ;;
+                        esac
+                        break
+                    done
+                fi
                 ;;
             "2")
                 clear
-                modify_hysteria_config
+                hysteria_check="/etc/hysteria2/server.json"
+
+                if [ -e "$hysteria_check" ]; then
+                    while true; do
+                        user_choice=$(
+                            whiptail --clear --title "Hysteria2 Modification Menu" --menu "Please select an option:" 25 50 15 \
+                            "1" "With OBFS" \
+                            "2" "Without OBFS" 3>&1 1>&2 2>&3 )
+
+                        case $user_choice in
+                        "1")
+                            clear
+                            modify_hysteria obfs
+                            ;;
+                        "2")
+                            clear
+                            modify_hysteria native
+                            ;;
+                        *)
+                            whiptail --msgbox "Invalid choice. Please select a valid option." 10 30
+                            ;;
+                        esac
+                        break
+                    done
+                else
+                    whiptail --msgbox "Hysteria2 is not installed yet." 10 30
+                    clear
+                fi
                 ;;
             "3")
                 clear
@@ -68,7 +126,6 @@ while true; do
                 clear
                 uninstall_hysteria
                 ;;
-
             "0")
                 break
                 ;;
@@ -144,11 +201,69 @@ while true; do
             case $user_choice in
             "1")
                 clear
-                install_reality
+                reality_check="/etc/reality/config.json"
+
+                if [ -e "$reality_check" ]; then
+                    whiptail --msgbox "Reality is Already installed " 10 30
+                    clear
+                else
+                    while true; do
+                        user_choice=$(
+                            whiptail --clear --title "Reality Installation Menu" --menu "Please select Transport Type:" 25 50 15 \
+                            "1" "gRPC" \
+                            "2" "TCP" \
+                            "0" "Back" 3>&1 1>&2 2>&3 )
+
+                        case $user_choice in
+                        "1")
+                            clear
+                            install_reality grpc
+                            ;;
+                        "2")
+                            clear
+                            install_reality tcp
+                            ;;
+                        "0")
+                            break
+                            ;;
+                        *)
+                            whiptail --msgbox "Invalid choice. Please select a valid option." 10 30
+                            ;;
+                        esac
+                        break
+                    done
+                fi
                 ;;
             "2")
                 clear
-                modify_reality_config
+                reality_check="/etc/reality/config.json"
+
+                if [ -e "$reality_check" ]; then
+                    while true; do
+                        user_choice=$(
+                            whiptail --clear --title "Reality Modification Menu" --menu "Please select Transport Type:" 25 50 15 \
+                            "1" "gRPC" \
+                            "2" "TCP" 3>&1 1>&2 2>&3 )
+
+                        case $user_choice in
+                        "1")
+                            clear
+                            modify_reality grpc
+                            ;;
+                        "2")
+                            clear
+                            modify_reality tcp
+                            ;;
+                        *)
+                            whiptail --msgbox "Invalid choice. Please select a valid option." 10 30
+                            ;;
+                        esac
+                        break
+                    done
+                else
+                    whiptail --msgbox "Reality is not installed yet." 10 30
+                    clear
+                fi
                 ;;
             "3")
                 clear
@@ -332,7 +447,7 @@ while true; do
                 ;;
             esac
         done
-        ;;        
+        ;;
     "Warp")
         while true; do
             user_choice=$(

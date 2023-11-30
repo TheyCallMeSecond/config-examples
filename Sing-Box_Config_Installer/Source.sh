@@ -24,149 +24,154 @@ install_required_packages() {
 }
 
 install_hysteria() {
-    hysteria_check="/etc/hysteria2/server.json"
+    Transport="$1"
+    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
 
-    if [ -e "$hysteria_check" ]; then
-        whiptail --msgbox "Hysteria2 is Already installed " 10 30
-        clear
-    else
-        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+    install_core SH
 
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SH"
-        cd && rm -rf singbox
+    mkdir -p /etc/hysteria2
 
-        mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Hysteria2.json
-        curl -Lo /etc/systemd/system/SH.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SH.service 
-        systemctl daemon-reload
+    if [ "$Transport" == "native" ]; then
+        curl -Lo /etc/hysteria2/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Hysteria2.json
+    elif [ "$Transport" == "obfs" ]; then
+        curl -Lo /etc/hysteria2/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Hysteria2-obfs.json
+    fi
 
-        mkdir /root/selfcert && cd /root/selfcert || exit
-        openssl genrsa -out ca.key 2048
-        openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=Google Root CA" -out ca.crt
-        openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=*.google.com" -out server.csr
-        openssl x509 -req -extfile <(printf "subjectAltName=DNS:google.com,DNS:www.google.com") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
-        mv server.crt /etc/hysteria2/server.crt
-        mv server.key /etc/hysteria2/server.key
-        cd || exit
-        rm -rf /root/selfcert
+    curl -Lo /etc/systemd/system/SH.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/SH.service
+    systemctl daemon-reload
 
-        password=$(openssl rand -hex 8)
-        sed -i "s/PORT/$user_port/" /etc/hysteria2/server.json
-        sed -i "s/PASSWORD/$password/" /etc/hysteria2/server.json
-        sed -i "s/NAME/Hysteria2/" /etc/hysteria2/server.json
+    get_selfsigned_cert hysteria2
 
-        public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
-        public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
+    password=$(openssl rand -hex 8)
+    obfspassword=$(openssl rand -hex 8)
+    sed -i "s/PORT/$user_port/" /etc/hysteria2/server.json
+    sed -i "s/PASSWORD/$password/" /etc/hysteria2/server.json
+    sed -i "s/OBFS/$obfspassword/" /etc/hysteria2/server.json
+    sed -i "s/NAME/Hysteria2/" /etc/hysteria2/server.json
 
-        set_ufw
+    public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
+    public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
-        systemctl enable --now SH
-        (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart SH") | crontab -
+    set_ufw
 
+    systemctl enable --now SH
+
+    (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart SH") | crontab -
+
+    if [ "$Transport" == "native" ]; then
         result_url=" 
         ipv4 : hy2://$password@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
         ---------------------------------------------------------------
         ipv6 : hy2://$password@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2-V6"
 
-        echo -e "Config URL: $result_url" >/etc/hysteria2/user-config.txt
-
         result_url2=" 
         ipv4 : hy2://PASSWORD@$public_ipv4:$user_port?insecure=1&sni=www.google.com#NAME-HY2
         ---------------------------------------------------------------
         ipv6 : hy2://PASSWORD@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#NAME-HY2-V6"
+    elif [ "$Transport" == "obfs" ]; then
+        result_url="
+        ipv4 : hy2://$password@$public_ipv4:$user_port?obfs=salamander&obfs-password=$obfspassword&insecure=1&sni=www.google.com#HY2
+        ---------------------------------------------------------------
+        ipv6 : hy2://$password@[$public_ipv6]:$user_port?obfs=salamander&obfs-password=$obfspassword&insecure=1&sni=www.google.com#HY2-V6"
 
-        echo -e "Config URL: $result_url2" >/etc/hysteria2/config.txt
-        echo -e "Config URL: \e[91m$result_url\e[0m"
-
-        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/hysteria2/user-config.txt)
-        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/hysteria2/user-config.txt)
-
-        echo IPv4:
-        qrencode -t ANSIUTF8 <<<"$ipv4qr"
-
-        echo IPv6:
-        qrencode -t ANSIUTF8 <<<"$ipv6qr"
-
-        echo "Hysteria2 setup completed."
-
-        echo -e "\e[31mPress Enter to Exit\e[0m"
-        read
-        clear
+        result_url2=" 
+        ipv4 : hy2://PASSWORD@$public_ipv4:$user_port?obfs=salamander&obfs-password=$obfspassword&insecure=1&sni=www.google.com#NAME-HY2
+        ---------------------------------------------------------------
+        ipv6 : hy2://PASSWORD@[$public_ipv6]:$user_port?obfs=salamander&obfs-password=$obfspassword&insecure=1&sni=www.google.com#NAME-HY2-V6"
     fi
+
+    echo -e "Config URL: $result_url" >/etc/hysteria2/user-config.txt
+    echo -e "Config URL: $result_url2" >/etc/hysteria2/config.txt
+    echo -e "Config URL: \e[91m$result_url\e[0m"
+
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/hysteria2/user-config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/hysteria2/user-config.txt)
+
+    echo IPv4:
+    qrencode -t ANSIUTF8 <<<"$ipv4qr"
+
+    echo IPv6:
+    qrencode -t ANSIUTF8 <<<"$ipv6qr"
+
+    echo "Hysteria2 setup completed."
+
+    echo -e "\e[31mPress Enter to Exit\e[0m"
+    read
+    clear
 }
 
 modify_hysteria_config() {
-    hysteria_check="/etc/hysteria2/server.json"
+    Transport="$1"
+    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
 
-    if [ -e "$hysteria_check" ]; then
-        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+    systemctl stop SH
 
-        systemctl stop SH
+    rm -rf /etc/hysteria2
 
-        rm -rf /etc/hysteria2
+    mkdir -p /etc/hysteria2
 
-        mkdir -p /etc/hysteria2 && curl -Lo /etc/hysteria2/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Hysteria2.json
+    if [ "$Transport" == "native" ]; then
+        curl -Lo /etc/hysteria2/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Hysteria2.json
+    elif [ "$Transport" == "obfs" ]; then
+        curl -Lo /etc/hysteria2/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Hysteria2-obfs.json
+    fi
 
-        mkdir /root/selfcert && cd /root/selfcert || exit
-        openssl genrsa -out ca.key 2048
-        openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=Google Root CA" -out ca.crt
-        openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=*.google.com" -out server.csr
-        openssl x509 -req -extfile <(printf "subjectAltName=DNS:google.com,DNS:www.google.com") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
-        mv server.crt /etc/hysteria2/server.crt
-        mv server.key /etc/hysteria2/server.key
-        cd || exit
-        rm -rf /root/selfcert
+    get_selfsigned_cert hysteria2
 
-        password=$(openssl rand -hex 8)
-        sed -i "s/PORT/$user_port/" /etc/hysteria2/server.json
-        sed -i "s/PASSWORD/$password/" /etc/hysteria2/server.json
-        sed -i "s/NAME/Hysteria2/" /etc/hysteria2/server.json
+    password=$(openssl rand -hex 8)
+    obfspassword=$(openssl rand -hex 8)
+    sed -i "s/PORT/$user_port/" /etc/hysteria2/server.json
+    sed -i "s/PASSWORD/$password/" /etc/hysteria2/server.json
+    sed -i "s/OBFS/$obfspassword/" /etc/hysteria2/server.json
+    sed -i "s/NAME/Hysteria2/" /etc/hysteria2/server.json
 
-        public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
-        public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
+    public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
+    public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
-        set_ufw
+    set_ufw
 
-        systemctl start SH
+    systemctl start SH
 
+    if [ "$Transport" == "native" ]; then
         result_url=" 
         ipv4 : hy2://$password@$public_ipv4:$user_port?insecure=1&sni=www.google.com#HY2
         ---------------------------------------------------------------
         ipv6 : hy2://$password@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#HY2-V6"
 
-        echo -e "Config URL: $result_url" >/etc/hysteria2/user-config.txt
-
         result_url2=" 
         ipv4 : hy2://PASSWORD@$public_ipv4:$user_port?insecure=1&sni=www.google.com#NAME-HY2
         ---------------------------------------------------------------
         ipv6 : hy2://PASSWORD@[$public_ipv6]:$user_port?insecure=1&sni=www.google.com#NAME-HY2-V6"
+    elif [ "$Transport" == "obfs" ]; then
+        result_url="
+        ipv4 : hy2://$password@$public_ipv4:$user_port?obfs=salamander&obfs-password=$obfspassword&insecure=1&sni=www.google.com#HY2
+        ---------------------------------------------------------------
+        ipv6 : hy2://$password@[$public_ipv6]:$user_port?obfs=salamander&obfs-password=$obfspassword&insecure=1&sni=www.google.com#HY2-V6"
 
-        echo -e "Config URL: $result_url2" >/etc/hysteria2/config.txt
-        echo -e "Config URL: \e[91m$result_url\e[0m"
-
-        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/hysteria2/user-config.txt)
-        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/hysteria2/user-config.txt)
-
-        echo IPv4:
-        qrencode -t ANSIUTF8 <<<"$ipv4qr"
-
-        echo IPv6:
-        qrencode -t ANSIUTF8 <<<"$ipv6qr"
-
-        echo "Hysteria2 configuration modified."
-
-        echo -e "\e[31mPress Enter to Exit\e[0m"
-        read
-        clear
-    else
-        whiptail --msgbox "Hysteria2 is not installed yet." 10 30
-        clear
+        result_url2=" 
+        ipv4 : hy2://PASSWORD@$public_ipv4:$user_port?obfs=salamander&obfs-password=$obfspassword&insecure=1&sni=www.google.com#NAME-HY2
+        ---------------------------------------------------------------
+        ipv6 : hy2://PASSWORD@[$public_ipv6]:$user_port?obfs=salamander&obfs-password=$obfspassword&insecure=1&sni=www.google.com#NAME-HY2-V6"
     fi
+
+    echo -e "Config URL: $result_url" >/etc/hysteria2/user-config.txt
+    echo -e "Config URL: $result_url2" >/etc/hysteria2/config.txt
+    echo -e "Config URL: \e[91m$result_url\e[0m"
+
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/hysteria2/user-config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/hysteria2/user-config.txt)
+
+    echo IPv4:
+    qrencode -t ANSIUTF8 <<<"$ipv4qr"
+
+    echo IPv6:
+    qrencode -t ANSIUTF8 <<<"$ipv6qr"
+
+    echo "Hysteria2 configuration modified."
+
+    echo -e "\e[31mPress Enter to Exit\e[0m"
+    read
+    clear
 }
 
 uninstall_hysteria() {
@@ -190,31 +195,16 @@ install_tuic() {
     else
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
 
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/TS"
-        cd && rm -rf singbox
+        install_core TS
 
         mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Tuic.json
-        curl -Lo /etc/systemd/system/TS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/TS.service 
+        curl -Lo /etc/systemd/system/TS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/TS.service
         systemctl daemon-reload
 
-        mkdir /root/selfcert && cd /root/selfcert || exit
-        openssl genrsa -out ca.key 2048
-        openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=Apple, Inc./CN=Apple Root CA" -out ca.crt
-        openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=Apple, Inc./CN=*.apple.com" -out server.csr
-        openssl x509 -req -extfile <(printf "subjectAltName=DNS:apple.com,DNS:www.apple.com") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
-        mv server.crt /etc/tuic/server.crt
-        mv server.key /etc/tuic/server.key
-        cd || exit
-        rm -rf /root/selfcert
+        get_selfsigned_cert tuic
 
         password=$(openssl rand -hex 8)
-        uuid=$(cat /proc/sys/kernel/random/uuid)        
+        uuid=$(cat /proc/sys/kernel/random/uuid)
         sed -i "s/NAME/Tuic/" /etc/tuic/server.json
         sed -i "s/PORT/$user_port/" /etc/tuic/server.json
         sed -i "s/PASSWORD/$password/" /etc/tuic/server.json
@@ -230,17 +220,16 @@ install_tuic() {
         (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart TS") | crontab -
 
         result_url=" 
-        ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
+        ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#TUIC
         ---------------------------------------------------------------
-        ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC-V6"
-
-        echo -e "Config URL: $result_url" >/etc/tuic/user-config.txt
+        ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#TUIC-V6"
 
         result_url2=" 
-        ipv4 : tuic://UUID:PASSWORD@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC
+        ipv4 : tuic://UUID:PASSWORD@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC
         ---------------------------------------------------------------
-        ipv6 : tuic://UUID:PASSWORD@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC-V6"
+        ipv6 : tuic://UUID:PASSWORD@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC-V6"
 
+        echo -e "Config URL: $result_url" >/etc/tuic/user-config.txt
         echo -e "Config URL: $result_url2" >/etc/tuic/config.txt
         echo -e "Config URL: \e[91m$result_url\e[0m"
 
@@ -273,18 +262,10 @@ modify_tuic_config() {
 
         mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Tuic.json
 
-        mkdir /root/selfcert && cd /root/selfcert || exit
-        openssl genrsa -out ca.key 2048
-        openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=Apple, Inc./CN=Apple Root CA" -out ca.crt
-        openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=Apple, Inc./CN=*.apple.com" -out server.csr
-        openssl x509 -req -extfile <(printf "subjectAltName=DNS:apple.com,DNS:www.apple.com") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
-        mv server.crt /etc/tuic/server.crt
-        mv server.key /etc/tuic/server.key
-        cd || exit
-        rm -rf /root/selfcert
+        get_selfsigned_cert tuic
 
         password=$(openssl rand -hex 8)
-        uuid=$(cat /proc/sys/kernel/random/uuid)        
+        uuid=$(cat /proc/sys/kernel/random/uuid)
         sed -i "s/NAME/Tuic/" /etc/tuic/server.json
         sed -i "s/PORT/$user_port/" /etc/tuic/server.json
         sed -i "s/PASSWORD/$password/" /etc/tuic/server.json
@@ -298,17 +279,16 @@ modify_tuic_config() {
         systemctl start TS
 
         result_url=" 
-        ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC
+        ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#TUIC
         ---------------------------------------------------------------
-        ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#TUIC-V6"
-
-        echo -e "Config URL: $result_url" >/etc/tuic/user-config.txt
+        ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#TUIC-V6"
 
         result_url2=" 
-        ipv4 : tuic://UUID:PASSWORD@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC
+        ipv4 : tuic://UUID:PASSWORD@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC
         ---------------------------------------------------------------
-        ipv6 : tuic://UUID:PASSWORD@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.apple.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC-V6"
+        ipv6 : tuic://UUID:PASSWORD@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC-V6"
 
+        echo -e "Config URL: $result_url" >/etc/tuic/user-config.txt
         echo -e "Config URL: $result_url2" >/etc/tuic/config.txt
         echo -e "Config URL: \e[91m$result_url\e[0m"
 
@@ -345,150 +325,166 @@ uninstall_tuic() {
 }
 
 install_reality() {
-    reality_check="/etc/reality/config.json"
+    Transport="$1"
+    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+    user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
 
-    if [ -e "$reality_check" ]; then
-        whiptail --msgbox "Reality is Already installed " 10 30
-        clear
-    else
-        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
-        user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
+    install_core RS
 
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/RS"
-        cd && rm -rf singbox
+    mkdir -p /etc/reality
 
-        mkdir -p /etc/reality && curl -Lo /etc/reality/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC.json
-        curl -Lo /etc/systemd/system/RS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/RS.service
-        systemctl daemon-reload
+    if [ "$Transport" == "grpc" ]; then
+        curl -Lo /etc/reality/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC.json
+    elif [ "$Transport" == "tcp" ]; then
+        curl -Lo /etc/reality/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-tcp.json
+    fi
 
-        uuid=$(cat /proc/sys/kernel/random/uuid)
-        short_id=$(openssl rand -hex 8)  
-        service_name=$(openssl rand -hex 4)  
-        output=$(RS generate reality-keypair)
-        private_key=$(echo "$output" | grep -oP 'PrivateKey: \K\S+')
-        public_key=$(echo "$output" | grep -oP 'PublicKey: \K\S+')                    
-        sed -i "s/PORT/$user_port/" /etc/reality/config.json
-        sed -i "s/SNI/$user_sni/" /etc/reality/config.json
-        sed -i "s/NAME/Reality/" /etc/reality/config.json
-        sed -i "s/UUID/$uuid/" /etc/reality/config.json
-        sed -i "s/PRIVATE-KEY/$private_key/" /etc/reality/config.json
-        sed -i "s/SHORT-ID/$short_id/" /etc/reality/config.json
-        sed -i "s/PATH/$service_name/" /etc/reality/config.json
+    curl -Lo /etc/systemd/system/RS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/RS.service
+    systemctl daemon-reload
 
-        public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
-        public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
+    uuid=$(cat /proc/sys/kernel/random/uuid)
+    short_id=$(openssl rand -hex 8)
+    service_name=$(openssl rand -hex 4)
+    output=$(RS generate reality-keypair)
+    private_key=$(echo "$output" | grep -oP 'PrivateKey: \K\S+')
+    public_key=$(echo "$output" | grep -oP 'PublicKey: \K\S+')
+    sed -i "s/PORT/$user_port/" /etc/reality/config.json
+    sed -i "s/SNI/$user_sni/" /etc/reality/config.json
+    sed -i "s/NAME/Reality/" /etc/reality/config.json
+    sed -i "s/UUID/$uuid/" /etc/reality/config.json
+    sed -i "s/PRIVATE-KEY/$private_key/" /etc/reality/config.json
+    sed -i "s/SHORT-ID/$short_id/" /etc/reality/config.json
+    sed -i "s/PATH/$service_name/" /etc/reality/config.json
 
-        set_ufw
+    public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
+    public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
-        systemctl enable --now RS
+    set_ufw
 
-        (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart RS") | crontab -
+    systemctl enable --now RS
 
+    (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart RS") | crontab -
+
+    if [ "$Transport" == "grpc" ]; then
         result_url=" 
         ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
         ---------------------------------------------------------------
         ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality-V6"
 
-        echo -e "Config URL: $result_url" >/etc/reality/user-config.txt
-
         result_url2=" 
         ipv4 : vless://UUID@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#NAME-Reality
         ---------------------------------------------------------------
         ipv6 : vless://UUID@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#NAME-Reality-V6"
+    elif [ "$Transport" == "tcp" ]; then
+        result_url="
+        ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=tcp&flow=xtls-rprx-vision&encryption=none#Reality
+        ---------------------------------------------------------------
+        ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=tcp&flow=xtls-rprx-vision&encryption=none#Reality-V6"
 
-        echo -e "Config URL: $result_url2" >/etc/reality/config.txt
-        echo -e "Config URL: \e[91m$result_url\e[0m"
-
-        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/reality/user-config.txt)
-        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/reality/user-config.txt)
-
-        echo IPv4:
-        qrencode -t ANSIUTF8 <<<"$ipv4qr"
-
-        echo IPv6:
-        qrencode -t ANSIUTF8 <<<"$ipv6qr"
-
-        echo "Reality setup completed."
-
-        echo -e "\e[31mPress Enter to Exit\e[0m"
-        read
-        clear
+        result_url2=" 
+        ipv4 : vless://UUID@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=tcp&flow=xtls-rprx-vision&encryption=none#NAME-Reality
+        ---------------------------------------------------------------
+        ipv6 : vless://UUID@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=tcp&flow=xtls-rprx-vision&encryption=none#NAME-Reality-V6"
     fi
+
+    echo -e "Config URL: $result_url" >/etc/reality/user-config.txt
+    echo -e "Config URL: $result_url2" >/etc/reality/config.txt
+    echo -e "Config URL: \e[91m$result_url\e[0m"
+
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/reality/user-config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/reality/user-config.txt)
+
+    echo IPv4:
+    qrencode -t ANSIUTF8 <<<"$ipv4qr"
+
+    echo IPv6:
+    qrencode -t ANSIUTF8 <<<"$ipv6qr"
+
+    echo "Reality setup completed."
+
+    echo -e "\e[31mPress Enter to Exit\e[0m"
+    read
+    clear
 }
 
 modify_reality_config() {
-    reality_check="/etc/reality/config.json"
+    Transport="$1"
+    user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+    user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
 
-    if [ -e "$reality_check" ]; then
-        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
-        user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
+    systemctl stop RS
 
-        systemctl stop RS
+    rm -rf /etc/reality
 
-        rm -rf /etc/reality
+    mkdir -p /etc/reality
 
-        mkdir -p /etc/reality && curl -Lo /etc/reality/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC.json
+    if [ "$Transport" == "grpc" ]; then
+        curl -Lo /etc/reality/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-gRPC.json
+    elif [ "$Transport" == "tcp" ]; then
+        curl -Lo /etc/reality/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Reality-tcp.json
+    fi
 
-        uuid=$(cat /proc/sys/kernel/random/uuid)
-        short_id=$(openssl rand -hex 8) 
-        service_name=$(openssl rand -hex 4) 
-        output=$(RS generate reality-keypair)
-        private_key=$(echo "$output" | grep -oP 'PrivateKey: \K\S+')
-        public_key=$(echo "$output" | grep -oP 'PublicKey: \K\S+')                      
-        sed -i "s/PORT/$user_port/" /etc/reality/config.json
-        sed -i "s/SNI/$user_sni/" /etc/reality/config.json
-        sed -i "s/NAME/Reality/" /etc/reality/config.json
-        sed -i "s/UUID/$uuid/" /etc/reality/config.json
-        sed -i "s/PRIVATE-KEY/$private_key/" /etc/reality/config.json
-        sed -i "s/SHORT-ID/$short_id/" /etc/reality/config.json
-        sed -i "s/PATH/$service_name/" /etc/reality/config.json
+    uuid=$(cat /proc/sys/kernel/random/uuid)
+    short_id=$(openssl rand -hex 8)
+    service_name=$(openssl rand -hex 4)
+    output=$(RS generate reality-keypair)
+    private_key=$(echo "$output" | grep -oP 'PrivateKey: \K\S+')
+    public_key=$(echo "$output" | grep -oP 'PublicKey: \K\S+')
+    sed -i "s/PORT/$user_port/" /etc/reality/config.json
+    sed -i "s/SNI/$user_sni/" /etc/reality/config.json
+    sed -i "s/NAME/Reality/" /etc/reality/config.json
+    sed -i "s/UUID/$uuid/" /etc/reality/config.json
+    sed -i "s/PRIVATE-KEY/$private_key/" /etc/reality/config.json
+    sed -i "s/SHORT-ID/$short_id/" /etc/reality/config.json
+    sed -i "s/PATH/$service_name/" /etc/reality/config.json
 
-        public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
-        public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
+    public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
+    public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
-        set_ufw
+    set_ufw
 
-        systemctl start RS
+    systemctl start RS
 
+    if [ "$Transport" == "grpc" ]; then
         result_url=" 
         ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality
         ---------------------------------------------------------------
         ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#Reality-V6"
 
-        echo -e "Config URL: $result_url" >/etc/reality/user-config.txt
-
         result_url2=" 
         ipv4 : vless://UUID@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#NAME-Reality
         ---------------------------------------------------------------
         ipv6 : vless://UUID@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=grpc&serviceName=$service_name&encryption=none#NAME-Reality-V6"
+    elif [ "$Transport" == "tcp" ]; then
+        result_url="
+        ipv4 : vless://$uuid@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=tcp&flow=xtls-rprx-vision&encryption=none#Reality
+        ---------------------------------------------------------------
+        ipv6 : vless://$uuid@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=tcp&flow=xtls-rprx-vision&encryption=none#Reality-V6"
 
-        echo -e "Config URL: $result_url2" >/etc/reality/config.txt
-        echo -e "Config URL: \e[91m$result_url\e[0m"
-
-        ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/reality/user-config.txt)
-        ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/reality/user-config.txt)
-
-        echo IPv4:
-        qrencode -t ANSIUTF8 <<<"$ipv4qr"
-
-        echo IPv6:
-        qrencode -t ANSIUTF8 <<<"$ipv6qr"
-
-        echo "Reality configuration modified."
-
-        echo -e "\e[31mPress Enter to Exit\e[0m"
-        read
-        clear
-    else
-        whiptail --msgbox "Reality is not installed yet." 10 30
-        clear
+        result_url2=" 
+        ipv4 : vless://UUID@$public_ipv4:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=tcp&flow=xtls-rprx-vision&encryption=none#NAME-Reality
+        ---------------------------------------------------------------
+        ipv6 : vless://UUID@[$public_ipv6]:$user_port?security=reality&sni=$user_sni&fp=firefox&pbk=$public_key&sid=$short_id&type=tcp&flow=xtls-rprx-vision&encryption=none#NAME-Reality-V6"
     fi
+
+    echo -e "Config URL: $result_url" >/etc/reality/user-config.txt
+    echo -e "Config URL: $result_url2" >/etc/reality/config.txt
+    echo -e "Config URL: \e[91m$result_url\e[0m"
+
+    ipv4qr=$(grep -oP 'ipv4 : \K\S+' /etc/reality/user-config.txt)
+    ipv6qr=$(grep -oP 'ipv6 : \K\S+' /etc/reality/user-config.txt)
+
+    echo IPv4:
+    qrencode -t ANSIUTF8 <<<"$ipv4qr"
+
+    echo IPv6:
+    qrencode -t ANSIUTF8 <<<"$ipv6qr"
+
+    echo "Reality configuration modified."
+
+    echo -e "\e[31mPress Enter to Exit\e[0m"
+    read
+    clear
 }
 
 regenerate_keys() {
@@ -539,21 +535,14 @@ install_shadowtls() {
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
         user_sni=$(whiptail --inputbox "Enter SNI:" 10 30 2>&1 >/dev/tty)
 
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/ST"
-        cd && rm -rf singbox
+        install_core ST
 
         mkdir -p /etc/shadowtls && curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS.json
         curl -Lo /etc/shadowtls/user-nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
         curl -Lo /etc/shadowtls/user-nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
         curl -Lo /etc/shadowtls/nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
         curl -Lo /etc/shadowtls/nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
-        curl -Lo /etc/systemd/system/ST.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/ST.service 
+        curl -Lo /etc/systemd/system/ST.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/ST.service
         systemctl daemon-reload
 
         sed -i "s/PORT/$user_port/" /etc/shadowtls/config.json
@@ -586,7 +575,7 @@ install_shadowtls() {
         sed -i "s/IP/$public_ipv4/" /etc/shadowtls/user-nekorayconfig.txt
         sed -i "s/IP/$public_ipv4/" /etc/shadowtls/user-nekoboxconfig.txt
 
-        sed -i "s/NAME/ShadowTLS/" /etc/shadowtls/config.json        
+        sed -i "s/NAME/ShadowTLS/" /etc/shadowtls/config.json
 
         set_ufw
 
@@ -656,7 +645,7 @@ modify_shadowtls_config() {
         sed -i "s/IP/$public_ipv4/" /etc/shadowtls/user-nekorayconfig.txt
         sed -i "s/IP/$public_ipv4/" /etc/shadowtls/user-nekoboxconfig.txt
 
-        sed -i "s/NAME/ShadowTLS/" /etc/shadowtls/config.json        
+        sed -i "s/NAME/ShadowTLS/" /etc/shadowtls/config.json
 
         set_ufw
 
@@ -702,17 +691,10 @@ install_ws() {
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
         domain=$(whiptail --inputbox "Enter Domain:" 10 30 2>&1 >/dev/tty)
 
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/WS"
-        cd && rm -rf singbox
+        install_core WS
 
         mkdir -p /etc/ws && curl -Lo /etc/ws/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/WebSocket.json
-        curl -Lo /etc/systemd/system/WS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/WS.service 
+        curl -Lo /etc/systemd/system/WS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/WS.service
         systemctl daemon-reload
 
         uuid=$(cat /proc/sys/kernel/random/uuid)
@@ -722,7 +704,7 @@ install_ws() {
         sed -i "s/NAME/WebSocket/" /etc/ws/config.json
 
         set_ufw
-        
+
         get_ssl ws
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/ws/server.crt
         cp /etc/letsencrypt/live/"$domain"/privkey.pem /etc/ws/server.key
@@ -734,11 +716,10 @@ install_ws() {
         result_url=" 
         vless://$uuid@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=ws&encryption=none#WebSocket"
 
-        echo -e "Config URL: $result_url" >/etc/ws/user-config.txt
-
         result_url2=" 
         vless://UUID@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=ws&encryption=none#NAME-WebSocket"
 
+        echo -e "Config URL: $result_url" >/etc/ws/user-config.txt
         echo -e "Config URL: $result_url2" >/etc/ws/config.txt
         echo -e "Config URL: \e[91m$result_url\e[0m"
 
@@ -750,7 +731,7 @@ install_ws() {
         echo "WebSocket setup completed."
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
-        
+
         read
         clear
     fi
@@ -788,11 +769,10 @@ modify_ws_config() {
         result_url=" 
         vless://$uuid@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=ws&encryption=none#WebSocket"
 
-        echo -e "Config URL: $result_url" >/etc/ws/user-config.txt
-
         result_url2=" 
         vless://UUID@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=ws&encryption=none#NAME-WebSocket"
 
+        echo -e "Config URL: $result_url" >/etc/ws/user-config.txt
         echo -e "Config URL: $result_url2" >/etc/ws/config.txt
         echo -e "Config URL: \e[91m$result_url\e[0m"
 
@@ -804,7 +784,7 @@ modify_ws_config() {
         echo "WebSocket configuration modified."
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
-        
+
         read
         clear
     else
@@ -835,17 +815,10 @@ install_naive() {
         user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
         domain=$(whiptail --inputbox "Enter Domain:" 10 30 2>&1 >/dev/tty)
 
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/NS"
-        cd && rm -rf singbox
+        install_core NS
 
         mkdir -p /etc/naive && curl -Lo /etc/naive/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Naive.json
-        curl -Lo /etc/systemd/system/NS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/NS.service 
+        curl -Lo /etc/systemd/system/NS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/NS.service
         systemctl daemon-reload
 
         password=$(openssl rand -hex 8)
@@ -855,7 +828,7 @@ install_naive() {
         sed -i "s/NAME/Naive/" /etc/naive/config.json
 
         set_ufw
-        
+
         get_ssl naive
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/naive/server.crt
         cp /etc/letsencrypt/live/"$domain"/privkey.pem /etc/naive/server.key
@@ -867,11 +840,10 @@ install_naive() {
         result_url=" 
         naive+https://Naive:$password@$domain:$user_port#Naive"
 
-        echo -e "Config URL: $result_url" >/etc/naive/user-config.txt
-
         result_url2=" 
         naive+https://NAME:PASSWORD@$domain:$user_port#NAME-Naive"
 
+        echo -e "Config URL: $result_url" >/etc/naive/user-config.txt
         echo -e "Config URL: $result_url2" >/etc/naive/config.txt
         echo -e "Config URL: \e[91m$result_url\e[0m"
 
@@ -883,7 +855,7 @@ install_naive() {
         echo "Naive setup completed."
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
-        
+
         read
         clear
     fi
@@ -921,11 +893,10 @@ modify_naive_config() {
         result_url=" 
         naive+https://Naive:$password@$domain:$user_port#Naive"
 
-        echo -e "Config URL: $result_url" >/etc/naive/user-config.txt
-
         result_url2=" 
         naive+https://NAME:PASSWORD@$domain:$user_port#NAME-Naive"
 
+        echo -e "Config URL: $result_url" >/etc/naive/user-config.txt
         echo -e "Config URL: $result_url2" >/etc/naive/config.txt
         echo -e "Config URL: \e[91m$result_url\e[0m"
 
@@ -937,7 +908,7 @@ modify_naive_config() {
         echo "Naive Configuration Modified."
 
         echo -e "\e[31mPress Enter to Exit\e[0m"
-        
+
         read
         clear
     else
@@ -1218,7 +1189,6 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file1" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file1"
-
             systemctl restart RS
 
             echo "WARP is disabled on Reality"
@@ -1240,7 +1210,6 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file2" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file2"
-
             systemctl restart ST
 
             echo "WARP is disabled on ShadowTLS"
@@ -1262,7 +1231,6 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file3" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file3"
-
             systemctl restart TS
 
             echo "WARP is disabled on TUIC"
@@ -1284,7 +1252,6 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file4" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file4"
-
             systemctl restart SH
 
             echo "WARP is disabled on Hysteria2"
@@ -1306,7 +1273,6 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file5" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file5"
-
             systemctl restart WS
 
             echo "WARP is disabled on WebSocket"
@@ -1328,7 +1294,6 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file6" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file6"
-
             systemctl restart NS
 
             echo "WARP is disabled on Naive"
@@ -1337,7 +1302,7 @@ uninstall_warp() {
         fi
     else
         echo
-    fi    
+    fi
 
     whiptail --msgbox "WARP uninstalled." 10 30
     clear
@@ -1350,20 +1315,9 @@ update_sing-box_core() {
 
     if [ -e "$rlt_core_check" ]; then
         systemctl stop RS
-
         rm /usr/bin/RS
-
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/RS"
-        cd && rm -rf singbox
-
+        install_core RS
         systemctl start RS
-
         echo "Reality sing-box core has been updated"
     else
         echo "Reality is not installed yet."
@@ -1373,20 +1327,9 @@ update_sing-box_core() {
 
     if [ -e "$st_core_check" ]; then
         systemctl stop ST
-
         rm /usr/bin/ST
-
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/ST"
-        cd && rm -rf singbox
-
+        install_core ST
         systemctl start ST
-
         echo "ShadowTLS sing-box core has been updated"
     else
         echo "ShadowTLS is not installed yet."
@@ -1396,20 +1339,9 @@ update_sing-box_core() {
 
     if [ -e "$ts_core_check" ]; then
         systemctl stop TS
-
         rm /usr/bin/TS
-
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/TS"
-        cd && rm -rf singbox
-
+        install_core TS
         systemctl start TS
-
         echo "TUIC sing-box core has been updated"
     else
         echo "TUIC is not installed yet."
@@ -1419,20 +1351,9 @@ update_sing-box_core() {
 
     if [ -e "$sh_core_check" ]; then
         systemctl stop SH
-
         rm /usr/bin/SH
-
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/SH"
-        cd && rm -rf singbox
-
+        install_core SH
         systemctl start SH
-
         echo "Hysteria2 sing-box core has been updated"
     else
         echo "Hysteria2 is not installed yet."
@@ -1442,20 +1363,9 @@ update_sing-box_core() {
 
     if [ -e "$ws_core_check" ]; then
         systemctl stop WS
-
         rm /usr/bin/WS
-
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/WS"
-        cd && rm -rf singbox
-
+        install_core WS
         systemctl start WS
-
         echo "WebSocket sing-box core has been updated"
     else
         echo "WebSocket is not installed yet."
@@ -1465,24 +1375,13 @@ update_sing-box_core() {
 
     if [ -e "$ns_core_check" ]; then
         systemctl stop NS
-
         rm /usr/bin/NS
-
-        mkdir /root/singbox && cd /root/singbox || exit
-        LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
-        LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
-        LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        wget "$LINK"
-        tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
-        cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/NS"
-        cd && rm -rf singbox
-
+        install_core NS
         systemctl start NS
-
         echo "Naive sing-box core has been updated"
     else
         echo "Naive is not installed yet."
-    fi    
+    fi
 
     whiptail --msgbox "Sing-Box Cores Has Been Updated" 10 30
     clear
@@ -1505,7 +1404,6 @@ toggle_warp_reality() {
 
                 jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
                 mv /tmp/tmp_config.json "$file"
-
                 systemctl start RS
 
                 whiptail --msgbox "WARP is disabled now" 10 30
@@ -1515,7 +1413,6 @@ toggle_warp_reality() {
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
-
                 systemctl start RS
 
                 whiptail --msgbox "WARP is enabled now" 10 30
@@ -1547,7 +1444,6 @@ toggle_warp_shadowtls() {
 
                 jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
                 mv /tmp/tmp_config.json "$file"
-
                 systemctl start ST
 
                 whiptail --msgbox "WARP is disabled now" 10 30
@@ -1557,7 +1453,6 @@ toggle_warp_shadowtls() {
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
-
                 systemctl start ST
 
                 whiptail --msgbox "WARP is enabled now" 10 30
@@ -1589,7 +1484,6 @@ toggle_warp_tuic() {
 
                 jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
                 mv /tmp/tmp_config.json "$file"
-
                 systemctl start TS
 
                 whiptail --msgbox "WARP is disabled now" 10 30
@@ -1599,7 +1493,6 @@ toggle_warp_tuic() {
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
-
                 systemctl start TS
 
                 whiptail --msgbox "WARP is enabled now" 10 30
@@ -1631,7 +1524,6 @@ toggle_warp_hysteria() {
 
                 jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
                 mv /tmp/tmp_config.json "$file"
-
                 systemctl start SH
 
                 whiptail --msgbox "WARP is disabled now" 10 30
@@ -1641,7 +1533,6 @@ toggle_warp_hysteria() {
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
-
                 systemctl start SH
 
                 whiptail --msgbox "WARP is enabled now" 10 30
@@ -1673,7 +1564,6 @@ toggle_warp_ws() {
 
                 jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
                 mv /tmp/tmp_config.json "$file"
-
                 systemctl start WS
 
                 whiptail --msgbox "WARP is disabled now" 10 30
@@ -1683,7 +1573,6 @@ toggle_warp_ws() {
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
-
                 systemctl start WS
 
                 whiptail --msgbox "WARP is enabled now" 10 30
@@ -1715,7 +1604,6 @@ toggle_warp_naive() {
 
                 jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
                 mv /tmp/tmp_config.json "$file"
-
                 systemctl start NS
 
                 whiptail --msgbox "WARP is disabled now" 10 30
@@ -1725,7 +1613,6 @@ toggle_warp_naive() {
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
-
                 systemctl start NS
 
                 whiptail --msgbox "WARP is enabled now" 10 30
@@ -1831,12 +1718,12 @@ get_storage_usage() {
 
 check_system_ip() {
     IP4=$(wget -4 -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 http://ip-api.com/json/) &&
-    WAN4=$(expr "$IP4" : '.*query\":[ ]*\"\([^"]*\).*') &&
-    COUNTRY=$(expr "$IP4" : '.*country\":[ ]*\"\([^"]*\).*') &&
-    ISP=$(expr "$IP4" : '.*isp\":[ ]*\"\([^"]*\).*')
+        WAN4=$(expr "$IP4" : '.*query\":[ ]*\"\([^"]*\).*') &&
+        COUNTRY=$(expr "$IP4" : '.*country\":[ ]*\"\([^"]*\).*') &&
+        ISP=$(expr "$IP4" : '.*isp\":[ ]*\"\([^"]*\).*')
 
     IP6=$(wget -6 -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://api.ip.sb/geoip) &&
-    WAN6=$(expr "$IP6" : '.*ip\":[ ]*\"\([^"]*\).*')
+        WAN6=$(expr "$IP6" : '.*ip\":[ ]*\"\([^"]*\).*')
 }
 
 check_and_display_process_status() {
@@ -1919,6 +1806,31 @@ get_ssl() {
     done
 }
 
+get_selfsigned_cert() {
+    protocol="$1"
+    mkdir /root/selfcert && cd /root/selfcert || exit
+    openssl genrsa -out ca.key 2048
+    openssl req -new -x509 -days 3650 -key ca.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=Google Root CA" -out ca.crt
+    openssl req -newkey rsa:2048 -nodes -keyout server.key -subj "/C=CN/ST=GD/L=SZ/O=Google, Inc./CN=*.google.com" -out server.csr
+    openssl x509 -req -extfile <(printf "subjectAltName=DNS:google.com,DNS:www.google.com") -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
+    mv server.crt /etc/$protocol/server.crt
+    mv server.key /etc/$protocol/server.key
+    cd || exit
+    rm -rf /root/selfcert
+}
+
+install_core() {
+    Protocol="$1"
+    mkdir /root/singbox && cd /root/singbox || exit
+    LATEST_URL=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/SagerNet/sing-box/releases/latest)
+    LATEST_VERSION="$(echo $LATEST_URL | grep -o -E '/.?[0-9|\.]+$' | grep -o -E '[0-9|\.]+')"
+    LINK="https://github.com/SagerNet/sing-box/releases/download/v${LATEST_VERSION}/sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+    wget "$LINK"
+    tar -xf "sing-box-${LATEST_VERSION}-linux-amd64.tar.gz"
+    cp "sing-box-${LATEST_VERSION}-linux-amd64/sing-box" "/usr/bin/$Protocol"
+    cd && rm -rf singbox
+}
+
 set_ufw() {
     if ufw status | grep -q "Status: active"; then
         ufw disable
@@ -1929,7 +1841,7 @@ set_ufw() {
         echo 'UFW is Optimized.'
         sleep 0.5
     else
-        echo "UFW in not active"
+        echo "UFW is not active"
     fi
 }
 
@@ -2061,12 +1973,17 @@ add_reality_user() {
 
             if [ "$user_exists" -eq 0 ]; then
                 uuid=$(cat /proc/sys/kernel/random/uuid)
+                transport_exists=$(jq '.inbounds[0].transport' "$config_file")
+                type_value=$(jq -r '.inbounds[0].transport.type' "$config_file")
 
-                jq --arg name "$name" --arg uuid "$uuid" '.inbounds[0].users += [{"name": $name, "uuid": $uuid}]' "$config_file" >tmp_config.json
+                if [ -z "$transport_exists" ] || ([ -n "$transport_exists" ] && [ "$type_value" != "grpc" ]); then
+                    jq --arg name "$name" --arg uuid "$uuid" '.inbounds[0].users += [{"name": $name, "uuid": $uuid, "flow": "xtls-rprx-vision"}]' "$config_file" >tmp_config.json
+                elif [ -n "$transport_exists" ] && [ "$type_value" = "grpc" ]; then
+                    jq --arg name "$name" --arg uuid "$uuid" '.inbounds[0].users += [{"name": $name, "uuid": $uuid}]' "$config_file" >tmp_config.json
+                fi
+
                 mv tmp_config.json "$config_file"
-
                 systemctl restart RS
-
                 whiptail --msgbox "User added successfully!" 10 30
                 clear
             else
@@ -2233,7 +2150,7 @@ add_naive_user() {
             if [ "$user_exists" -eq 0 ]; then
                 password=$(openssl rand -hex 8)
 
-                jq --arg username "$name" --arg password "$password" '.inbounds[0].users += [{"username": $username, "password": $password}]' "$config_file" > tmp_config.json && mv tmp_config.json "$config_file"
+                jq --arg username "$name" --arg password "$password" '.inbounds[0].users += [{"username": $username, "password": $password}]' "$config_file" >tmp_config.json && mv tmp_config.json "$config_file"
 
                 systemctl restart NS
 
