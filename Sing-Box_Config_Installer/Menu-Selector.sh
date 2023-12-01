@@ -67,13 +67,13 @@ while true; do
   case $user_choice in
 
   1)
-    clear
-    check_dep    
+    check_dep
+    clear    
     tui
     ;;
   2)
+    check_dep
     clear
-    check_dep    
     legacy
     ;;
   0)
