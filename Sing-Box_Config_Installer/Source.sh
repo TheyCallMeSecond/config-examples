@@ -197,7 +197,9 @@ install_tuic() {
 
         install_core TS
 
-        mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Tuic.json
+        mkdir -p /etc/tuic
+
+        curl -Lo /etc/tuic/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Tuic.json
         curl -Lo /etc/systemd/system/TS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/TS.service
         systemctl daemon-reload
 
@@ -260,7 +262,9 @@ modify_tuic_config() {
 
         rm -rf /etc/tuic
 
-        mkdir -p /etc/tuic && curl -Lo /etc/tuic/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Tuic.json
+        mkdir -p /etc/tuic
+
+        curl -Lo /etc/tuic/server.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Tuic.json
 
         get_selfsigned_cert tuic
 
@@ -489,15 +493,14 @@ modify_reality_config() {
 
 regenerate_keys() {
     reality_check="/etc/reality/config.json"
+    config_json="/etc/reality/config.json"
+    config_txt="/etc/reality/config.txt"
 
     if [ -e "$reality_check" ]; then
         output=$(RS generate reality-keypair)
         new_private_key=$(echo "$output" | grep -oP 'PrivateKey: \K\S+')
         new_public_key=$(echo "$output" | grep -oP 'PublicKey: \K\S+')
         new_short_id=$(RS generate rand 8 --hex)
-
-        config_json="/etc/reality/config.json"
-        config_txt="/etc/reality/config.txt"
 
         jq --arg new_key "$new_private_key" --arg new_id "$new_short_id" '.inbounds[0].tls.reality.private_key = $new_key | .inbounds[0].tls.reality.short_id[0] = $new_id' "$config_json" >temp.json && mv temp.json "$config_json"
         sed -i "s/pbk=[^\&]*/pbk=$new_public_key/g" "$config_txt"
@@ -537,13 +540,19 @@ install_shadowtls() {
 
         install_core ST
 
-        mkdir -p /etc/shadowtls && curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS.json
+        mkdir -p /etc/shadowtls
+
+        curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS.json
         curl -Lo /etc/shadowtls/user-nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
         curl -Lo /etc/shadowtls/user-nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
         curl -Lo /etc/shadowtls/nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
         curl -Lo /etc/shadowtls/nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
         curl -Lo /etc/systemd/system/ST.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/ST.service
         systemctl daemon-reload
+
+        stpass=$(openssl rand -hex 16)
+        sspass=$(openssl rand -hex 16)
+        public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
 
         sed -i "s/PORT/$user_port/" /etc/shadowtls/config.json
         sed -i "s/PORT/$user_port/" /etc/shadowtls/nekorayconfig.txt
@@ -557,19 +566,16 @@ install_shadowtls() {
         sed -i "s/SNI/$user_sni/" /etc/shadowtls/user-nekorayconfig.txt
         sed -i "s/SNI/$user_sni/" /etc/shadowtls/user-nekoboxconfig.txt
 
-        stpass=$(openssl rand -hex 16)
         sed -i "s/STPASS/$stpass/" /etc/shadowtls/config.json
         sed -i "s/STPASS/$stpass/" /etc/shadowtls/user-nekorayconfig.txt
         sed -i "s/STPASS/$stpass/" /etc/shadowtls/user-nekoboxconfig.txt
 
-        sspass=$(openssl rand -hex 16)
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/config.json
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekorayconfig.txt
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekoboxconfig.txt
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/user-nekorayconfig.txt
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/user-nekoboxconfig.txt
 
-        public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
         sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekorayconfig.txt
         sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekoboxconfig.txt
         sed -i "s/IP/$public_ipv4/" /etc/shadowtls/user-nekorayconfig.txt
@@ -609,11 +615,17 @@ modify_shadowtls_config() {
 
         rm -rf /etc/shadowtls
 
-        mkdir -p /etc/shadowtls && curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS.json
+        mkdir -p /etc/shadowtls
+
+        curl -Lo /etc/shadowtls/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/ShadowTLS.json
         curl -Lo /etc/shadowtls/user-nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
         curl -Lo /etc/shadowtls/user-nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
         curl -Lo /etc/shadowtls/nekorayconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekoray.json
         curl -Lo /etc/shadowtls/nekoboxconfig.txt https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Client/ShadowTLS-nekobox.json
+
+        stpass=$(openssl rand -hex 16)
+        sspass=$(openssl rand -hex 16)
+        public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
 
         sed -i "s/PORT/$user_port/" /etc/shadowtls/config.json
         sed -i "s/PORT/$user_port/" /etc/shadowtls/nekorayconfig.txt
@@ -627,19 +639,16 @@ modify_shadowtls_config() {
         sed -i "s/SNI/$user_sni/" /etc/shadowtls/user-nekorayconfig.txt
         sed -i "s/SNI/$user_sni/" /etc/shadowtls/user-nekoboxconfig.txt
 
-        stpass=$(openssl rand -hex 16)
         sed -i "s/STPASS/$stpass/" /etc/shadowtls/config.json
         sed -i "s/STPASS/$stpass/" /etc/shadowtls/user-nekorayconfig.txt
         sed -i "s/STPASS/$stpass/" /etc/shadowtls/user-nekoboxconfig.txt
 
-        sspass=$(openssl rand -hex 16)
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/config.json
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekorayconfig.txt
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/nekoboxconfig.txt
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/user-nekorayconfig.txt
         sed -i "s/SSPASS/$sspass/" /etc/shadowtls/user-nekoboxconfig.txt
 
-        public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
         sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekorayconfig.txt
         sed -i "s/IP/$public_ipv4/" /etc/shadowtls/nekoboxconfig.txt
         sed -i "s/IP/$public_ipv4/" /etc/shadowtls/user-nekorayconfig.txt
@@ -693,7 +702,9 @@ install_ws() {
 
         install_core WS
 
-        mkdir -p /etc/ws && curl -Lo /etc/ws/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/WebSocket.json
+        mkdir -p /etc/ws
+
+        curl -Lo /etc/ws/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/WebSocket.json
         curl -Lo /etc/systemd/system/WS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/WS.service
         systemctl daemon-reload
 
@@ -705,7 +716,7 @@ install_ws() {
 
         set_ufw
 
-        get_ssl ws
+        get_ssl ws "$domain"
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/ws/server.crt
         cp /etc/letsencrypt/live/"$domain"/privkey.pem /etc/ws/server.key
 
@@ -748,7 +759,9 @@ modify_ws_config() {
 
         rm -rf /etc/ws
 
-        mkdir -p /etc/ws && curl -Lo /etc/ws/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/WebSocket.json
+        mkdir -p /etc/ws
+
+        curl -Lo /etc/ws/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/WebSocket.json
 
         uuid=$(cat /proc/sys/kernel/random/uuid)
         sed -i "s/UUID/$uuid/" /etc/ws/config.json
@@ -758,7 +771,7 @@ modify_ws_config() {
 
         set_ufw
 
-        get_ssl ws
+        get_ssl ws "$domain"
         rm -f /etc/ws/server.crt
         rm -f /etc/ws/server.key
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/ws/server.crt
@@ -817,7 +830,9 @@ install_naive() {
 
         install_core NS
 
-        mkdir -p /etc/naive && curl -Lo /etc/naive/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Naive.json
+        mkdir -p /etc/naive
+
+        curl -Lo /etc/naive/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Naive.json
         curl -Lo /etc/systemd/system/NS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/NS.service
         systemctl daemon-reload
 
@@ -829,7 +844,7 @@ install_naive() {
 
         set_ufw
 
-        get_ssl naive
+        get_ssl naive "$domain"
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/naive/server.crt
         cp /etc/letsencrypt/live/"$domain"/privkey.pem /etc/naive/server.key
 
@@ -872,7 +887,9 @@ modify_naive_config() {
 
         rm -rf /etc/naive
 
-        mkdir -p /etc/naive && curl -Lo /etc/naive/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Naive.json
+        mkdir -p /etc/naive
+
+        curl -Lo /etc/naive/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/Naive.json
 
         password=$(openssl rand -hex 8)
         sed -i "s/PASSWORD/$password/" /etc/naive/config.json
@@ -882,7 +899,7 @@ modify_naive_config() {
 
         set_ufw
 
-        get_ssl naive
+        get_ssl naive "$domain"
         rm -f /etc/naive/server.crt
         rm -f /etc/naive/server.key
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/naive/server.crt
@@ -1629,7 +1646,6 @@ toggle_warp_naive() {
 }
 
 check_OS() {
-    [[ $EUID -ne 0 ]] && echo "not root!" && exit 0
     if [[ -f /etc/redhat-release ]]; then
         systemPackage="yum"
     elif cat /etc/issue | grep -q -E -i "debian"; then
@@ -1765,6 +1781,7 @@ add_alias() {
 
 get_ssl() {
     SERVICE_TYPE="$1"
+    DOMAIN="$2"
     RESTART_SERVICES=()
 
     stop_service() {
@@ -1790,7 +1807,7 @@ get_ssl() {
 
     check_and_stop_service 80
     check_and_stop_service 443
-    certbot certonly --standalone --agree-tos --register-unsafely-without-email -d "$domain"
+    certbot certonly --standalone --agree-tos --register-unsafely-without-email -d "$DOMAIN"
 
     if [[ $? -eq 0 ]]; then
         echo "Certificate generated successfully"
