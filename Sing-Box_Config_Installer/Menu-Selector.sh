@@ -10,7 +10,7 @@ get_storage_usage
 check_system_info
 check_system_ip
 
-processes=("SH:Hysteria2:/etc/hysteria2/server.json" "ST:ShadowTLS:/etc/shadowtls/config.json" "WS:WebSocket:/etc/ws/config.json" "RS:Reality:/etc/reality/config.json" "NS:Naive:/etc/naive/config.json" "TS:TUIC:/etc/tuic/server.json")
+processes=("SH:Hysteria2:/etc/hysteria2/server.json" "ST:ShadowTLS:/etc/shadowtls/config.json" "WS:WebSocket:/etc/ws/config.json" "RS:Reality:/etc/reality/config.json" "NS:Naive:/etc/naive/config.json" "TS:TUIC:/etc/tuic/server.json" "GS:gRPC:/etc/grpc/config.json")
 
 while true; do
   echo "
@@ -21,7 +21,7 @@ while true; do
 ┃╰━╯┃┃┃┃┃╰╯┣━━┫╰━╯┃╰╯┣╋╋╮┃╰━╯┃╰╯┃┃┃┃┃┃┃╰╯┃╭┫┣┫┃┃┣━━┃╰┫╭╮┃╰┫╰┫┃━┫┃
 ╰━━━┻┻╯╰┻━╮┃╱╱╰━━━┻━━┻╯╰╯╰━━━┻━━┻╯╰┻╯╰┻━╮┃╰━━┻╯╰┻━━┻━┻╯╰┻━┻━┻━━┻╯
 ╱╱╱╱╱╱╱╱╭━╯┃╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╭━╯┃
-╱╱╱╱╱╱╱╱╰━━╯╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╰━━╯V5.5.0"
+╱╱╱╱╱╱╱╱╰━━╯╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╰━━╯V6.0.0"
 
   echo "By theTCS"
 
@@ -58,27 +58,22 @@ while true; do
 
   echo
 
-  echo -e "00: \e[91mInstall Required Packages\e[0m
-   (Select this for first use)"
-  echo ------------------------------
-  echo -e "1:  \e[93mTUI Menu\e[0m"
-  echo -e "2:  \e[93mLegacy Menu\e[0m"
-  echo -e "0:  \e[95mExit\e[0m"
+  echo -e "1)  \e[93mTUI Menu\e[0m"
+  echo -e "2)  \e[93mLegacy Menu\e[0m"
+  echo -e "0)  \e[95mExit\e[0m"
 
   read -p "Enter your choice: " user_choice
 
   case $user_choice in
 
-  00)
-    clear
-    install_required_packages
-    ;;
   1)
     clear
+    check_dep    
     tui
     ;;
   2)
     clear
+    check_dep    
     legacy
     ;;
   0)

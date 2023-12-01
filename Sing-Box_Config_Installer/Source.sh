@@ -15,14 +15,6 @@ optimize_server() {
     clear
 }
 
-install_required_packages() {
-    check_OS
-    $systemPackage update -y
-    $systemPackage install wget whiptail qrencode jq certbot openssl python3 python3-pip -y
-    pip install httpx requests
-    clear
-}
-
 install_hysteria() {
     Transport="$1"
     user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
@@ -704,7 +696,7 @@ install_ws() {
 
         mkdir -p /etc/ws
 
-        curl -Lo /etc/ws/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/WebSocket.json
+        curl -Lo /etc/ws/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/vless-WebSocket.json
         curl -Lo /etc/systemd/system/WS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/WS.service
         systemctl daemon-reload
 
@@ -761,7 +753,7 @@ modify_ws_config() {
 
         mkdir -p /etc/ws
 
-        curl -Lo /etc/ws/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/WebSocket.json
+        curl -Lo /etc/ws/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/vless-WebSocket.json
 
         uuid=$(cat /proc/sys/kernel/random/uuid)
         sed -i "s/UUID/$uuid/" /etc/ws/config.json
@@ -815,6 +807,138 @@ uninstall_ws() {
     systemctl daemon-reload
 
     whiptail --msgbox "WebSocket uninstalled." 10 30
+    clear
+}
+
+install_grpc() {
+    grpc_check="/etc/grpc/config.json"
+
+    if [ -e "$grpc_check" ]; then
+        whiptail --msgbox "gRPC is Already installed " 10 30
+        clear
+    else
+        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+        domain=$(whiptail --inputbox "Enter Domain:" 10 30 2>&1 >/dev/tty)
+
+        install_core GS
+
+        mkdir -p /etc/grpc
+
+        curl -Lo /etc/grpc/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/vless-gRPC.json
+        curl -Lo /etc/systemd/system/GS.service https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/GS.service
+        systemctl daemon-reload
+
+        uuid=$(cat /proc/sys/kernel/random/uuid)
+        service_name=$(openssl rand -hex 4)
+        sed -i "s/UUID/$uuid/" /etc/grpc/config.json
+        sed -i "s/PORT/$user_port/" /etc/grpc/config.json
+        sed -i "s/DOMAIN/$domain/" /etc/grpc/config.json
+        sed -i "s/NAME/WebSocket/" /etc/grpc/config.json
+        sed -i "s/PATH/$service_name/" /etc/grpc/config.json
+
+        set_ufw
+
+        get_ssl grpc "$domain"
+        cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/grpc/server.crt
+        cp /etc/letsencrypt/live/"$domain"/privkey.pem /etc/grpc/server.key
+
+        systemctl enable --now GS
+
+        (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart GS") | crontab -
+
+        result_url=" 
+        vless://$uuid@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=grpc&serviceName=$service_name&encryption=none#gRPC"
+
+        result_url2=" 
+        vless://UUID@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=grpc&serviceName=$service_name&encryption=none#NAME-gRPC"
+
+        echo -e "Config URL: $result_url" >/etc/grpc/user-config.txt
+        echo -e "Config URL: $result_url2" >/etc/grpc/config.txt
+        echo -e "Config URL: \e[91m$result_url\e[0m"
+
+        config=$(cat /etc/grpc/user-config.txt)
+
+        echo QR:
+        qrencode -t ANSIUTF8 <<<"$config"
+
+        echo "gRPC setup completed."
+
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+
+        read
+        clear
+    fi
+}
+
+modify_grpc_config() {
+    grpc_check="/etc/grpc/config.json"
+
+    if [ -e "$grpc_check" ]; then
+        user_port=$(whiptail --inputbox "Enter Port:" 10 30 2>&1 >/dev/tty)
+        domain=$(whiptail --inputbox "Enter Domain:" 10 30 2>&1 >/dev/tty)
+
+        systemctl stop GS
+
+        rm -rf /etc/grpc
+
+        mkdir -p /etc/grpc
+
+        curl -Lo /etc/grpc/config.json https://raw.githubusercontent.com/TheyCallMeSecond/config-examples/main/Sing-Box/Server/vless-gRPC.json
+
+        uuid=$(cat /proc/sys/kernel/random/uuid)
+        service_name=$(openssl rand -hex 4)
+        sed -i "s/UUID/$uuid/" /etc/grpc/config.json
+        sed -i "s/PORT/$user_port/" /etc/grpc/config.json
+        sed -i "s/DOMAIN/$domain/" /etc/grpc/config.json
+        sed -i "s/NAME/WebSocket/" /etc/grpc/config.json
+        sed -i "s/PATH/$service_name/" /etc/grpc/config.json
+
+        set_ufw
+
+        get_ssl grpc "$domain"
+        rm -f /etc/grpc/server.crt
+        rm -f /etc/grpc/server.key
+        cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/grpc/server.crt
+        cp /etc/letsencrypt/live/"$domain"/privkey.pem /etc/grpc/server.key
+
+        systemctl enable --now GS
+
+        result_url=" 
+        vless://$uuid@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=grpc&serviceName=$service_name&encryption=none#gRPC"
+
+        result_url2=" 
+        vless://UUID@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=grpc&serviceName=$service_name&encryption=none#NAME-gRPC"
+
+        echo -e "Config URL: $result_url" >/etc/grpc/user-config.txt
+        echo -e "Config URL: $result_url2" >/etc/grpc/config.txt
+        echo -e "Config URL: \e[91m$result_url\e[0m"
+
+        config=$(cat /etc/grpc/user-config.txt)
+
+        echo QR:
+        qrencode -t ANSIUTF8 <<<"$config"
+
+        echo "gRPC configuration modified."
+
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+
+        read
+        clear
+    else
+        whiptail --msgbox "gRPC is not installed yet." 10 30
+        clear
+    fi
+}
+
+uninstall_grpc() {
+    systemctl stop GS
+    rm -f /usr/bin/GS
+    rm -rf /etc/grpc
+    rm -f /etc/systemd/system/GS.service
+    crontab -l | sed '/0 \*\/5 \* \* \* systemctl restart GS/d' | crontab -
+    systemctl daemon-reload
+
+    whiptail --msgbox "gRPC uninstalled." 10 30
     clear
 }
 
@@ -1124,6 +1248,37 @@ show_ws_config() {
     fi
 }
 
+show_grpc_config() {
+    grpc_check="/etc/grpc/config.txt"
+
+    if [ -e "$grpc_check" ]; then
+        config_file="/etc/grpc/config.json"
+        users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
+        user_choice=$(whiptail --menu "Select user:" 25 50 10 $users 2>&1 >/dev/tty)
+
+        if [ -n "$user_choice" ]; then
+            user_uuid=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].uuid' "$config_file")
+            user_name=$(jq -r --argjson user_key "$user_choice" '.inbounds[0].users[$user_key].name' "$config_file")
+
+            sed -e "s/UUID/$user_uuid/g" -e "s/NAME/$user_name/g" /etc/grpc/config.txt >/etc/grpc/user-config.txt
+
+            echo -e "\e[91m$(cat /etc/grpc/user-config.txt)\e[0m"
+
+            config=$(cat /etc/grpc/user-config.txt)
+
+            echo QR:
+            qrencode -t ANSIUTF8 <<<"$config"
+        fi
+
+        echo -e "\e[31mPress Enter to Exit\e[0m"
+        read
+        clear
+    else
+        whiptail --msgbox "gRPC is not installed yet." 10 30
+        clear
+    fi
+}
+
 show_naive_config() {
     naive_check="/etc/naive/config.txt"
 
@@ -1321,6 +1476,27 @@ uninstall_warp() {
         echo
     fi
 
+    file7="/etc/grpc/config.json"
+
+    if [ -e "$file7" ]; then
+        if jq -e '.outbounds[0].type == "wireguard"' "$file7" &>/dev/null; then
+            new_json='{
+            "tag": "direct",
+            "type": "direct"
+            }'
+
+            jq '.outbounds = ['"$new_json"']' "$file7" >/tmp/tmp_config.json
+            mv /tmp/tmp_config.json "$file7"
+            systemctl restart WS
+
+            echo "WARP is disabled on gRPC"
+        else
+            echo
+        fi
+    else
+        echo
+    fi    
+
     whiptail --msgbox "WARP uninstalled." 10 30
     clear
 
@@ -1399,6 +1575,18 @@ update_sing-box_core() {
     else
         echo "Naive is not installed yet."
     fi
+
+    gs_core_check="/usr/bin/GS"
+
+    if [ -e "$gs_core_check" ]; then
+        systemctl stop GS
+        rm /usr/bin/GS
+        install_core GS
+        systemctl start GS
+        echo "gRPC sing-box core has been updated"
+    else
+        echo "gRPC is not installed yet."
+    fi    
 
     whiptail --msgbox "Sing-Box Cores Has Been Updated" 10 30
     clear
@@ -1605,6 +1793,46 @@ toggle_warp_ws() {
     fi
 }
 
+toggle_warp_grpc() {
+    file="/etc/grpc/config.json"
+    warp="/etc/sbw/proxy.json"
+
+    if [ -e "$file" ]; then
+        if [ -e "$warp" ]; then
+            systemctl stop GS
+
+            if jq -e '.outbounds[0].type == "wireguard"' "$file" &>/dev/null; then
+                new_json='{
+                "tag": "direct",
+                "type": "direct"
+                }'
+
+                jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
+                mv /tmp/tmp_config.json "$file"
+                systemctl start WS
+
+                whiptail --msgbox "WARP is disabled now" 10 30
+                clear
+            else
+                outbounds_block=$(jq -c '.outbounds' "$warp")
+
+                jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
+                mv temp_config.json "$file"
+                systemctl start GS
+
+                whiptail --msgbox "WARP is enabled now" 10 30
+                clear
+            fi
+        else
+            whiptail --msgbox "WARP is not installed yet" 10 30
+            clear
+        fi
+    else
+        whiptail --msgbox "gRPC is not installed yet." 10 30
+        clear
+    fi
+}
+
 toggle_warp_naive() {
     file="/etc/naive/config.json"
     warp="/etc/sbw/proxy.json"
@@ -1646,20 +1874,32 @@ toggle_warp_naive() {
 }
 
 check_OS() {
-    if [[ -f /etc/redhat-release ]]; then
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        OS=$NAME
+        VER=$VERSION_ID
+    elif type lsb_release >/dev/null 2>&1; then
+        OS=$(lsb_release -si)
+        VER=$(lsb_release -sr)
+    elif [ -f /etc/lsb-release ]; then
+        . /etc/lsb-release
+        OS=$DISTRIB_ID
+        VER=$DISTRIB_RELEASE
+    elif [ -f /etc/debian_version ]; then
+        OS=Debian
+        VER=$(cat /etc/debian_version)
+    else
+        OS=$(uname -s)
+        VER=$(uname -r)
+    fi
+
+    if [ "$OS" == "Ubuntu" ] || [ "$OS" == "Debian" ]; then
+        systemPackage="apt"
+    elif [ "$OS" == "CentOS" ] || [ "$OS" == "Red Hat" ]; then
         systemPackage="yum"
-    elif cat /etc/issue | grep -q -E -i "debian"; then
-        systemPackage="apt"
-    elif cat /etc/issue | grep -q -E -i "ubuntu"; then
-        systemPackage="apt"
-    elif cat /etc/issue | grep -q -E -i "centos|red hat|redhat"; then
-        systemPackage="yum"
-    elif cat /proc/version | grep -q -E -i "debian"; then
-        systemPackage="apt"
-    elif cat /proc/version | grep -q -E -i "ubuntu"; then
-        systemPackage="apt"
-    elif cat /proc/version | grep -q -E -i "centos|red hat|redhat"; then
-        systemPackage="yum"
+    else
+        echo "Unsupported OS"
+        exit 1
     fi
 }
 
@@ -1692,6 +1932,35 @@ check_system_info() {
 
     KERNEL=$(uname -r)
     ARCHITECTURE=$(uname -m)
+}
+
+check_dep() {
+    check_OS
+    if [ "$OS" == "Ubuntu" ] || [ "$OS" == "Debian" ]; then
+        dependencies=("wget" "whiptail" "qrencode" "jq" "certbot" "openssl" "python3" "python3-pip")
+    elif [ "$OS" == "CentOS" ] || [ "$OS" == "Red Hat" ]; then
+        dependencies=("wget" "newt" "qrencode" "jq" "certbot" "openssl" "python3" "python3-pip")
+    fi
+
+    for package in "${dependencies[@]}"; do
+        if ! dpkg -s $package >/dev/null 2>&1 && ! rpm -q $package >/dev/null 2>&1; then
+            echo "Package $package is not installed. Installing..."
+            $systemPackage install -y $package
+        else
+            echo "Package $package is already installed."
+        fi
+    done
+
+    python_dependencies=("httpx" "requests")
+
+    for package in "${python_dependencies[@]}"; do
+        if ! python3 -c "import $package" >/dev/null 2>&1; then
+            echo "Python package $package is not installed. Installing..."
+            pip3 install $package
+        else
+            echo "Python package $package is already installed."
+        fi
+    done
 }
 
 get_cpu_usage() {
@@ -1734,12 +2003,12 @@ get_storage_usage() {
 
 check_system_ip() {
     IP4=$(wget -4 -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 http://ip-api.com/json/) &&
-        WAN4=$(expr "$IP4" : '.*query\":[ ]*\"\([^"]*\).*') &&
-        COUNTRY=$(expr "$IP4" : '.*country\":[ ]*\"\([^"]*\).*') &&
-        ISP=$(expr "$IP4" : '.*isp\":[ ]*\"\([^"]*\).*')
+    WAN4=$(expr "$IP4" : '.*query\":[ ]*\"\([^"]*\).*') &&
+    COUNTRY=$(expr "$IP4" : '.*country\":[ ]*\"\([^"]*\).*') &&
+    ISP=$(expr "$IP4" : '.*isp\":[ ]*\"\([^"]*\).*')
 
     IP6=$(wget -6 -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://api.ip.sb/geoip) &&
-        WAN6=$(expr "$IP6" : '.*ip\":[ ]*\"\([^"]*\).*')
+    WAN6=$(expr "$IP6" : '.*ip\":[ ]*\"\([^"]*\).*')
 }
 
 check_and_display_process_status() {
@@ -1820,6 +2089,10 @@ get_ssl() {
             rm -f /usr/bin/NS
             rm -rf /etc/naive
             rm -f /etc/systemd/system/NS.service
+        elif [ "$SERVICE_TYPE" == "grpc" ]; then
+            rm -f /usr/bin/GS
+            rm -rf /etc/grpc
+            rm -f /etc/systemd/system/GS.service    
         fi
 
         systemctl daemon-reload
@@ -2164,6 +2437,63 @@ remove_ws_user() {
         fi
     else
         whiptail --msgbox "WebSocket is not installed yet." 10 30
+        clear
+    fi
+}
+
+add_grpc_user() {
+    config_file="/etc/grpc/config.json"
+
+    if [ -e "$config_file" ]; then
+        name_regex="^[A-Za-z0-9]+$"
+        name=$(whiptail --inputbox "Enter the user's name:" 10 30 2>&1 >/dev/tty)
+
+        if [[ "$name" =~ $name_regex ]]; then
+            user_exists=$(jq --arg name "$name" '.inbounds[0].users | map(select(.name == $name)) | length' "$config_file")
+
+            if [ "$user_exists" -eq 0 ]; then
+                uuid=$(cat /proc/sys/kernel/random/uuid)
+
+                jq --arg name "$name" --arg uuid "$uuid" '.inbounds[0].users += [{"name": $name, "uuid": $uuid}]' "$config_file" >tmp_config.json
+                mv tmp_config.json "$config_file"
+
+                systemctl restart GS
+
+                whiptail --msgbox "User added successfully!" 10 30
+                clear
+            else
+                whiptail --msgbox "User already exists!" 10 30
+                clear
+            fi
+        else
+            whiptail --msgbox "Invalid characters. Use only A-Z and 0-9." 10 30
+            clear
+        fi
+    else
+        whiptail --msgbox "gRPC is not installed yet." 10 30
+        clear
+    fi
+}
+
+remove_grpc_user() {
+    config_file="/etc/grpc/config.json"
+
+    if [ -e "$config_file" ]; then
+        users=$(jq -r '.inbounds[0].users | to_entries[] | "\(.key) \(.value.name)"' "$config_file")
+        user_choice=$(whiptail --menu "Select a user to remove:" 25 50 10 $users 2>&1 >/dev/tty)
+
+        if [ -n "$user_choice" ]; then
+            user_index=$(echo "$user_choice" | awk '{print $1}')
+            jq "del(.inbounds[0].users[$user_index])" "$config_file" >tmp_config.json
+            mv tmp_config.json "$config_file"
+
+            systemctl restart GS
+
+            whiptail --msgbox "User removed successfully!" 10 30
+            clear
+        fi
+    else
+        whiptail --msgbox "gRPC is not installed yet." 10 30
         clear
     fi
 }

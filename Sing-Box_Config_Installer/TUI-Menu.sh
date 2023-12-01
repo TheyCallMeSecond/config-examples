@@ -4,18 +4,19 @@ source <(curl -sSL https://raw.githubusercontent.com/TheyCallMeSecond/config-exa
 
 while true; do
     user_choice=$(whiptail --clear --title "Main Menu" --menu "Please select a protocol:" 25 50 15 \
-        "Optimize" "     Optimize Server" \
-        "Update" "     Update Sing-Box Cores" \
+        "Optimize" "Optimize Server" \
+        "Update" "Update Sing-Box Cores" \
         "" "" \
-        "Hysteria2" "     Manage Hysteria2" \
-        "Tuic" "     Manage Tuic" \
-        "Reality" "     Manage Reality" \
-        "ShadowTLS" "     Manage ShadowTLS" \
-        "WebSocket" "     Manage WebSocket" \
-        "Naive" "     Manage Naive" \
-        "Warp" "     Manage Warp" \
-        "Exit" "     Exit the script" 3>&1 1>&2 2>&3)
-
+        "VLESS-WebSocket-tls" "Manage VLESS-WebSocket-tls" \
+        "VLESS-gRPC-tls" "Manage VLESS-gRPC-tls" \
+        "ShadowTLS" "Manage ShadowTLS" \
+        "Hysteria2" "Manage Hysteria2" \
+        "Reality" "Manage Reality" \
+        "Tuic-V5" "Manage Tuic-V5" \
+        "Naive" "Manage Naive" \
+        "Warp" "Manage Warp" \
+        "" "" \
+        "Exit" "Exit the script" 3>&1 1>&2 2>&3)
     case $user_choice in
     "Optimize")
         clear
@@ -27,18 +28,15 @@ while true; do
         ;;
     "Hysteria2")
         while true; do
-            user_choice=$(
-                whiptail --clear --title "Hysteria2 Menu" --menu "Please select an option:" 25 50 15 \
-                    "1" "Install" \
-                    "2" "Modify Config" \
-                    "3" "Add a new user" \
-                    "4" "Remove an existing user" \
-                    "5" "Show User Configs" \
-                    "6" "Enable/Disable WARP" \
-                    "7" "Uninstall" \
-                    "0" "Back to Main Menu" 3>&1 1>&2 2>&3
-            )
-
+            user_choice=$(whiptail --clear --title "Hysteria2 Menu" --menu "Please select an option:" 25 50 15 \
+                "1" "Install" \
+                "2" "Modify Config" \
+                "3" "Add a new user" \
+                "4" "Remove an existing user" \
+                "5" "Show User Configs" \
+                "6" "Enable/Disable WARP" \
+                "7" "Uninstall" \
+                "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
             case $user_choice in
             "1")
                 clear
@@ -49,12 +47,10 @@ while true; do
                     clear
                 else
                     while true; do
-                        user_choice=$(
-                            whiptail --clear --title "Hysteria2 Installation Menu" --menu "Please select an option:" 25 50 15 \
+                        user_choice=$(whiptail --clear --title "Hysteria2 Installation Menu" --menu "Please select an option:" 25 50 15 \
                             "1" "With OBFS" \
                             "2" "Without OBFS" \
-                            "0" "Back" 3>&1 1>&2 2>&3 )
-
+                            "0" "Back" 3>&1 1>&2 2>&3)
                         case $user_choice in
                         "1")
                             clear
@@ -81,11 +77,9 @@ while true; do
 
                 if [ -e "$hysteria_check" ]; then
                     while true; do
-                        user_choice=$(
-                            whiptail --clear --title "Hysteria2 Modification Menu" --menu "Please select an option:" 25 50 15 \
+                        user_choice=$(whiptail --clear --title "Hysteria2 Modification Menu" --menu "Please select an option:" 25 50 15 \
                             "1" "With OBFS" \
-                            "2" "Without OBFS" 3>&1 1>&2 2>&3 )
-
+                            "2" "Without OBFS" 3>&1 1>&2 2>&3)
                         case $user_choice in
                         "1")
                             clear
@@ -135,9 +129,9 @@ while true; do
             esac
         done
         ;;
-    "Tuic")
+    "Tuic-V5")
         while true; do
-            user_choice=$(whiptail --clear --title "Tuic Menu" --menu "Please select an option:" 25 50 15 \
+            user_choice=$(whiptail --clear --title "Tuic-V5 Menu" --menu "Please select an option:" 25 50 15 \
                 "1" "Install" \
                 "2" "Modify Config" \
                 "3" "Add a new user" \
@@ -146,7 +140,6 @@ while true; do
                 "6" "Enable/Disable WARP" \
                 "7" "Uninstall" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
-
             case $user_choice in
             "1")
                 clear
@@ -197,7 +190,6 @@ while true; do
                 "7" "Enable/Disable WARP" \
                 "8" "Uninstall" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
-
             case $user_choice in
             "1")
                 clear
@@ -208,12 +200,10 @@ while true; do
                     clear
                 else
                     while true; do
-                        user_choice=$(
-                            whiptail --clear --title "Reality Installation Menu" --menu "Please select Transport Type:" 25 50 15 \
+                        user_choice=$(whiptail --clear --title "Reality Installation Menu" --menu "Please select Transport Type:" 25 50 15 \
                             "1" "gRPC" \
                             "2" "TCP" \
-                            "0" "Back" 3>&1 1>&2 2>&3 )
-
+                            "0" "Back" 3>&1 1>&2 2>&3)
                         case $user_choice in
                         "1")
                             clear
@@ -240,11 +230,9 @@ while true; do
 
                 if [ -e "$reality_check" ]; then
                     while true; do
-                        user_choice=$(
-                            whiptail --clear --title "Reality Modification Menu" --menu "Please select Transport Type:" 25 50 15 \
+                        user_choice=$(whiptail --clear --title "Reality Modification Menu" --menu "Please select Transport Type:" 25 50 15 \
                             "1" "gRPC" \
-                            "2" "TCP" 3>&1 1>&2 2>&3 )
-
+                            "2" "TCP" 3>&1 1>&2 2>&3)
                         case $user_choice in
                         "1")
                             clear
@@ -309,7 +297,6 @@ while true; do
                 "6" "Enable/Disable WARP" \
                 "7" "Uninstall" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
-
             case $user_choice in
             "1")
                 clear
@@ -348,9 +335,9 @@ while true; do
             esac
         done
         ;;
-    "WebSocket")
+    "VLESS-WebSocket-tls")
         while true; do
-            user_choice=$(whiptail --clear --title "WebSocket Menu" --menu "Please select an option:" 25 50 15 \
+            user_choice=$(whiptail --clear --title "VLESS-WebSocket-tls Menu" --menu "Please select an option:" 25 50 15 \
                 "1" "Install" \
                 "2" "Modify Config" \
                 "3" "Add a new user" \
@@ -359,7 +346,6 @@ while true; do
                 "6" "Enable/Disable WARP" \
                 "7" "Uninstall" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
-
             case $user_choice in
             "1")
                 clear
@@ -398,6 +384,55 @@ while true; do
             esac
         done
         ;;
+    "VLESS-gRPC-tls")
+        while true; do
+            user_choice=$(whiptail --clear --title "VLESS-gRPC-tls Menu" --menu "Please select an option:" 25 50 15 \
+                "1" "Install" \
+                "2" "Modify Config" \
+                "3" "Add a new user" \
+                "4" "Remove an existing user" \
+                "5" "Show User Configs" \
+                "6" "Enable/Disable WARP" \
+                "7" "Uninstall" \
+                "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
+            case $user_choice in
+            "1")
+                clear
+                install_grpc
+                ;;
+            "2")
+                clear
+                modify_grpc_config
+                ;;
+            "3")
+                clear
+                add_grpc_user
+                ;;
+            "4")
+                clear
+                remove_grpc_user
+                ;;
+            "5")
+                clear
+                show_grpc_config
+                ;;
+            "6")
+                clear
+                toggle_warp_grpc
+                ;;
+            "7")
+                clear
+                uninstall_grpc
+                ;;
+            "0")
+                break
+                ;;
+            *)
+                whiptail --msgbox "Invalid choice. Please select a valid option." 10 30
+                ;;
+            esac
+        done
+        ;;        
     "Naive")
         while true; do
             user_choice=$(whiptail --clear --title "Naive Menu" --menu "Please select an option:" 25 50 15 \
@@ -409,7 +444,6 @@ while true; do
                 "6" "Enable/Disable WARP" \
                 "7" "Uninstall" \
                 "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
-
             case $user_choice in
             "1")
                 clear
@@ -450,15 +484,12 @@ while true; do
         ;;
     "Warp")
         while true; do
-            user_choice=$(
-                whiptail --clear --title "Warp Menu" --menu "Please select an option:" 25 50 15 \
-                    "1" "Generate WARP+ Key" \
-                    "2" "Generate WARP+ Wireguard Config" \
-                    "3" "Show Config" \
-                    "4" "Uninstall" \
-                    "0" "Back to Main Menu" 3>&1 1>&2 2>&3
-            )
-
+            user_choice=$(whiptail --clear --title "Warp Menu" --menu "Please select an option:" 25 50 15 \
+                "1" "Generate WARP+ Key" \
+                "2" "Generate WARP+ Wireguard Config" \
+                "3" "Show Config" \
+                "4" "Uninstall" \
+                "0" "Back to Main Menu" 3>&1 1>&2 2>&3)
             case $user_choice in
             "1")
                 clear
