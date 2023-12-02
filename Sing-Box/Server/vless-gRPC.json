@@ -9,7 +9,7 @@
             "sniff_override_destination": true,
             "tls": {
                 "alpn": [
-                    "http/1.1"
+                    "h2"
                 ],
                 "enabled": true,
                 "server_name": "DOMAIN",
