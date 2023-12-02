@@ -847,10 +847,10 @@ install_grpc() {
         (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart GS") | crontab -
 
         result_url=" 
-        vless://$uuid@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=grpc&serviceName=$service_name&encryption=none#gRPC"
+        vless://$uuid@$domain:$user_port?security=tls&sni=$domain&alpn=h2&fp=firefox&type=grpc&serviceName=$service_name&encryption=none#gRPC"
 
         result_url2=" 
-        vless://UUID@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=grpc&serviceName=$service_name&encryption=none#NAME-gRPC"
+        vless://UUID@$domain:$user_port?security=tls&sni=$domain&alpn=h2&fp=firefox&type=grpc&serviceName=$service_name&encryption=none#NAME-gRPC"
 
         echo -e "Config URL: $result_url" >/etc/grpc/user-config.txt
         echo -e "Config URL: $result_url2" >/etc/grpc/config.txt
@@ -904,10 +904,10 @@ modify_grpc_config() {
         systemctl enable --now GS
 
         result_url=" 
-        vless://$uuid@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=grpc&serviceName=$service_name&encryption=none#gRPC"
+        vless://$uuid@$domain:$user_port?security=tls&sni=$domain&alpn=h2&fp=firefox&type=grpc&serviceName=$service_name&encryption=none#gRPC"
 
         result_url2=" 
-        vless://UUID@$domain:$user_port?security=tls&sni=$domain&alpn=http/1.1&fp=firefox&type=grpc&serviceName=$service_name&encryption=none#NAME-gRPC"
+        vless://UUID@$domain:$user_port?security=tls&sni=$domain&alpn=h2&fp=firefox&type=grpc&serviceName=$service_name&encryption=none#NAME-gRPC"
 
         echo -e "Config URL: $result_url" >/etc/grpc/user-config.txt
         echo -e "Config URL: $result_url2" >/etc/grpc/config.txt
