@@ -833,7 +833,7 @@ install_grpc() {
         sed -i "s/UUID/$uuid/" /etc/grpc/config.json
         sed -i "s/PORT/$user_port/" /etc/grpc/config.json
         sed -i "s/DOMAIN/$domain/" /etc/grpc/config.json
-        sed -i "s/NAME/WebSocket/" /etc/grpc/config.json
+        sed -i "s/NAME/gRPC/" /etc/grpc/config.json
         sed -i "s/PATH/$service_name/" /etc/grpc/config.json
 
         set_ufw tcp
@@ -890,7 +890,7 @@ modify_grpc_config() {
         sed -i "s/UUID/$uuid/" /etc/grpc/config.json
         sed -i "s/PORT/$user_port/" /etc/grpc/config.json
         sed -i "s/DOMAIN/$domain/" /etc/grpc/config.json
-        sed -i "s/NAME/WebSocket/" /etc/grpc/config.json
+        sed -i "s/NAME/gRPC/" /etc/grpc/config.json
         sed -i "s/PATH/$service_name/" /etc/grpc/config.json
 
         set_ufw tcp
