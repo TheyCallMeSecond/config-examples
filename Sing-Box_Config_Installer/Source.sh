@@ -44,7 +44,7 @@ install_hysteria() {
     public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
     public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
-    set_ufw
+    set_ufw udp
 
     systemctl enable --now SH
 
@@ -120,7 +120,7 @@ modify_hysteria_config() {
     public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
     public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
-    set_ufw
+    set_ufw udp
 
     systemctl start SH
 
@@ -207,7 +207,7 @@ install_tuic() {
         public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
         public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
-        set_ufw
+        set_ufw  udp
 
         systemctl enable --now TS
 
@@ -270,7 +270,7 @@ modify_tuic_config() {
         public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
         public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
-        set_ufw
+        set_ufw udp
 
         systemctl start TS
 
@@ -355,7 +355,7 @@ install_reality() {
     public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
     public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
-    set_ufw
+    set_ufw tcp
 
     systemctl enable --now RS
 
@@ -437,7 +437,7 @@ modify_reality_config() {
     public_ipv4=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v4.ident.me)
     public_ipv6=$(wget -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://v6.ident.me)
 
-    set_ufw
+    set_ufw tcp
 
     systemctl start RS
 
@@ -575,7 +575,7 @@ install_shadowtls() {
 
         sed -i "s/NAME/ShadowTLS/" /etc/shadowtls/config.json
 
-        set_ufw
+        set_ufw tcp
 
         systemctl enable --now ST
 
@@ -648,7 +648,7 @@ modify_shadowtls_config() {
 
         sed -i "s/NAME/ShadowTLS/" /etc/shadowtls/config.json
 
-        set_ufw
+        set_ufw tcp
 
         systemctl start ST
 
@@ -706,7 +706,7 @@ install_ws() {
         sed -i "s/DOMAIN/$domain/" /etc/ws/config.json
         sed -i "s/NAME/WebSocket/" /etc/ws/config.json
 
-        set_ufw
+        set_ufw tcp
 
         get_ssl ws "$domain"
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/ws/server.crt
@@ -761,7 +761,7 @@ modify_ws_config() {
         sed -i "s/DOMAIN/$domain/" /etc/ws/config.json
         sed -i "s/NAME/WebSocket/" /etc/ws/config.json
 
-        set_ufw
+        set_ufw tcp
 
         get_ssl ws "$domain"
         rm -f /etc/ws/server.crt
@@ -836,7 +836,7 @@ install_grpc() {
         sed -i "s/NAME/WebSocket/" /etc/grpc/config.json
         sed -i "s/PATH/$service_name/" /etc/grpc/config.json
 
-        set_ufw
+        set_ufw tcp
 
         get_ssl grpc "$domain"
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/grpc/server.crt
@@ -893,7 +893,7 @@ modify_grpc_config() {
         sed -i "s/NAME/WebSocket/" /etc/grpc/config.json
         sed -i "s/PATH/$service_name/" /etc/grpc/config.json
 
-        set_ufw
+        set_ufw tcp
 
         get_ssl grpc "$domain"
         rm -f /etc/grpc/server.crt
@@ -966,7 +966,7 @@ install_naive() {
         sed -i "s/DOMAIN/$domain/" /etc/naive/config.json
         sed -i "s/NAME/Naive/" /etc/naive/config.json
 
-        set_ufw
+        set_ufw tcp
 
         get_ssl naive "$domain"
         cp /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/naive/server.crt
@@ -1021,7 +1021,7 @@ modify_naive_config() {
         sed -i "s/DOMAIN/$domain/" /etc/naive/config.json
         sed -i "s/NAME/Naive/" /etc/naive/config.json
 
-        set_ufw
+        set_ufw tcp
 
         get_ssl naive "$domain"
         rm -f /etc/naive/server.crt
@@ -2136,9 +2136,17 @@ install_core() {
 }
 
 set_ufw() {
+    protocol="$1"
+
     if ufw status | grep -q "Status: active"; then
         ufw disable
-        ufw allow "$user_port"/udp
+
+        if [ "$protocol" == "tcp" ]; then
+            ufw allow "$user_port"
+        elif [ "$protocol" == "udp" ]; then
+            ufw allow "$user_port"/udp
+        fi
+
         sleep 0.5
         echo "y" | ufw enable
         ufw reload
