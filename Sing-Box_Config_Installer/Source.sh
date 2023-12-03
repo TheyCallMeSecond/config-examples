@@ -214,14 +214,14 @@ install_tuic() {
         (crontab -l 2>/dev/null; echo "0 */5 * * * systemctl restart TS") | crontab -
 
         result_url=" 
-        ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#TUIC
+        ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#TUIC
         ---------------------------------------------------------------
-        ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#TUIC-V6"
+        ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#TUIC-V6"
 
         result_url2=" 
-        ipv4 : tuic://UUID:PASSWORD@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC
+        ipv4 : tuic://UUID:PASSWORD@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC
         ---------------------------------------------------------------
-        ipv6 : tuic://UUID:PASSWORD@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC-V6"
+        ipv6 : tuic://UUID:PASSWORD@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC-V6"
 
         echo -e "Config URL: $result_url" >/etc/tuic/user-config.txt
         echo -e "Config URL: $result_url2" >/etc/tuic/config.txt
@@ -275,14 +275,14 @@ modify_tuic_config() {
         systemctl start TS
 
         result_url=" 
-        ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#TUIC
+        ipv4 : tuic://$uuid:$password@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#TUIC
         ---------------------------------------------------------------
-        ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#TUIC-V6"
+        ipv6 : tuic://$uuid:$password@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#TUIC-V6"
 
         result_url2=" 
-        ipv4 : tuic://UUID:PASSWORD@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC
+        ipv4 : tuic://UUID:PASSWORD@$public_ipv4:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC
         ---------------------------------------------------------------
-        ipv6 : tuic://UUID:PASSWORD@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC-V6"
+        ipv6 : tuic://UUID:PASSWORD@[$public_ipv6]:$user_port?congestion_control=bbr&alpn=h3,%20spdy/3.1&sni=www.google.com&udp_relay_mode=native&allow_insecure=1#NAME-TUIC-V6"
 
         echo -e "Config URL: $result_url" >/etc/tuic/user-config.txt
         echo -e "Config URL: $result_url2" >/etc/tuic/config.txt
