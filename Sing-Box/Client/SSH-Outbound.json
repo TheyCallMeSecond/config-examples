@@ -1,0 +1,8 @@
+    {
+      "type": "ssh",
+      "tag": "proxy",
+      "server": "IP",
+      "server_port": PORT,
+      "user": "USERNAME",
+      "password": "PASSWORD"
+    }
