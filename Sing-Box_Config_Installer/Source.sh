@@ -1957,6 +1957,7 @@ check_dep() {
         if ! python3 -c "import $package" >/dev/null 2>&1; then
             echo "Python package $package is not installed. Installing..."
             pip3 install $package
+            pip3 uninstall urllib3 -y
         else
             echo "Python package $package is already installed."
         fi
