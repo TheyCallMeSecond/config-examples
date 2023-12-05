@@ -1945,6 +1945,7 @@ check_dep() {
     for package in "${dependencies[@]}"; do
         if ! dpkg -s $package >/dev/null 2>&1 && ! rpm -q $package >/dev/null 2>&1; then
             echo "Package $package is not installed. Installing..."
+            $systemPackage update
             $systemPackage install -y $package
         else
             echo "Package $package is already installed."
