@@ -17,7 +17,11 @@ Automatic Installation and Configuration of WARP, ShadowTLS, WebSocket, gRPC, Re
 
  You need Curl to run this script. If it's not installed on your server, install it with the following command:
 
->sudo apt install curl 
+>sudo apt install curl
+
+or 
+
+>sudo yum install curl 
 
 
 Run the following command on your server:
