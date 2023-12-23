@@ -8,7 +8,6 @@ Automatic Installation and Configuration of WARP, ShadowTLS, WebSocket, gRPC, Re
 
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/TheyCallMeSecond/config-examples?style=for-the-badge&color=cba6f7) ![GitHub last commit](https://img.shields.io/github/last-commit/TheyCallMeSecond/config-examples?style=for-the-badge&color=b4befe) ![GitHub forks](https://img.shields.io/github/forks/TheyCallMeSecond/config-examples?style=for-the-badge&color=cba6f7)
-<br/>
 </div>
 
 ------------
