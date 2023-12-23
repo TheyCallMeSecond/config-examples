@@ -46,7 +46,7 @@ bash <(curl -fsSL https://bit.ly/config-installer)
 
 - Tested on Ubuntu, Debian, and CentOS servers.
 
-- Optimize your server before installing protocols (actions include: server update and upgrade, installing the latest ZEN kernel, necessary package installation, enabling IPv6, enabling BBR, optimizing SSH connection, setting limits, enabling firewall).
+- Optimize your server before installing protocols (actions include: server update and upgrade, installing the latest XanMod kernel, necessary package installation, enabling IPv6, enabling BBR, optimizing SSH connection, setting limits, enabling firewall).
 
 - To activate WARP: first obtain the WARP+ code through the script, create a WireGuard configuration for WARP, then enable it for the desired protocol.
 
