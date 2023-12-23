@@ -3,7 +3,7 @@
 [![banner](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/SCI.png?raw=true "banner")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/SCI.png?raw=true "banner")
 
 
-نصب و کانفیگ اتوماتیک WARP, ShadowTLS, WebSocket, gRPC, Reality, Naive, TUIC, Hysteria2
+Automatic Installation and Configuration of WARP, ShadowTLS, WebSocket, gRPC, Reality, Naive, TUIC, Hysteria2
 
 
 
@@ -13,22 +13,22 @@
 
 ------------
 
-#### نصب :
+#### Installation:
 
 
- برای اجرای این اسکریپت نیاز به کرل دارید.اگر روی سرورتون نصب نیست با دستور زیر نصبش کنید
+ You need Curl to run this script. If it's not installed on your server, install it with the following command:
 
 >sudo apt install curl 
 
 
- دستور زیر رو روی سرورتون اجرا کنید : 
+Run the following command on your server:
 
 
 ```bash
 bash <(curl -fsSL https://bit.ly/config-installer)
 ```
 
- [بعد از اولین استفاده میتونین فقط با زدن "sci" داخل سرورتون به آخرین ورژن اسکریپت دسترسی داشته باشین]
+ [After the initial use, you can access the latest version of the script by simply typing "sci" on your server]
 
  
  
@@ -42,38 +42,37 @@ bash <(curl -fsSL https://bit.ly/config-installer)
 
 ------------
 
-#### نکات :
+#### Notes:
 
- بر روی سرور‌های اوبونتو دبین و سنت او اس تست شده
+- Tested on Ubuntu, Debian, and CentOS servers.
 
- حتما قبل از نصب پروتکل ها سرورتون رو اپتیمایز کنید (کارایی که انجام میشه : آپدیت و آپگرید سرور...نصب آخرین ورژن کرنل زن-مود...نصب پکیج های مورد نیاز...فعال کردن آیپی ورژن 6...فعال   کردن بی بی آر...اپتیمایز کردن کانکشن اس اس اچ...اپتیمایز کردن لیمیت ها...فعال کردن فایروال)
- 
+- Optimize your server before installing protocols (actions include: server update and upgrade, installing the latest ZEN kernel, necessary package installation, enabling IPv6, enabling BBR, optimizing SSH connection, setting limits, enabling firewall).
 
- برای فعال کردن وارپ : ابتدا کد وارپ پلاس رو از طریق اسکریپت دریافت کنید.کانفیگ وایرگارد برای وارپ بسازید بعد روی هر پروتکلی که خواستید فعالش کنید
+- To activate WARP: first obtain the WARP+ code through the script, create a WireGuard configuration for WARP, then enable it for the desired protocol.
 
- وارپ از طریق وایرگارد توسط هسته سینگ باکس کانکت میشه در نتیجه از حداقل منابع سرور استفاده میکنه و کمترین تاخیر رو داره (نسبت به کلاینت اصلی وارپ)
+- WARP connects via WireGuard's kernel, utilizing minimal server resources and offering minimal latency compared to the primary WARP client.
 
- میتونین از اسکریپت برای دریافت کد وارپ پلاس  استفاده کنید
+- You can use the script to obtain WARP+ codes.
 
- با پاک کردن وارپ به صورت اتوماتیک وارپ روی پروتکل هایی که فعال کرده بودین غیرفعال میشه
+- Deleting WARP will automatically deactivate it for the protocols you had enabled.
 
- قابلیت آپدیت هسته سینگ باکس استفاده شده برای اجرای پروتکل ها
- 
- بازتولید کلید‌های ریلیتی
- 
- دریافت اتوماتیک سرتیفیکیت برای دامنه‌ی شما
+- Ability to update the Singbox core used to run protocols.
 
- مدیریت کاربران : قابلیت حذف و اضافه کردن کاربر برای همه ی پروتکل ها
+- Regenerates Reality Keys.
 
- نمایش خروجی کانفیگ به صورت لینک و کیو‌آر کد برای آیپی ورژن 6 و 4 جداگونه (برای شدو تی ال اس دو مدل خروجی برای نکوری و نکوباکس داده میشه که باید داخل این دو نرم افزار کاستم کانفیگ     بسازید و کانفیگ مرتبط رو داخلش کپی کنید)
+- Automatic certificate retrieval for your domain.
 
- همچنین برای شدو تی ال اس  بر روی اندروید و آی او اس می تونین از کلاینت رسمی سینگ باکس هم استفاده کنید (از کانفیگ خروجیه مخصوص نکوباکس استفاده کنید)
+- User management: capability to add or remove users for all protocols.
+
+- Displays configuration output as links and QR codes separately for IPv6 and IPv4 (provides separate output models for Shadow TLS compatible with NekoRay and NekoBox, where you need to create custom configurations and copy relevant configurations into them).
+
+- Additionally, for Shadow TLS, you can use the official SingBox client on Android and iOS (use the dedicated output configuration for NekoBox).
 
 
 
 ------------
 
-#### کلاینت
+#### Clients
 - Android
   - [v2rayNG](https://github.com/2dust/v2rayNg/releases)
   - [NekoBox](https://github.com/MatsuriDayo/NekoBoxForAndroid/releases)
@@ -94,13 +93,6 @@ bash <(curl -fsSL https://bit.ly/config-installer)
   ## Special Thanks
 
 
-  - **[hawshemi]** - *For server optimizer*
+  - [hawshemi](https://github.com/hawshemi/Linux-Optimizer) - *For server optimizer*
 
-  - **[misaka]** - *For warp config and key generator*
-
-
-  [hawshemi]: https://github.com/hawshemi/Linux-Optimizer
-  [misaka]: https://replit.com/@misaka-blog/warpgo-profile-generator
-
-
-
+  - [misaka](https://replit.com/@misaka-blog/warpgo-profile-generator) - *For warp config and key generator*
