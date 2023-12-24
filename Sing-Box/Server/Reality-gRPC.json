@@ -22,6 +22,11 @@
         },
         "server_name": "SNI"
       },
+      "multiplex": {
+        "enabled": true,
+        "padding": false,
+        "brutal": {}
+      },
       "transport": {
         "service_name": "PATH",
         "type": "grpc"
