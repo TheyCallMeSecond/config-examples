@@ -22,6 +22,11 @@
         },
         "server_name": "SNI"
       },
+      "multiplex": {
+        "enabled": true,
+        "padding": false,
+        "brutal": {}
+      },
       "users": [
         {
           "name": "NAME",
