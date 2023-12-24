@@ -16,6 +16,11 @@
         "certificate_path": "/etc/ws/server.crt",
         "key_path": "/etc/ws/server.key"
       },
+      "multiplex": {
+        "enabled": true,
+        "padding": false,
+        "brutal": {}
+      },
       "transport": {
         "type": "ws",
         "path": "",
