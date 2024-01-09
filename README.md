@@ -33,7 +33,8 @@ bash <(curl -fsSL https://bit.ly/config-installer)
 
  [After the initial use, you can access the latest version of the script by simply typing "sci" on your server]
 
- 
+
+ <div align="center">
  
 [![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/29.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/29.png?raw=true "bash screen")
 
@@ -43,6 +44,7 @@ bash <(curl -fsSL https://bit.ly/config-installer)
 
 [![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/32.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/32.png?raw=true "bash screen")
 
+</div>
 ------------
 
 #### Notes:
