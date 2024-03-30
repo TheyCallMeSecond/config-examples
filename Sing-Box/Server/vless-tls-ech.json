@@ -1,0 +1,54 @@
+{
+  "inbounds": [
+    {
+      "type": "vless",
+      "tag": "vless-ws-ech",
+      "listen": "::",
+      "listen_port": 443,
+      "domain_strategy": "prefer_ipv4",
+      "users": [
+        {
+          "name": "ech",
+          "uuid": "UUID"
+        }
+      ],
+      "tls": {
+        "enabled": true,
+        "server_name": "DOMAIN",
+        "certificate_path": "/root/singbox-ech/server.crt",
+        "key_path": "/root/singbox-ech/server.key",
+        "ech": {
+          "enabled": true,
+          "pq_signature_schemes_enabled": true,
+          "dynamic_record_sizing_disabled": false,
+          "key_path": "/root/singbox-ech/ech.key"
+        }
+      },
+      "multiplex": {
+        "enabled": true,
+        "padding": false,
+        "brutal": {}
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/imghp?hl=en&ogbl",
+        "headers": {
+          "Host": "google.com",
+          "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:124.0) Gecko/20100101 Firefox/124.0"
+        },
+        "max_early_data": 2048,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      }
+    }
+  ],
+  "log": {
+    "level": "warn",
+    "timestamp": true
+  },
+  "outbounds": [
+    {
+      "tag": "direct",
+      "type": "direct"
+    }
+  ]
+}
