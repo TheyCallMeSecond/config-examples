@@ -1,0 +1,36 @@
+{
+    "outbounds": [
+        {
+            "type": "vless",
+            "tag": "proxy",
+            "server": "DOMAIN",
+            "server_port": 443,
+            "uuid": "UUID",
+            "tls": {
+                "enabled": true,
+                "ech": {
+                    "enabled": true,
+                    "pq_signature_schemes_enabled": true,
+                    "dynamic_record_sizing_disabled": false,
+                    "config": "ECH-CONFIGS"
+                }
+            },
+            "multiplex": {
+                "enabled": true,
+                "max_connections": 8,
+                "min_streams": 8,
+                "padding": false
+            },
+            "transport": {
+                "type": "ws",
+                "path": "/imghp?hl=en&ogbl",
+                "headers": {
+                    "Host": "google.com",
+                    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:124.0) Gecko/20100101 Firefox/124.0"
+                },
+                "max_early_data": 2048,
+                "early_data_header_name": "Sec-WebSocket-Protocol"
+            }
+        }
+        ]
+        }
