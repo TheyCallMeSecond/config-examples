@@ -1893,9 +1893,9 @@ check_OS() {
         VER=$(uname -r)
     fi
 
-    if [ "$OS" == "Ubuntu" ] || [ "$OS" == "Debian" ]; then
+    if `grep -E 'Debian|Ubuntu' <<< $OS > /dev/null` ; then
         systemPackage="apt"
-    elif [ "$OS" == "CentOS" ] || [ "$OS" == "Red Hat" ]; then
+    elif `grep -E 'Fedora|CentOS|Red Hat' <<< $OS > /dev/null`; then
         systemPackage="yum"
     else
         echo "Unsupported OS"
