@@ -1609,6 +1609,10 @@ toggle_warp_reality() {
 
                 jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
                 mv /tmp/tmp_config.json "$file"
+
+                jq '(.route.rules[] | select(.inbound[0] == "vless-in")).outbound = "direct"' /tmp/tmp_config.json > /tmp/final_config.json
+                mv /tmp/final_config.json "$file"
+
                 systemctl start RS
 
                 whiptail --msgbox "WARP is disabled now" 10 30
@@ -1618,6 +1622,10 @@ toggle_warp_reality() {
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
+
+                jq '(.route.rules[] | select(.inbound[0] == "vless-in")).outbound = "wireguard-out"' /tmp/tmp_config.json > /tmp/final_config.json
+                mv /tmp/final_config.json "$file"
+
                 systemctl start RS
 
                 whiptail --msgbox "WARP is enabled now" 10 30
@@ -1649,6 +1657,10 @@ toggle_warp_shadowtls() {
 
                 jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
                 mv /tmp/tmp_config.json "$file"
+
+                jq '(.route.rules[] | select(.inbound[0] == "shadowsocks-in")).outbound = "direct"' /tmp/tmp_config.json > /tmp/final_config.json
+                mv /tmp/final_config.json "$file"
+
                 systemctl start ST
 
                 whiptail --msgbox "WARP is disabled now" 10 30
@@ -1658,6 +1670,10 @@ toggle_warp_shadowtls() {
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
+
+                jq '(.route.rules[] | select(.inbound[0] == "shadowsocks-in")).outbound = "wireguard-out"' /tmp/tmp_config.json > /tmp/final_config.json
+                mv /tmp/final_config.json "$file"
+
                 systemctl start ST
 
                 whiptail --msgbox "WARP is enabled now" 10 30
@@ -1689,6 +1705,10 @@ toggle_warp_tuic() {
 
                 jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
                 mv /tmp/tmp_config.json "$file"
+
+                jq '(.route.rules[] | select(.inbound[0] == "tuic-in")).outbound = "direct"' /tmp/tmp_config.json > /tmp/final_config.json
+                mv /tmp/final_config.json "$file"
+
                 systemctl start TS
 
                 whiptail --msgbox "WARP is disabled now" 10 30
@@ -1698,6 +1718,10 @@ toggle_warp_tuic() {
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
+
+                jq '(.route.rules[] | select(.inbound[0] == "tuic-in")).outbound = "wireguard-out"' /tmp/tmp_config.json > /tmp/final_config.json
+                mv /tmp/final_config.json "$file"
+
                 systemctl start TS
 
                 whiptail --msgbox "WARP is enabled now" 10 30
@@ -1729,6 +1753,10 @@ toggle_warp_hysteria() {
 
                 jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
                 mv /tmp/tmp_config.json "$file"
+
+                jq '(.route.rules[] | select(.inbound[0] == "hy2-in")).outbound = "direct"' /tmp/tmp_config.json > /tmp/final_config.json
+                mv /tmp/final_config.json "$file"
+
                 systemctl start SH
 
                 whiptail --msgbox "WARP is disabled now" 10 30
@@ -1738,6 +1766,10 @@ toggle_warp_hysteria() {
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
+
+                jq '(.route.rules[] | select(.inbound[0] == "hy2-in")).outbound = "wireguard-out"' /tmp/tmp_config.json > /tmp/final_config.json
+                mv /tmp/final_config.json "$file"
+
                 systemctl start SH
 
                 whiptail --msgbox "WARP is enabled now" 10 30
@@ -1769,6 +1801,10 @@ toggle_warp_ws() {
 
                 jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
                 mv /tmp/tmp_config.json "$file"
+
+                jq '(.route.rules[] | select(.inbound[0] == "vless-in")).outbound = "direct"' /tmp/tmp_config.json > /tmp/final_config.json
+                mv /tmp/final_config.json "$file"
+
                 systemctl start WS
 
                 whiptail --msgbox "WARP is disabled now" 10 30
@@ -1778,6 +1814,10 @@ toggle_warp_ws() {
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
+
+                jq '(.route.rules[] | select(.inbound[0] == "vless-in")).outbound = "wireguard-out"' /tmp/tmp_config.json > /tmp/final_config.json
+                mv /tmp/final_config.json "$file"
+
                 systemctl start WS
 
                 whiptail --msgbox "WARP is enabled now" 10 30
@@ -1809,6 +1849,10 @@ toggle_warp_grpc() {
 
                 jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
                 mv /tmp/tmp_config.json "$file"
+
+                jq '(.route.rules[] | select(.inbound[0] == "vless-in")).outbound = "direct"' /tmp/tmp_config.json > /tmp/final_config.json
+                mv /tmp/final_config.json "$file"
+
                 systemctl start WS
 
                 whiptail --msgbox "WARP is disabled now" 10 30
@@ -1818,6 +1862,10 @@ toggle_warp_grpc() {
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
+
+                jq '(.route.rules[] | select(.inbound[0] == "vless-in")).outbound = "wireguard-out"' /tmp/tmp_config.json > /tmp/final_config.json
+                mv /tmp/final_config.json "$file"
+
                 systemctl start GS
 
                 whiptail --msgbox "WARP is enabled now" 10 30
@@ -1849,6 +1897,10 @@ toggle_warp_naive() {
 
                 jq '.outbounds = ['"$new_json"']' "$file" >/tmp/tmp_config.json
                 mv /tmp/tmp_config.json "$file"
+
+                jq '(.route.rules[] | select(.inbound[0] == "naive-in")).outbound = "direct"' /tmp/tmp_config.json > /tmp/final_config.json
+                mv /tmp/final_config.json "$file"
+
                 systemctl start NS
 
                 whiptail --msgbox "WARP is disabled now" 10 30
@@ -1858,6 +1910,10 @@ toggle_warp_naive() {
 
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
+
+                jq '(.route.rules[] | select(.inbound[0] == "naive-in")).outbound = "wireguard-out"' /tmp/tmp_config.json > /tmp/final_config.json
+                mv /tmp/final_config.json "$file"
+
                 systemctl start NS
 
                 whiptail --msgbox "WARP is enabled now" 10 30
