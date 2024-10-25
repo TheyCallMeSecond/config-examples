@@ -1361,6 +1361,10 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file1" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file1"
+
+            jq '(.route.rules[] | select(.inbound[0] == "vless-in")).outbound = "direct"' /tmp/tmp_config.json > /tmp/final_config.json
+            mv /tmp/final_config.json "$file1"
+
             systemctl restart RS
 
             echo "WARP is disabled on Reality"
@@ -1382,6 +1386,10 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file2" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file2"
+
+            jq '(.route.rules[] | select(.inbound[0] == "shadowsocks-in")).outbound = "direct"' /tmp/tmp_config.json > /tmp/final_config.json
+            mv /tmp/final_config.json "$file2"
+
             systemctl restart ST
 
             echo "WARP is disabled on ShadowTLS"
@@ -1403,6 +1411,10 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file3" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file3"
+
+            jq '(.route.rules[] | select(.inbound[0] == "tuic-in")).outbound = "direct"' /tmp/tmp_config.json > /tmp/final_config.json
+            mv /tmp/final_config.json "$file3"
+
             systemctl restart TS
 
             echo "WARP is disabled on TUIC"
@@ -1424,6 +1436,10 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file4" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file4"
+
+            jq '(.route.rules[] | select(.inbound[0] == "hy2-in")).outbound = "direct"' /tmp/tmp_config.json > /tmp/final_config.json
+            mv /tmp/final_config.json "$file4"
+
             systemctl restart SH
 
             echo "WARP is disabled on Hysteria2"
@@ -1445,6 +1461,10 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file5" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file5"
+
+            jq '(.route.rules[] | select(.inbound[0] == "vless-in")).outbound = "direct"' /tmp/tmp_config.json > /tmp/final_config.json
+            mv /tmp/final_config.json "$file5"
+
             systemctl restart WS
 
             echo "WARP is disabled on WebSocket"
@@ -1466,6 +1486,10 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file6" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file6"
+
+            jq '(.route.rules[] | select(.inbound[0] == "naive-in")).outbound = "direct"' /tmp/tmp_config.json > /tmp/final_config.json
+            mv /tmp/final_config.json "$file6"
+
             systemctl restart NS
 
             echo "WARP is disabled on Naive"
@@ -1487,6 +1511,10 @@ uninstall_warp() {
 
             jq '.outbounds = ['"$new_json"']' "$file7" >/tmp/tmp_config.json
             mv /tmp/tmp_config.json "$file7"
+
+            jq '(.route.rules[] | select(.inbound[0] == "vless-in")).outbound = "direct"' /tmp/tmp_config.json > /tmp/final_config.json
+            mv /tmp/final_config.json "$file7"
+
             systemctl restart WS
 
             echo "WARP is disabled on gRPC"
@@ -1623,7 +1651,7 @@ toggle_warp_reality() {
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
 
-                jq '(.route.rules[] | select(.inbound[0] == "vless-in")).outbound = "wireguard-out"' /tmp/tmp_config.json > /tmp/final_config.json
+                jq '(.route.rules[] | select(.inbound[0] == "vless-in")).outbound = "wireguard"' /tmp/tmp_config.json > /tmp/final_config.json
                 mv /tmp/final_config.json "$file"
 
                 systemctl start RS
@@ -1671,7 +1699,7 @@ toggle_warp_shadowtls() {
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
 
-                jq '(.route.rules[] | select(.inbound[0] == "shadowsocks-in")).outbound = "wireguard-out"' /tmp/tmp_config.json > /tmp/final_config.json
+                jq '(.route.rules[] | select(.inbound[0] == "shadowsocks-in")).outbound = "wireguard"' /tmp/tmp_config.json > /tmp/final_config.json
                 mv /tmp/final_config.json "$file"
 
                 systemctl start ST
@@ -1719,7 +1747,7 @@ toggle_warp_tuic() {
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
 
-                jq '(.route.rules[] | select(.inbound[0] == "tuic-in")).outbound = "wireguard-out"' /tmp/tmp_config.json > /tmp/final_config.json
+                jq '(.route.rules[] | select(.inbound[0] == "tuic-in")).outbound = "wireguard"' /tmp/tmp_config.json > /tmp/final_config.json
                 mv /tmp/final_config.json "$file"
 
                 systemctl start TS
@@ -1767,7 +1795,7 @@ toggle_warp_hysteria() {
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
 
-                jq '(.route.rules[] | select(.inbound[0] == "hy2-in")).outbound = "wireguard-out"' /tmp/tmp_config.json > /tmp/final_config.json
+                jq '(.route.rules[] | select(.inbound[0] == "hy2-in")).outbound = "wireguard"' /tmp/tmp_config.json > /tmp/final_config.json
                 mv /tmp/final_config.json "$file"
 
                 systemctl start SH
@@ -1815,7 +1843,7 @@ toggle_warp_ws() {
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
 
-                jq '(.route.rules[] | select(.inbound[0] == "vless-in")).outbound = "wireguard-out"' /tmp/tmp_config.json > /tmp/final_config.json
+                jq '(.route.rules[] | select(.inbound[0] == "vless-in")).outbound = "wireguard"' /tmp/tmp_config.json > /tmp/final_config.json
                 mv /tmp/final_config.json "$file"
 
                 systemctl start WS
@@ -1863,7 +1891,7 @@ toggle_warp_grpc() {
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
 
-                jq '(.route.rules[] | select(.inbound[0] == "vless-in")).outbound = "wireguard-out"' /tmp/tmp_config.json > /tmp/final_config.json
+                jq '(.route.rules[] | select(.inbound[0] == "vless-in")).outbound = "wireguard"' /tmp/tmp_config.json > /tmp/final_config.json
                 mv /tmp/final_config.json "$file"
 
                 systemctl start GS
@@ -1911,7 +1939,7 @@ toggle_warp_naive() {
                 jq --argjson new_outbounds "$outbounds_block" '.outbounds = $new_outbounds' "$file" >temp_config.json
                 mv temp_config.json "$file"
 
-                jq '(.route.rules[] | select(.inbound[0] == "naive-in")).outbound = "wireguard-out"' /tmp/tmp_config.json > /tmp/final_config.json
+                jq '(.route.rules[] | select(.inbound[0] == "naive-in")).outbound = "wireguard"' /tmp/tmp_config.json > /tmp/final_config.json
                 mv /tmp/final_config.json "$file"
 
                 systemctl start NS
