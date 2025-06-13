@@ -38,12 +38,6 @@ bash <(curl -fsSL https://bit.ly/config-installer)
  
 [![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/29.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/29.png?raw=true "bash screen")
 
-[![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/30.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/30.png?raw=true "bash screen")
-
-[![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/31.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/31.png?raw=true "bash screen")
-
-[![bash screen](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/32.png?raw=true "bash screen")](https://github.com/TheyCallMeSecond/config-examples/blob/main/img/32.png?raw=true "bash screen")
-
 </div>
 
 ------------
